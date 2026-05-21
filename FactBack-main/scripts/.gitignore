@@ -1,0 +1,7 @@
+# Fichiers générés par les scripts
+azure-group-ids.txt
+*.log
+
+# Variables d'environnement locales
+.env
+.env.local

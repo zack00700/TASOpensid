@@ -1,0 +1,9 @@
+# Keep pom.xml and src/ INCLUDED!
+# Common excludes:
+target/
+.git/
+.gitignore
+.DS_Store
+node_modules/
+**/*.iml
+.idea/

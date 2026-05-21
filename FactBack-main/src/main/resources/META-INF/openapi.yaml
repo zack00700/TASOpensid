@@ -1,0 +1,145 @@
+openapi: 3.0.3
+info:
+  title: Third Party API
+  version: "1.0"
+paths:
+  /third-party/{id}:
+    patch:
+      summary: Mise a jour partielle d'un tier
+      requestBody:
+        required: true
+        content:
+          application/json-patch+json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/JsonPatchOperation'
+      responses:
+        "200":
+          description: Tier mis a jour
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThirdParty'
+        "409":
+          description: Conflit de version
+  /third-party/{id}/history:
+    get:
+      summary: Historique d'un tier
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Historique
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/HistoryEntry'
+  /api/event/{id}:
+    get:
+      summary: Fetch a single event configuration by its identifier
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Event configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+              examples:
+                sample:
+                  value:
+                    id: "123e4567-e89b-12d3-a456-426614174000"
+                    eventName: "Gate In"
+                    eventType: "IN"
+                    billedEvent: false
+        "404":
+          description: Event not found
+        "400":
+          description: Invalid identifier
+  /api/event:
+    get:
+      summary: List or search event configurations
+      parameters:
+        - in: query
+          name: q
+          required: false
+          schema:
+            type: string
+          description: Filter by event name (case-insensitive)
+      responses:
+        "200":
+          description: List of events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
+              examples:
+                sample:
+                  value:
+                    - id: "123e4567-e89b-12d3-a456-426614174000"
+                      eventName: "Gate In"
+                      eventType: "IN"
+                      billedEvent: false
+
+components:
+  schemas:
+    JsonPatchOperation:
+      type: object
+      required: [op, path]
+      properties:
+        op:
+          type: string
+        path:
+          type: string
+        value:
+          nullable: true
+    ThirdParty:
+      type: object
+      properties:
+        id:
+          type: string
+        version:
+          type: integer
+        updatedAt:
+          type: string
+          format: date-time
+    HistoryEntry:
+      type: object
+      properties:
+        id:
+          type: string
+        thirdPartyId:
+          type: string
+        version:
+          type: integer
+        data:
+          type: object
+        updatedAt:
+          type: string
+          format: date-time
+    Event:
+      type: object
+      properties:
+        id:
+          type: string
+        eventName:
+          type: string
+        eventType:
+          type: string
+          enum: [IN, OUT, INTERMEDIATE]
+        billedEvent:
+          type: boolean

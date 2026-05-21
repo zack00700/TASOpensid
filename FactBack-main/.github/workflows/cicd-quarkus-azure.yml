@@ -1,0 +1,77 @@
+name: CI/CD - FactBack -> Azure (OIDC + Managed Identity)
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  id-token: write
+  packages: write
+
+jobs:
+  ci_build_test:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Build & test
+        run: ./mvnw -B clean verify
+
+      - name: Build Docker image (no push)
+        run: docker build -t factback-ci .
+
+  cd_build_push_deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    env:
+      IMAGE_NAME: factback
+      GHCR_OWNER: pigch
+      GHCR_LOGIN_SERVER: ghcr.io
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Azure Login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image to GHCR
+        run: |
+          IMAGE_TAG=${{ github.sha }}
+          FULL_IMAGE=${GHCR_LOGIN_SERVER}/${GHCR_OWNER}/${IMAGE_NAME}:${IMAGE_TAG}
+          echo "Building image $FULL_IMAGE"
+          docker build -t $FULL_IMAGE -t ${GHCR_LOGIN_SERVER}/${GHCR_OWNER}/${IMAGE_NAME}:latest .
+          docker push $FULL_IMAGE
+          docker push ${GHCR_LOGIN_SERVER}/${GHCR_OWNER}/${IMAGE_NAME}:latest
+          echo "FULL_IMAGE=$FULL_IMAGE" >> $GITHUB_ENV
+
+      - name: Deploy to Azure Container Apps
+        run: |
+          az containerapp update \
+            --name ca-factback \
+            --resource-group rg-cont-billing-dev \
+            --image ${{ env.FULL_IMAGE }}

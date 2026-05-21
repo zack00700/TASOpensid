@@ -1,0 +1,54 @@
+[
+    {
+        "id": "78b6e30f-f74b-4f5e-af0b-330843f9b531",
+        "name": "Standard Container Storage",
+        "description": "Daily storage charges for standard containers",
+        "calculationMode": {
+            "eventConfig": {
+                "id": "fa15c7e6-e081-48be-b29d-4a81c4041f4a",
+                "eventName": "Container Gate in",
+                "eventType": "IN",
+                "billedEvent": true
+            },
+            "type": "DateByTEU",
+            "subType": "call_date_teu"
+        },
+        "status": "Active",
+        "startDate": "2025-02-24T00:00:00.000+00:00",
+        "endDate": "2026-02-24T00:00:00.000+00:00",
+        "rates": [
+            {
+                "startQuantity": 0,
+                "endQuantity": 0,
+                "unitOfMeasurement": "Items",
+                "amount": 1000,
+                "currency": "USD",
+                "startDate": null,
+                "endDate": null,
+                "priority": 1,
+                "dateBased": false,
+                "quantityBased": false,
+                "defaultRate": false
+            }
+        ]
+    },
+    {
+        "id": "15e9fcf6-7ba6-417a-a16f-10b6cb267951",
+        "name": "Reefer Monitoring",
+        "description": "Hourly monitoring charges for reefer containers",
+        "calculationMode": {
+            "eventConfig": {
+                "id": "9e0844b4-12fb-4c13-ad25-b75ac23414b8",
+                "eventName": "Container Yard Move",
+                "eventType": "INTERMEDIATE",
+                "billedEvent": false
+            },
+            "type": "Quantity",
+            "subType": "quantity"
+        },
+        "status": "Active",
+        "startDate": "2025-02-24T00:00:00.000+00:00",
+        "endDate": "2026-02-24T00:00:00.000+00:00",
+        "rates": []
+    }
+]

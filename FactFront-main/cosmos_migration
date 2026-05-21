@@ -1,0 +1,94 @@
+// ========= CONFIG =========
+const DB = db.getName();           // utilise la base courante
+const SAMPLE_DOCS = 1;             // nb de docs à montrer si pas de validator
+const MAX_INDEX_KEYS = 50;         // limite d'affichage clés index
+
+print(`\n=== Introspection de la base: ${DB} ===\n`);
+
+function safeStringify(obj) {
+  try { return JSON.stringify(obj, null, 2); } catch (e) { return String(obj); }
+}
+
+function inferFieldTypes(doc, prefix = "", acc = {}) {
+  if (doc === null || doc === undefined) {
+    acc[prefix || "(root)"] = "null";
+    return acc;
+  }
+  if (Array.isArray(doc)) {
+    acc[prefix || "(root)"] = "array";
+    if (doc.length > 0) inferFieldTypes(doc[0], prefix ? prefix + "[0]" : "[0]", acc);
+    return acc;
+  }
+  if (typeof doc === "object") {
+    if (prefix && !acc[prefix]) acc[prefix] = "object";
+    for (const k of Object.keys(doc)) {
+      const key = prefix ? `${prefix}.${k}` : k;
+      inferFieldTypes(doc[k], key, acc);
+    }
+    return acc;
+  }
+  acc[prefix || "(root)"] = typeof doc;
+  return acc;
+}
+
+const infos = db.getCollectionInfos({}); // toutes les collections
+
+if (!infos || infos.length === 0) {
+  print("Aucune collection trouvée.");
+} else {
+  for (const info of infos) {
+    const name = info.name;
+    const type = info.type || "collection";
+    print(`\n--- COLLECTION: ${name} (${type}) ---`);
+
+    // 1) Validator / Schéma
+    const validator = info?.options?.validator;
+    if (validator) {
+      print("Validator (JSON Schema):");
+      print(safeStringify(validator));
+    } else {
+      print("Validator: (aucun)");
+      // Optionnel: petit échantillon pour deviner des types
+      try {
+        const sample = db.getCollection(name).aggregate([{ $sample: { size: SAMPLE_DOCS } }]).toArray();
+        if (sample.length > 0) {
+          print(`Échantillon (${sample.length} doc${sample.length>1?"s":""}):`);
+          print(safeStringify(sample));
+          // Inférence rapide des types (sur le 1er doc)
+          const types = inferFieldTypes(sample[0]);
+          print("Types (inférence rapide sur 1 doc):");
+          print(safeStringify(types));
+        } else {
+          print("Échantillon: (collection vide)");
+        }
+      } catch (e) {
+        print(`Échantillon: impossible (${e.message})`);
+      }
+    }
+
+    // 2) Index
+    try {
+      const idx = db.getCollection(name).getIndexes();
+      if (!idx || idx.length === 0) {
+        print("Index: (aucun)");
+      } else {
+        print(`Index (${idx.length}):`);
+        for (const i of idx) {
+          // on tronque les clés si énormes
+          const keys = Object.keys(i.key || {}).slice(0, MAX_INDEX_KEYS);
+          const truncated = { ...i, key: keys.reduce((o,k)=> (o[k]=i.key[k], o), {}) };
+          print(safeStringify(truncated));
+        }
+      }
+    } catch (e) {
+      print(`Index: impossible de lister (${e.message})`);
+    }
+
+    // 3) Infos diverses utiles Cosmos
+    if (info?.options?.expireAfterSeconds !== undefined) {
+      print(`TTL: expireAfterSeconds=${info.options.expireAfterSeconds}`);
+    }
+  }
+}
+
+print("\n=== Fin ===\n");

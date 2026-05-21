@@ -1,0 +1,139 @@
+{
+    "id": "d59940ce-3dd5-4104-952d-eda798ef7e3f",
+    "itemType": "Container",
+    "itemNumber": "212131",
+    "type": "20DC",
+    "ownerId": "3131EZ",
+    "position": "313RZRZ",
+    "itemStatus": null,
+    "lastInspectionDate": null,
+    "nexInspectionDate": null,
+    "notes": "",
+    "status": "Available",
+    "lifeCycles": [
+        {
+            "id": "b47932d9-528a-4685-9d0a-3e7a2f365142",
+            "startTime": "2025-03-14T23:30:27.038+00:00",
+            "endTime": "2025-03-14T23:32:19.277+00:00",
+            "status": "Completed",
+            "events": [
+                {
+                    "type": "IN",
+                    "timeStamp": "2025-03-14T00:00:00.000+00:00",
+                    "location": "P-ABJ-7575",
+                    "notes": "Event added from configuration",
+                    "additionalProperties": {
+                        "additionalProp1": "string",
+                        "additionalProp3": "string",
+                        "additionalProp2": "string"
+                    }
+                },
+                {
+                    "type": "OUT",
+                    "timeStamp": "2025-03-14T00:00:00.000+00:00",
+                    "location": "P-ABJ-7885",
+                    "notes": "Event added from configuration",
+                    "additionalProperties": {
+                        "additionalProp1": "string",
+                        "additionalProp3": "string",
+                        "additionalProp2": "string"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "bf4db8d9-df4f-4398-93ad-522c2c17ca54",
+            "startTime": "2025-03-14T23:35:28.188+00:00",
+            "endTime": "2025-03-16T20:35:23.079+00:00",
+            "status": "Completed",
+            "events": [
+                {
+                    "type": "IN",
+                    "timeStamp": "2025-03-14T00:00:00.000+00:00",
+                    "location": "P-ABJ-4245",
+                    "notes": "Event added from configuration",
+                    "additionalProperties": {
+                        "additionalProp1": "string",
+                        "additionalProp3": "string",
+                        "additionalProp2": "string"
+                    }
+                },
+                {
+                    "type": "INTERMEDIATE",
+                    "timeStamp": "2025-03-16T21:22:00.000+00:00",
+                    "location": "P-787-AEFA",
+                    "notes": "Test Intermediate event",
+                    "additionalProperties": {}
+                },
+                {
+                    "type": "INTERMEDIATE",
+                    "timeStamp": "2025-03-17T21:23:00.000+00:00",
+                    "location": "P-AE-784-C",
+                    "notes": "Confirm intermediate move",
+                    "additionalProperties": {}
+                },
+                {
+                    "type": "OUT",
+                    "timeStamp": "2025-03-16T20:35:22.976+00:00",
+                    "location": "313RZRZ",
+                    "notes": "Event added from configuration: Container Gate Out",
+                    "additionalProperties": {}
+                }
+            ]
+        },
+        {
+            "id": "79823d56-4659-4727-980f-e46dc56d2663",
+            "startTime": "2025-03-16T20:38:10.129+00:00",
+            "endTime": null,
+            "status": "In Progress",
+            "events": [
+                {
+                    "type": "IN",
+                    "timeStamp": "2025-03-16T20:38:10.081+00:00",
+                    "location": "313RZRZ",
+                    "notes": "Event added from configuration: Container Gate In",
+                    "additionalProperties": {}
+                }
+            ]
+        }
+    ],
+    "additionalProperties": {}
+},
+{
+    "id": "b45d44df-ae9a-4423-953a-9f037b5ddbe0",
+    "itemType": "Container",
+    "itemNumber": "CMA1323",
+    "type": "20DC",
+    "ownerId": "5055Q",
+    "position": "PABJ7282",
+    "itemStatus": null,
+    "lastInspectionDate": null,
+    "nexInspectionDate": null,
+    "notes": "",
+    "status": "Available",
+    "lifeCycles": [
+        {
+            "id": "056ebcde-6807-448d-b8de-96ca72617a2c",
+            "startTime": "2025-03-19T13:44:23.975+00:00",
+            "endTime": "2025-03-27T20:38:57.416+00:00",
+            "status": "Completed",
+            "events": [
+                {
+                    "type": "IN",
+                    "timeStamp": "2025-03-19T13:44:23.687+00:00",
+                    "location": "PABJ7282",
+                    "notes": "Event added from configuration: Container Gate In",
+                    "additionalProperties": {}
+                },
+                {
+                    "type": "OUT",
+                    "timeStamp": "2025-03-27T20:38:57.320+00:00",
+                    "location": "PABJ7282",
+                    "notes": "Event added from configuration: Container Gate Out",
+                    "additionalProperties": {}
+                }
+            ]
+        }
+    ],
+    "additionalProperties": {}
+}

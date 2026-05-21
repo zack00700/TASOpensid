@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <title>Facture {invoiceNumber}</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="robots" content="index,follow">
+    <meta name="generator" content="GrapesJS Studio">
+    <style>
+        * { box-sizing: border-box; }
+
+        :root {
+            --text: #222;
+            --muted: #666;
+            --border: #bbb;
+            --primary: #af4e8a;
+        }
+
+        body {
+            margin: 0;
+            background-color: #f3f5f7;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+            color: var(--text);
+            line-height: 1.45;
+        }
+
+        .page {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            padding: 22mm 18mm;
+            background: #fff;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, .07);
+            position: relative;
+        }
+
+        .watermark {
+            position: absolute;
+            top: 40%;
+            left: 20%;
+            font-size: 72px;
+            color: rgba(175, 78, 138, 0.1);
+            transform: rotate(-30deg);
+            z-index: 0;
+            pointer-events: none;
+            font-weight: 900;
+            letter-spacing: 4px;
+        }
+
+        .content {
+            position: relative;
+            z-index: 1;
+        }
+
+        #logo {
+            color: black;
+            width: 112px;
+            height: 124px;
+            margin-bottom: 10mm;
+        }
+
+        .title {
+            color: var(--primary);
+            font-size: 22pt;
+            font-weight: 700;
+            margin: 0 0 18mm 0;
+            text-align: center;
+            letter-spacing: .5px;
+        }
+
+        .cols {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16mm;
+            margin-bottom: 12mm;
+        }
+
+        .block h3 {
+            margin: 0 0 6px 0;
+            font-size: 12pt;
+            color: var(--text);
+        }
+
+        .small {
+            color: var(--muted);
+            font-size: 10.5pt;
+            line-height: 1.6;
+        }
+
+        .details {
+            margin: 6mm 0 10mm;
+        }
+
+        .details h4 {
+            margin: 0 0 6px 0;
+            font-size: 12pt;
+        }
+
+        .kv {
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            row-gap: 6px;
+            column-gap: 10px;
+            font-size: 10.5pt;
+        }
+
+        .kv div:nth-child(odd) {
+            color: var(--muted);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10.5pt;
+            margin: 6mm 0 8mm;
+        }
+
+        th, td {
+            border: 1px solid var(--border);
+            padding: 8px 10px;
+            vertical-align: top;
+        }
+
+        th {
+            background: #f6f7f9;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td.num, th.num {
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--muted);
+            font-style: italic;
+            padding: 20px;
+        }
+
+        .total-row {
+            font-weight: bold;
+            background: #fafbfc;
+        }
+
+        .grand-total {
+            background: var(--primary);
+            color: white;
+        }
+
+        .foot {
+            margin-top: 12mm;
+            display: grid;
+            grid-template-columns: 1fr;
+            row-gap: 8mm;
+            font-size: 10.5pt;
+        }
+
+        .muted {
+            color: var(--muted);
+        }
+
+        .notes {
+            margin-top: 8mm;
+            padding: 10px;
+            background: #f9f9f9;
+            border-left: 4px solid var(--primary);
+            font-size: 10.5pt;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 10pt;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-draft {
+            background: rgba(255, 193, 7, 0.2);
+            color: #856404;
+            border: 1px solid rgba(255, 193, 7, 0.5);
+        }
+
+        .status-sent {
+            background: rgba(0, 123, 255, 0.2);
+            color: #0056b3;
+            border: 1px solid rgba(0, 123, 255, 0.5);
+        }
+
+        .status-paid {
+            background: rgba(40, 167, 69, 0.2);
+            color: #155724;
+            border: 1px solid rgba(40, 167, 69, 0.5);
+        }
+
+        @media print {
+            @page { size: A4; margin: 20mm; }
+
+            body {
+                background: #fff;
+            }
+
+            .page {
+                box-shadow: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            a {
+                color: inherit;
+                text-decoration: none;
+            }
+
+            .watermark {
+                color: rgba(175, 78, 138, 0.05);
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+    {#if status == 'DRAFT'}
+        <div class="watermark">BROUILLON</div>
+    {/if}
+
+    <div class="content">
+        <img id="logo" src="/assets/logo1.png" alt="Logo"/>
+
+        <h1 class="title">FACTURE {invoiceNumber ?: 'N/A'}</h1>
+
+        {#if status}
+            <div style="text-align: center; margin-bottom: 12mm;">
+                <span class="status-badge status-draft">
+                    {#if status == 'DRAFT'}BROUILLON{/if}
+                    {#if status == 'SENT'}ENVOYÉE{/if}
+                    {#if status == 'PAID'}PAYÉE{/if}
+                    {#if status && status != 'DRAFT' && status != 'SENT' && status != 'PAID'}{status}{/if}
+                </span>
+            </div>
+        {/if}
+
+        <section class="cols">
+            <div class="block">
+                <h3>Entreprise émettrice :</h3>
+                <div class="small">
+                    {#if seller}
+                        {#if seller.companyName??}
+                            {#if seller.companyName}
+                                <strong>{seller.companyName}</strong><br/>
+                            {/if}
+                            {#if seller.address}
+                                {seller.address}<br/>
+                            {/if}
+                            {#if seller.postalCode || seller.city}
+                                {seller.postalCode ?: ''} {seller.city ?: ''}<br/>
+                            {/if}
+                            {#if seller.phone}
+                                Téléphone : <span>{seller.phone}</span><br/>
+                            {/if}
+                            {#if seller.email}
+                                E-mail : <span>{seller.email}</span><br/>
+                            {/if}
+                            {#if seller.siret || seller.vatNumber}
+                                SIRET / TVA intracommunautaire : <span>{seller.siret ?: seller.vatNumber ?: ''}</span>
+                            {/if}
+                        {#else}
+                            <strong>{seller}</strong><br/>
+                            Adresse<br/>
+                            Code postal, Ville<br/>
+                            Téléphone : <span>00 00 00 00 00</span><br/>
+                            E-mail : <span>contact@entreprise.fr</span><br/>
+                            SIRET / TVA intracommunautaire : <span>FRXX XXXX XXXX</span>
+                        {/if}
+                    {#else}
+                        <strong>Nom de l'entreprise</strong><br/>
+                        Adresse<br/>
+                        Code postal, Ville<br/>
+                        Téléphone : <span>00 00 00 00 00</span><br/>
+                        E-mail : <span>contact@entreprise.fr</span><br/>
+                        SIRET / TVA intracommunautaire : <span>FRXX XXXX XXXX</span>
+                    {/if}
+                </div>
+            </div>
+            <div class="block">
+                <h3>Client :</h3>
+                <div class="small">
+                    {#if buyer}
+                        {#if buyer.companyName?? || buyer.name??}
+                            {#if buyer.companyName || buyer.name}
+                                <strong>{buyer.companyName ?: buyer.name ?: ''}</strong><br/>
+                            {/if}
+                            {#if buyer.address}
+                                {buyer.address}<br/>
+                            {/if}
+                            {#if buyer.postalCode || buyer.city}
+                                {buyer.postalCode ?: ''} {buyer.city ?: ''}
+                            {/if}
+                        {#else}
+                            <strong>{buyer}</strong><br/>
+                            Adresse<br/>
+                            Code postal, Ville
+                        {/if}
+                    {#else}
+                        <strong>Nom / Société</strong><br/>
+                        Adresse<br/>
+                        Code postal, Ville
+                    {/if}
+                </div>
+            </div>
+        </section>
+
+        <section class="details">
+            <h4>Détails de la facture :</h4>
+            <div class="kv">
+                <div>N° de facture :</div>
+                <div><strong>{invoiceNumber ?: 'N/A'}</strong></div>
+                <div>Date d'émission :</div>
+                <div><strong>{issueDate ?: 'JJ/MM/AAAA'}</strong></div>
+            </div>
+        </section>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Description</th>
+                <th class="num">Quantité</th>
+                <th class="num">Prix Unitaire HT</th>
+                <th class="num">Total HT</th>
+            </tr>
+            </thead>
+            <tbody>
+            {#if !lines || lines.isEmpty}
+                <tr>
+                    <td colspan="4" class="empty-state">Aucun élément</td>
+                </tr>
+            {#else}
+                {#for l in lines}
+                    <tr>
+                        <td>{l.description ?: ''}</td>
+                        <td class="num">{l.quantity ?: 0} {l.uom ?: ''}</td>
+                        <td class="num">{l.unitPrice ?: 0} {l.currency ?: '€'}</td>
+                        <td class="num">{l.amount ?: 0} {l.currency ?: '€'}</td>
+                    </tr>
+                {/for}
+            {/if}
+            </tbody>
+
+            {#if totals && !totals.isEmpty}
+                <tfoot>
+                {#for t in totals}
+                    <tr class="{#if t.type?? && t.type == 'grand'}grand-total{#else}total-row{/if}">
+                        <td colspan="3" class="num">
+                            <strong>
+                                {#if t.type??}
+                                    {#if t.type == 'subtotal'}Sous-total HT{/if}
+                                    {#if t.type == 'tax'}TVA ({t.rate ?: 0}%){/if}
+                                    {#if t.type == 'grand'}Total TTC{/if}
+                                    {#if t.type != 'subtotal' && t.type != 'tax' && t.type != 'grand'}{t.label ?: ''}{/if}
+                                {#else}
+                                    <!-- Fallbacks when `type` is absent -->
+                                    {#if t.rate??}
+                                        TVA ({t.rate ?: 0}%)
+                                    {#else}
+                                        {t.label ?: 'Total'}
+                                    {/if}
+                                {/if}
+                            </strong>
+                        </td>
+                        <td class="num"><strong>{t.total ?: 0} {t.currency ?: '€'}</strong></td>
+                    </tr>
+                {/for}
+                </tfoot>
+            {/if}
+
+        </table>
+
+        {#if grandTotal}
+            <div style="text-align: right; font-size: 14pt; font-weight: bold; margin: 8mm 0;">
+                Total : {grandTotal}
+            </div>
+        {/if}
+
+        {#if notes}
+            <div class="notes">
+                <strong>Notes :</strong><br/>
+                {@raw notes}
+            </div>
+        {/if}
+
+        <section class="foot">
+            <div>
+                <strong>Conditions de paiement :</strong><br/>
+                Paiement à effectuer par : virement bancaire / chèque / autre<br/>
+                <span class="muted">Coordonnées bancaires :</span><br/>
+                IBAN : <span>[À COMPLÉTER]</span><br/>
+                BIC : <span>[À COMPLÉTER]</span>
+            </div>
+            <div class="muted">
+                <strong>Mention légale :</strong><br/>
+                En cas de retard de paiement, des pénalités de <em>3%</em> par mois seront appliquées.
+            </div>
+        </section>
+    </div>
+</div>
+</body>
+</html>

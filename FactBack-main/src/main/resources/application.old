@@ -1,0 +1,69 @@
+# Serve all REST endpoints under /api
+//quarkus.http.root-path=/api
+#quarkus.http.host=94.125.165.11
+
+
+//quarkus.http.host=0.0.0.0
+
+quarkus.smallrye-openapi.path=/openapi
+quarkus.swagger-ui.path=/swagger-ui
+quarkus.swagger-ui.always-include=true
+# LOGGING
+quarkus.log.level=trace
+app.upload.base-path=${UPLOAD_BASE_PATH:/var/app/secure-uploads}
+app.upload.max-file-size=${MAX_FILE_SIZE:5242880}
+app.upload.max-files-per-request=${MAX_FILES_PER_REQUEST:10}
+
+quarkus.oidc.tenant-enabled=false
+
+# configure the mongoDB client for a single instance on localhost
+#quarkus.mongodb.connection-string=mongodb+srv://mrazonarison:rAeibjxTOKLFqMtJ@cluster0.kkvr4.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+# application.properties
+quarkus.mongodb.connection-string=mongodb://localhost:27017
+
+quarkus.mongodb.database=tos3d
+quarkus.mongodb.uuid-representation=standard
+
+# Ask AI configuration
+
+openai.api.key=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
+#openai.api.model=gpt-4o
+#quarkus.rest-client.openai.url=https://api.openai.com
+#openai.api.key=${OPENAI_API_KEY}
+openai.api.model=gpt-5-nano
+quarkus.rest-client.openai.url=https://api.openai.com
+quarkus.rest-client.openai.http2=false
+app.timezone=Europe/Paris
+# mongodb.connection.string=mongodb://localhost:27017
+# mongodb.database=app
+
+
+# Invoice configuration (existing - keep as is)
+app.invoice.collection=INVOICE
+app.invoice.date-range-years=1
+
+# Bill of Lading configuration (ADD THESE LINES)
+app.bill-of-lading.collection=BillOfLading
+app.bill-of-lading.date-range-years=1
+
+# JWT Configuration
+
+quarkus.smallrye-jwt.enabled=true
+mp.jwt.verify.publickey.location=classpath:/publicKey.pem
+mp.jwt.verify.issuer=https://your-app.com
+smallrye.jwt.sign.key.location=classpath:/privateKey.pem
+
+# Token expiration
+app.jwt.duration=3600
+
+# S?curit?
+quarkus.security.users.embedded.enabled=false
+quarkus.security.auth.enabled-in-dev-mode=true
+
+# CORS avec auth
+quarkus.http.cors=true
+quarkus.http.cors.origins=${ALLOWED_ORIGINS:http://localhost:5173}
+#quarkus.http.cors.origins=${ALLOWED_ORIGINS:https://stvuebilling28691.z6.web.core.windows.net}
+quarkus.http.cors.headers=accept,authorization,content-type,x-requested-with
+quarkus.http.cors.methods=GET,POST,PUT,DELETE,OPTIONS,PATCH
+quarkus.http.cors.credentials=true

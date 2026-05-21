@@ -1,0 +1,71 @@
+name: Deploy Frontend → Azure Static Web Apps
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  build:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+  deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+        env:
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+          VITE_API_BASE_URL: ${{ secrets.VITE_API_URL }}
+          VITE_AZURE_AD_CLIENT_ID: ${{ secrets.VITE_AZURE_AD_CLIENT_ID }}
+          VITE_AZURE_AD_AUTHORITY: ${{ secrets.VITE_AZURE_AD_AUTHORITY }}
+          VITE_AZURE_AD_SCOPES: ${{ secrets.VITE_AZURE_AD_SCOPES }}
+          VITE_AZURE_AD_REDIRECT_URI: ${{ secrets.VITE_AZURE_AD_REDIRECT_URI }}
+          VITE_APPINSIGHTS_CONNECTION_STRING: ${{ secrets.VITE_APPINSIGHTS_CONNECTION_STRING }}
+          VITE_FEATURE_ADOBE_EXPRESS: ${{ secrets.VITE_FEATURE_ADOBE_EXPRESS }}
+          VITE_GJS_STUDIO_KEY: ${{ secrets.VITE_GJS_STUDIO_KEY }}
+
+      - name: Deploy to Azure Static Web Apps
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          action: upload
+          app_location: "dist"
+          skip_app_build: true
+          skip_api_build: true
+
+    environment:
+      name: production
+      url: https://lively-cliff-098bcde03.7.azurestaticapps.net

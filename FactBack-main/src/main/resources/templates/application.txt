@@ -1,0 +1,99 @@
+# ===== Server =====
+quarkus.http.host=0.0.0.0
+quarkus.http.port=${PORT:8080}
+# (Optional) mount all REST under /api
+# quarkus.http.root-path=/api
+
+# ===== MongoDB (via App Settings -> Key Vault references) =====
+quarkus.mongodb.connection-string=${MONGODB_URI}
+quarkus.mongodb.database=${MONGODB_DATABASE}
+quarkus.mongodb.uuid-representation=standard
+
+# ===== MongoDB Local =====
+# Disable retryable writes and read concern for standalone MongoDB in dev mode
+%dev.quarkus.mongodb.connection-string=mongodb://localhost:27017/?retryWrites=false
+%dev.quarkus.mongodb.database=tos3d
+quarkus.mongodb.devservices.enabled=false 
+
+# ===== CORS =====
+quarkus.http.cors=true
+# Allow only your SPA origin in prod; override during dev
+quarkus.http.cors.origins=${CORS_ORIGINS:https://stvuebilling28691.z6.web.core.windows.net}
+%dev.quarkus.http.cors.origins=${ALLOWED_ORIGINS:http://localhost:5173}
+quarkus.http.cors.methods=GET,POST,PUT,DELETE,OPTIONS,PATCH
+quarkus.http.cors.headers=accept,authorization,content-type,x-requested-with
+quarkus.http.cors.credentials=true
+
+# ===== Logging =====
+# Use INFO in prod; raise categories as needed
+quarkus.log.level=INFO
+
+
+
+# ===== Health & OpenAPI / Swagger =====
+quarkus.smallrye-health.root-path=/q/health
+quarkus.smallrye-openapi.path=/q/openapi
+quarkus.swagger-ui.path=/q/swagger
+quarkus.swagger-ui.always-include=true
+
+%dev.quarkus.smallrye-openapi.path=/openapi
+%dev.quarkus.swagger-ui.path=/swagger-ui
+%dev.quarkus.swagger-ui.always-include=true
+
+# ===== Timezone =====
+app.timezone=Europe/Paris
+
+# ===== Feature toggles / security =====
+quarkus.oidc.tenant-enabled=false
+quarkus.security.users.embedded.enabled=false
+quarkus.security.auth.enabled-in-dev-mode=true
+
+# ===== JWT (only if you actually use it) =====
+##quarkus.smallrye-jwt.enabled=true
+##mp.jwt.verify.publickey=${JWT_PUBLIC_KEY}
+#mp.jwt.verify.issuer=https://login.microsoftonline.com/17a64cff-61e7-4589-bbe0-c0989d8f625c/v2.0
+#mp.jwt.verify.audience=api://7e6ac0af-7c14-4469-8dcc-925924ef3c97
+#mp.jwt.verify.publickey.location=https://login.microsoftonline.com/17a64cff-61e7-4589-bbe0-c0989d8f625c/discovery/v2.0/keys
+##smallrye.jwt.sign.key.location=privateKey.pem
+#app.jwt.duration=3600
+
+# ===== JWT via Azure AD =====
+quarkus.smallrye-jwt.enabled=true
+
+# JWKS (cl�s publiques) expos�es par Azure AD pour ton tenant
+mp.jwt.verify.publickey.location=https://login.microsoftonline.com/17a64cff-61e7-4589-bbe0-c0989d8f625c/discovery/v2.0/keys
+
+# Issuer attendu (le iss dans ton token)
+mp.jwt.verify.issuer=https://login.microsoftonline.com/17a64cff-61e7-4589-bbe0-c0989d8f625c/v2.0
+
+# Audience attendue (aud dans ton token)
+mp.jwt.verify.audiences=api://7e6ac0af-7c14-4469-8dcc-925924ef3c97
+
+# Enable local JWT token generation (requires privateKey.pem)
+# Set to false when using only Azure AD authentication
+app.jwt.generate-tokens=true
+app.jwt.duration=3600
+
+# ===== Azure AD Group Mapping =====
+# Map Azure AD group Object IDs to role names
+# Replace the GUIDs below with your actual Azure AD group Object IDs
+azure.ad.group.mapping.ROLE_ADMIN=<YOUR_ROLE_ADMIN_GROUP_OBJECT_ID>
+azure.ad.group.mapping.ROLE_INVOICE_ADMIN=<YOUR_ROLE_INVOICE_ADMIN_GROUP_OBJECT_ID>
+azure.ad.group.mapping.ROLE_TEMPLATES_ADMIN=<YOUR_ROLE_TEMPLATES_ADMIN_GROUP_OBJECT_ID>
+azure.ad.group.mapping.ROLE_USER=<YOUR_ROLE_USER_GROUP_OBJECT_ID>
+azure.ad.group.mapping.ROLE_READONLY=<YOUR_ROLE_READONLY_GROUP_OBJECT_ID>
+
+# ===== Domain configs (adjust names to your collections if different) =====
+app.invoice.collection=INVOICE
+app.invoice.date-range-years=1
+app.bill-of-lading.collection=BillOfLading
+app.bill-of-lading.date-range-years=1
+
+# ===== Ask AI (no hard-coded keys) =====
+openai.api.key=${OPENAI_API_KEY}
+%dev.openai.api.key=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
+openai.api.model=gpt-5-nano
+quarkus.rest-client.openai.url=https://api.openai.com
+quarkus.rest-client.openai.http2=false
+
+
