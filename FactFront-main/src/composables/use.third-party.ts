@@ -56,6 +56,11 @@ function createThirdPartyStore($axios: AxiosInstance) {
         if (!formData.value.contactNumber) {
             errors.value.contactNumber = "Contact number is required";
             isValid = false;
+        } else if (!/^[+\d][\d\s().-]{5,19}$/.test(formData.value.contactNumber.trim())) {
+            // Accept E.164-ish phone numbers: optional leading +, digits and common
+            // separators ( -, ., (, ), space ), 6–20 chars total.
+            errors.value.contactNumber = "Contact number must contain digits only (with optional + and separators)";
+            isValid = false;
         }
 
         if (!formData.value.email) {

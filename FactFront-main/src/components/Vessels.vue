@@ -26,7 +26,7 @@ import type { AisStatus } from "../types/ais";
 const { t, locale } = useI18n();
 
 // Instance du composable pour la gestion de la liste
-const { vessels, getVessels } = useVessel();
+const { vessels, getVessels, deleteVessel } = useVessel();
 const { snapshots, health, statusFor, loadSnapshotsForVessels, getHealth } = useVesselAis();
 
 async function refresh() {
@@ -46,23 +46,53 @@ const showDeleteConfirm = ref(false);
 const vesselToDelete = ref<Vessel | null>(null);
 const searchQuery = ref("");
 
-// Filtrage et recherche
+// Selection state (used for the "Export selected" action below).
+const selectedIds = ref<Set<string>>(new Set());
+
+// Filtrage et recherche — every field is normalized to "" so a missing/null
+// operator (or any other column) cannot throw .toLowerCase() and silently
+// blackhole the whole filter.
 const filteredVessels = computed(() => {
   if (!searchQuery.value.trim()) {
     return vessels.value;
   }
-
   const query = searchQuery.value.toLowerCase();
-  return vessels.value.filter(vessel =>
-    vessel.name.toLowerCase().includes(query) ||
-    vessel.imoNumber.toLowerCase().includes(query) ||
-    vessel.callSign.toLowerCase().includes(query) ||
-    vessel.flag.toLowerCase().includes(query) ||
-    vessel.owner.toLowerCase().includes(query) ||
-    vessel.operator.toLowerCase().includes(query) ||
-    vessel.vesselType.toLowerCase().includes(query)
+  const norm = (s: unknown) => (s == null ? '' : String(s)).toLowerCase();
+  return vessels.value.filter((vessel) =>
+    norm(vessel.name).includes(query) ||
+    norm(vessel.imoNumber).includes(query) ||
+    norm(vessel.callSign).includes(query) ||
+    norm(vessel.flag).includes(query) ||
+    norm(vessel.owner).includes(query) ||
+    norm(vessel.operator).includes(query) ||
+    norm(vessel.vesselType).includes(query)
   );
 });
+
+function toggleSelect(id: string | undefined) {
+  if (!id) return;
+  const next = new Set(selectedIds.value);
+  if (next.has(id)) next.delete(id); else next.add(id);
+  selectedIds.value = next;
+}
+
+const allFilteredSelected = computed(() => {
+  const ids = filteredVessels.value.map((v) => v.id).filter(Boolean) as string[];
+  return ids.length > 0 && ids.every((id) => selectedIds.value.has(id));
+});
+
+function toggleSelectAllFiltered() {
+  const ids = filteredVessels.value.map((v) => v.id).filter(Boolean) as string[];
+  if (allFilteredSelected.value) {
+    const next = new Set(selectedIds.value);
+    ids.forEach((id) => next.delete(id));
+    selectedIds.value = next;
+  } else {
+    const next = new Set(selectedIds.value);
+    ids.forEach((id) => next.add(id));
+    selectedIds.value = next;
+  }
+}
 
 const tableHeaders = computed(() => [
   t('vessels.column.vesselName'),
@@ -153,26 +183,22 @@ const handleDelete = (vessel: Vessel) => {
 };
 
 const confirmDelete = async () => {
-  if (vesselToDelete.value?.id) {
-    try {
-      // Call API to delete vessel
-      const response = await fetch(`/api/vessel/${vesselToDelete.value.id}`, {
-        method: 'DELETE'
-      });
-
-      if (response.ok) {
-        // Remove from local array
-        vessels.value = vessels.value.filter((v) => v.id !== vesselToDelete.value?.id);
-      } else {
-        console.error('Failed to delete vessel');
-      }
-    } catch (error) {
-      console.error('Error deleting vessel:', error);
-    }
-
+  if (!vesselToDelete.value?.id) {
     showDeleteConfirm.value = false;
     vesselToDelete.value = null;
+    return;
   }
+  // Use the shared $axios instance via the composable so the Bearer token + base URL
+  // are applied consistently; the raw fetch() used previously bypassed both and
+  // silently left the document in MongoDB.
+  const ok = await deleteVessel(vesselToDelete.value.id);
+  if (!ok) {
+    console.error('Failed to delete vessel');
+  } else {
+    selectedIds.value.delete(vesselToDelete.value.id);
+  }
+  showDeleteConfirm.value = false;
+  vesselToDelete.value = null;
 };
 
 const handleFormSubmit = async (formData: Vessel) => {
@@ -205,11 +231,14 @@ const handleFormCancel = () => {
 };
 
 const handleExport = () => {
-  // Simple CSV export
+  // Export selection when the user has ticked rows, otherwise export the visible (filtered) list.
+  const source = selectedIds.value.size > 0
+    ? vessels.value.filter((v) => v.id && selectedIds.value.has(v.id))
+    : filteredVessels.value;
   const headers = ['Name', 'IMO Number', 'Call Sign', 'Flag', 'Owner', 'Operator', 'Vessel Type', 'Status'];
   const csvContent = [
     headers.join(','),
-    ...vessels.value.map(vessel => [
+    ...source.map((vessel) => [
       vessel.name,
       vessel.imoNumber,
       vessel.callSign,
@@ -218,7 +247,7 @@ const handleExport = () => {
       vessel.operator,
       vessel.vesselType,
       vessel.status
-    ].map(field => `"${field}"`).join(','))
+    ].map((field) => `"${(field ?? '').toString().replace(/"/g, '""')}"`).join(','))
   ].join('\n');
 
   const blob = new Blob([csvContent], { type: 'text/csv' });
@@ -312,6 +341,16 @@ const handleExport = () => {
         <table class="min-w-full divide-y divide-gray-200">
           <thead class="bg-gray-50">
             <tr>
+              <th class="px-3 py-3 w-8">
+                <input
+                  type="checkbox"
+                  :checked="allFilteredSelected"
+                  :indeterminate.prop="!allFilteredSelected && selectedIds.size > 0"
+                  @change="toggleSelectAllFiltered"
+                  data-test="vessels-select-all"
+                  :title="t('vessels.action.selectAll')"
+                />
+              </th>
               <th
                 v-for="(header, idx) in tableHeaders"
                 :key="header"
@@ -331,6 +370,15 @@ const handleExport = () => {
               :data-test="'row-' + vessel.id"
               class="group hover:bg-gray-50 transition-colors duration-150"
             >
+              <td class="px-3 py-3 w-8">
+                <input
+                  type="checkbox"
+                  :checked="vessel.id ? selectedIds.has(vessel.id) : false"
+                  :disabled="!vessel.id"
+                  @change="toggleSelect(vessel.id)"
+                  :data-test="'vessels-select-' + vessel.id"
+                />
+              </td>
               <td class="px-4 py-3 whitespace-nowrap">
                 <div class="flex items-center">
                   <Ship class="h-5 w-5 text-gray-400 mr-2 flex-shrink-0" />

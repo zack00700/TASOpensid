@@ -16,6 +16,7 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.jboss.logging.Logger;
 
 import java.time.Instant;
 import java.util.List;
@@ -25,6 +26,8 @@ import java.util.Map;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class VesselEventResource {
+
+    private static final Logger LOG = Logger.getLogger(VesselEventResource.class);
 
     @Inject
     VesselEventDao dao;
@@ -80,7 +83,17 @@ public class VesselEventResource {
         event.eventDate = req.eventDate;
         event.notes = req.notes;
 
-        dao.addVesselEvent(event);
+        try {
+            dao.addVesselEvent(event);
+        } catch (IllegalArgumentException e) {
+            return Response.status(400)
+                .entity(new ErrorResponse("BAD_REQUEST", e.getMessage(), 400)).build();
+        } catch (RuntimeException e) {
+            LOG.errorf(e, "Failed to persist vessel event for visit %s", visitId);
+            return Response.status(500)
+                .entity(new ErrorResponse("PERSISTENCE_ERROR",
+                    "Unable to record vessel event: " + e.getMessage(), 500)).build();
+        }
 
         return Response.status(201)
             .entity(Map.of("id", event.getId(), "message", "Vessel event recorded"))

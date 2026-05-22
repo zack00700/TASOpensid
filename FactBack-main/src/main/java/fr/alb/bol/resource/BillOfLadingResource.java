@@ -54,8 +54,12 @@ public class BillOfLadingResource {
                     .entity(new ErrorResponse("BAD_REQUEST", e.getMessage(), 400))
                     .build();
         } catch (Exception e) {
+            LOG.errorf(e, "Failed to create bill of lading (transportType=%s, itemCount=%d)",
+                    bill != null ? bill.getTransportType() : "null",
+                    bill != null && bill.getItems() != null ? bill.getItems().size() : 0);
+            String msg = e.getMessage() != null ? e.getMessage() : e.getClass().getSimpleName();
             return Response.status(500)
-                    .entity(new ErrorResponse("INTERNAL_ERROR", e.getMessage(), 500))
+                    .entity(new ErrorResponse("INTERNAL_ERROR", "Failed to create bill of lading: " + msg, 500))
                     .build();
         }
     }
@@ -96,16 +100,36 @@ public class BillOfLadingResource {
             throw new IllegalArgumentException("Bill of lading is required");
         }
 
+        // Normalize transport: when the form sets only the legacy `transportType` string
+        // (TRUCK/TRAIN/VESSEL) without a `transport` block, build a minimal TransportInfo
+        // so the document is consistent with non-vessel modes.
+        if (bill.getTransport() == null && bill.getTransportType() != null && !bill.getTransportType().isBlank()) {
+            try {
+                TransportType t = TransportType.valueOf(bill.getTransportType().trim().toUpperCase());
+                TransportInfo info = new TransportInfo();
+                info.type = t;
+                bill.setTransport(info);
+            } catch (IllegalArgumentException ignored) {
+                // Unknown legacy value — leave transport null rather than failing the create
+            }
+        }
+
         bill.persist();
 
         List<String> itemIds = new ArrayList<>();
         if (bill.getItems() != null) {
+            int idx = 0;
             for (Item item : bill.getItems()) {
+                if (item == null) {
+                    throw new IllegalArgumentException("Item at index " + idx + " is null");
+                }
                 item.setBillOfLadingId(bill.getId());
                 if (!itemDao.addItem(item)) {
-                    throw new IllegalStateException("Failed to create item");
+                    throw new IllegalStateException("Failed to create item at index " + idx
+                            + " (check server logs for the underlying cause)");
                 }
                 itemIds.add(item.getId());
+                idx++;
             }
         }
         bill.setItemIds(itemIds);

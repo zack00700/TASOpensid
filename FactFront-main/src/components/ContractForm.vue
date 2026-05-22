@@ -460,12 +460,10 @@ onMounted(async () => {
       }
     }
 
-    // Ensure we start at step 1 if no event is selected, otherwise go to step 4
-    if (formData.value.calculationMode.eventConfig && formData.value.calculationMode.eventConfig.eventName) {
-      currentStep.value = 4; // Go to last step in edit mode
-    } else {
-      currentStep.value = 1; // Start at event selection if event not properly loaded
-    }
+    // Edit mode opens on the first wizard step (overview / event config). Jumping straight
+    // to step 4 (rates) on edit was disorienting — testers expected to land on the same
+    // first screen as create, with all data pre-populated.
+    currentStep.value = 1;
   }
 });
 </script>

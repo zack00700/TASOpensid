@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="aiEnabled">
     <!-- ── FAB ────────────────────────────────────────────── -->
     <button class="askai-fab" @click="openModal" :aria-label="t('askAiFab.label.askAi')">
       <svg class="askai-fab-star" viewBox="0 0 24 24" fill="currentColor">
@@ -185,11 +185,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, nextTick, onUnmounted } from 'vue';
+import { ref, computed, nextTick, onMounted, onUnmounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useAuthStore } from '../stores/authStore';
 
 const { t } = useI18n();
+
+// ─── Availability ───────────────────────────────────────────
+// Hidden until /ask-ai/status confirms the backend has an LLM key configured.
+const aiEnabled = ref(false);
 
 // ─── Types ──────────────────────────────────────────────────
 interface Dataset { name?: string; data?: number[] }
@@ -225,6 +229,20 @@ let echartsInst: any = null;
 
 const authStore = useAuthStore();
 
+onMounted(async () => {
+  try {
+    const headers: Record<string, string> = {};
+    if (authStore.token) headers.Authorization = `Bearer ${authStore.token}`;
+    const res = await fetch(`${API_BASE}/ask-ai/status`, { headers });
+    if (res.ok) {
+      const data = await res.json();
+      aiEnabled.value = !!data?.enabled;
+    }
+  } catch {
+    aiEnabled.value = false;
+  }
+});
+
 // ─── Modal ──────────────────────────────────────────────────
 function openModal() {
   showModal.value = true;
@@ -257,7 +275,19 @@ async function submit() {
       method: 'POST', headers,
       body: JSON.stringify({ question: question.value }),
     });
-    if (!res.ok) throw new Error(await res.text());
+    if (!res.ok) {
+      // Surface a clean message when the AI feature is not configured server-side.
+      if (res.status === 503) {
+        try {
+          const body = await res.json();
+          if (body?.error === 'AI_NOT_CONFIGURED') {
+            aiEnabled.value = false;
+            throw new Error(t('askAiFab.error.notConfigured'));
+          }
+        } catch { /* fall through to generic */ }
+      }
+      throw new Error(await res.text());
+    }
     const spec: AskAiSpec = await res.json();
     lastQuestion.value = question.value;
     // Close modal inline (can't call closeModal() — it guards on loading=true)

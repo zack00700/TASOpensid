@@ -10,8 +10,10 @@ import fr.alb.dto.EventMapper;
 import fr.alb.yard.model.EventConfig;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
@@ -75,5 +77,51 @@ public class EventConfigResource {
                 }
                 EventDTO dto = EventMapper.toDTO(evt);
                 return Response.ok(dto).build();
+        }
+
+        @PUT
+        @Path("{id}")
+        @Consumes(MediaType.APPLICATION_JSON)
+        @Produces(MediaType.APPLICATION_JSON)
+        public Response updateEvent(@PathParam("id") String id, EventConfig evt) {
+                if (id == null || id.isBlank()) {
+                        return Response.status(Response.Status.BAD_REQUEST)
+                                .entity(new ErrorResponse("BAD_REQUEST", "id is required", 400)).build();
+                }
+                if (evt == null) {
+                        return Response.status(Response.Status.BAD_REQUEST)
+                                .entity(new ErrorResponse("BAD_REQUEST", "request body required", 400)).build();
+                }
+                evt.setId(id);
+                try {
+                        boolean updated = evtDao.updateEventConfig(evt);
+                        if (!updated) {
+                                return Response.status(Response.Status.NOT_FOUND).build();
+                        }
+                        EventConfig fresh = evtDao.findById(id);
+                        return Response.ok(EventMapper.toDTO(fresh)).build();
+                } catch (Exception e) {
+                        return Response.status(500)
+                                .entity(new ErrorResponse("INTERNAL_ERROR", e.getMessage(), 500)).build();
+                }
+        }
+
+        @DELETE
+        @Path("{id}")
+        public Response deleteEvent(@PathParam("id") String id) {
+                if (id == null || id.isBlank()) {
+                        return Response.status(Response.Status.BAD_REQUEST)
+                                .entity(new ErrorResponse("BAD_REQUEST", "id is required", 400)).build();
+                }
+                try {
+                        boolean removed = evtDao.deleteEventConfig(id);
+                        if (!removed) {
+                                return Response.status(Response.Status.NOT_FOUND).build();
+                        }
+                        return Response.noContent().build();
+                } catch (Exception e) {
+                        return Response.status(500)
+                                .entity(new ErrorResponse("INTERNAL_ERROR", e.getMessage(), 500)).build();
+                }
         }
 }

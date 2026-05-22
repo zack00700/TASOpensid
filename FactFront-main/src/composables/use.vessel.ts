@@ -129,6 +129,17 @@ export function useVessel(initialData?: Ref<Vessel | null> | Vessel | null) {
         }
     }
 
+    async function deleteVessel(id: string): Promise<boolean> {
+        try {
+            await $axios.delete(`/vessel/${id}`);
+            vessels.value = vessels.value.filter((v) => v.id !== id);
+            return true;
+        } catch (error) {
+            console.error('deleteVessel failed', error);
+            return false;
+        }
+    }
+
     onBeforeMount(() => {
         getVessels();
     });
@@ -140,6 +151,7 @@ export function useVessel(initialData?: Ref<Vessel | null> | Vessel | null) {
         validateForm,
         addVessel,
         updateVessel,
+        deleteVessel,
         getVessels,
         resetForm,
         initializeForm

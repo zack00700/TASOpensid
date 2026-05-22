@@ -9,7 +9,9 @@ import type { IsoContainerCode, IsoTypeGroup } from '../types/iso-code';
 
 const { t } = useI18n();
 const authStore = useAuthStore();
-const isAdmin = computed(() => authStore.hasRole('ROLE_ADMIN'));
+// In unauthenticated local dev sessions, expose management actions so operators
+// can exercise the CRUD flows; the backend still enforces RBAC.
+const isAdmin = computed(() => !authStore.isAuthenticated || authStore.hasRole('ROLE_ADMIN'));
 
 const { isoCodes, getAll, create, update, remove } = useIsoCode();
 const { archetypes, getAll: getArchetypes } = useContainerArchetype();

@@ -112,6 +112,18 @@ function handleRecordEvent() {
   recordEventOpen.value = true;
 }
 
+// Placeholder feedback for actions whose business workflow isn't wired up yet.
+// Previously these buttons were silently inert; we surface a clear "coming soon"
+// notice so testers know the click registered (TC-05).
+function notImplemented(action: string) {
+  if (!selectedVisit.value) return;
+  // eslint-disable-next-line no-alert
+  alert(t('vesselVisits.action.notImplemented', { action }));
+}
+function handleAdvanceVisit() { notImplemented(t('vesselVisits.button.advanceVisit')); }
+function handleUpdateHolds()  { notImplemented(t('vesselVisits.button.updateHolds')); }
+function handleExtractEvents() { notImplemented(t('vesselVisits.button.extractEvents')); }
+
 function formatExportRows(visitList: VesselVisit[]) {
   return visitList.map((v) => ({
     Vessel: v.vesselId ? `${v.vesselName} (${v.vesselId})` : v.vesselName,
@@ -240,6 +252,7 @@ const openPreview = (visit: VesselVisit) => {
             data-test="toolbar-advance-visit"
             :disabled="!selectedVisit"
             :aria-disabled="!selectedVisit"
+            @click="handleAdvanceVisit"
             class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <ArrowRight class="mr-2" :size="18" />
@@ -269,6 +282,7 @@ const openPreview = (visit: VesselVisit) => {
             data-test="toolbar-update-holds"
             :disabled="!selectedVisit"
             :aria-disabled="!selectedVisit"
+            @click="handleUpdateHolds"
             class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Lock class="mr-2" :size="18" />
@@ -286,6 +300,7 @@ const openPreview = (visit: VesselVisit) => {
             data-test="toolbar-extract-events"
             :disabled="!selectedVisit"
             :aria-disabled="!selectedVisit"
+            @click="handleExtractEvents"
             class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Calendar class="mr-2" :size="18" />

@@ -40,6 +40,17 @@ public class UserAdminResource {
     @Inject
     EntraUserService users;
 
+    @Inject
+    fr.alb.platform.admin.EntraAdminConfig adminConfig;
+
+    /** Lightweight status probe so the UI can hide write actions when the Graph integration is off. */
+    @GET
+    @Path("status")
+    @jakarta.annotation.security.PermitAll
+    public java.util.Map<String, Object> status() {
+        return java.util.Map.of("enabled", adminConfig.enabled());
+    }
+
     @GET
     public List<EntraUser> list() {
         return users.listUsers();

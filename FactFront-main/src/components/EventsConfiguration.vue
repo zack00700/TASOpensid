@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import { useI18n } from "vue-i18n";
-import { v4 as uuidv4 } from "uuid";
 import {
   Plus,
   Pencil,
@@ -26,6 +25,8 @@ const {
   isValid,
   validateForm,
   addEventConfig,
+  updateEventConfig,
+  deleteEventConfig,
   eventConfigs,
 } = useEventConfig();
 
@@ -77,6 +78,7 @@ const handleAdd = () => {
     eventName: "",
     eventType: "IN",
     billedEvent: false,
+    scope: "ITEM",
   };
   editingEvent.value = null;
   showForm.value = true;
@@ -84,9 +86,10 @@ const handleAdd = () => {
 
 const handleEdit = (event: EventConfig) => {
   formData.value = {
-    name: event.name,
+    eventName: event.eventName,
     eventType: event.eventType,
     billedEvent: event.billedEvent,
+    scope: event.scope ?? "ITEM",
   };
   editingEvent.value = event;
   showForm.value = true;
@@ -97,40 +100,38 @@ const handleDelete = (event: EventConfig) => {
   showDeleteConfirm.value = true;
 };
 
-const confirmDelete = () => {
-  if (eventToDelete.value) {
-    eventConfigs.value = eventConfigs.value.filter(
-      (e) => e.id !== eventToDelete.value?.id
-    );
+const confirmDelete = async () => {
+  if (!eventToDelete.value?.id) {
+    showDeleteConfirm.value = false;
+    eventToDelete.value = null;
+    return;
+  }
+  try {
+    await deleteEventConfig(eventToDelete.value.id);
+  } catch (e) {
+    console.error("Failed to delete event config", e);
+  } finally {
     showDeleteConfirm.value = false;
     eventToDelete.value = null;
   }
 };
 
-const handleSubmit = () => {
+const handleSubmit = async () => {
   if (!validateForm()) {
     return;
   }
 
-  if (editingEvent.value) {
-    const index = eventConfigs.value.findIndex((e) => e.id === editingEvent.value?.id);
-    if (index !== -1) {
-      eventConfigs.value[index] = {
-        ...formData.value,
-        id: editingEvent.value.id,
-      };
+  try {
+    if (editingEvent.value?.id) {
+      await updateEventConfig(editingEvent.value.id, formData.value);
+    } else {
+      await addEventConfig();
     }
-  } else {
-    eventConfigs.value.push({
-      ...formData.value,
-      id: uuidv4(),
-    });
-
-    addEventConfig();
+    showForm.value = false;
+    editingEvent.value = null;
+  } catch (e) {
+    console.error("Failed to save event config", e);
   }
-
-  showForm.value = false;
-  editingEvent.value = null;
 };
 
 const getInputClasses = (fieldName: keyof typeof formData.value) => {

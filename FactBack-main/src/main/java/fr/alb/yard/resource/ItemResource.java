@@ -184,12 +184,18 @@ public class ItemResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed("ROLE_ADMIN")
-    public Response updateItemFull(@PathParam("id") String id, Item incoming) {
+    public Response updateItemFull(@PathParam("id") String id, JsonNode incoming) {
+        // Merge-update semantics: only keys present in the incoming JSON are written.
+        // This is intentionally NOT a strict PUT (which would full-replace) because the
+        // frontend currently sends a partial payload — full-replace would null out the
+        // port/customs/commercial fields the form does not expose. Callers that need
+        // to explicitly clear a field should use the PATCH endpoint above.
         try {
-            Optional<Response> validation = ContainerTypeValidator.validate(
-                    incoming == null ? null : incoming.getContainerType(),
-                    isoContainerCodeRegistry::contains);
-            if (validation.isPresent()) return validation.get();
+            if (incoming == null) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity(new ErrorResponse("BAD_REQUEST", "request body required", 400))
+                        .build();
+            }
 
             Item existing = itemDao.getItem(id);
             if (existing == null) {
@@ -198,9 +204,19 @@ public class ItemResource {
                         .build();
             }
 
-            incoming.setId(existing.getId());
-            itemDao.updateItem(incoming);
-            return Response.ok(incoming).build();
+            // Reset the computed status before merging so the stored value (if any) wins
+            // over the previously-derived display string when the payload omits it.
+            existing.setStatus(null);
+            mapper.readerForUpdating(existing).readValue(incoming);
+
+            Optional<Response> validation = ContainerTypeValidator.validate(
+                    existing.getContainerType(),
+                    isoContainerCodeRegistry::contains);
+            if (validation.isPresent()) return validation.get();
+
+            existing.setId(id);
+            itemDao.updateItem(existing);
+            return Response.ok(existing).build();
 
         } catch (Exception e) {
             return Response.status(500)

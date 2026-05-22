@@ -8,7 +8,9 @@ import type { ContainerArchetype } from '../types/container-archetype';
 
 const { t } = useI18n();
 const authStore = useAuthStore();
-const isAdmin = computed(() => authStore.hasRole('ROLE_ADMIN'));
+// In unauthenticated local dev sessions, expose management actions so operators
+// can exercise the CRUD flows; the backend still enforces RBAC.
+const isAdmin = computed(() => !authStore.isAuthenticated || authStore.hasRole('ROLE_ADMIN'));
 
 const { archetypes, getAll, create, update, remove, getIsoCodesFor } = useContainerArchetype();
 

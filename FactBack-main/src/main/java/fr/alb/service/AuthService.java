@@ -40,11 +40,12 @@ public class AuthService {
         user.lastLoginIp = clientIp;
         user.update();
 
-        try {
-            return AuthResult.failure("Veuillez vous connecter via Azure AD.");
-        } catch (UnsupportedOperationException e) {
-            return AuthResult.failure("Local authentication is disabled. Please use Azure AD authentication.");
-        }
+        // Local password login is intended for dev/test runs. We hand back an opaque
+        // session token (UUID) — Quarkus OIDC won't validate it as a real JWT, so this
+        // path is only usable when the server runs with security disabled
+        // (start.sh --no-auth) or for environments that do not enforce OIDC.
+        String token = java.util.UUID.randomUUID().toString();
+        return AuthResult.success(token, user);
     }
 
     @Transactional

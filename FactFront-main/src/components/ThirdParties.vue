@@ -48,6 +48,15 @@ const handleFilter = (filters: any[]) => {
   // Implement filter logic here
 };
 
+// Defensive date formatting: `new Date(null|undefined|"")` resolves to the Unix
+// epoch (01/01/1970), which was leaking into the list view for parties without
+// a createdAt/updatedAt yet. Falls back to "—" for any unparseable input.
+function formatDate(raw: string | number | null | undefined): string {
+  if (raw === null || raw === undefined || raw === '') return '—';
+  const d = new Date(raw);
+  return Number.isNaN(d.getTime()) ? '—' : d.toLocaleDateString();
+}
+
 const getStatusBadgeClasses = (status: string) => {
   const baseClasses = "px-2 py-1 text-xs font-medium rounded-full";
   switch (status) {
@@ -184,10 +193,10 @@ const closeHistory = () => {
                 </span>
               </td>
               <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
-                {{ new Date(party.createdAt).toLocaleDateString() }}
+                {{ formatDate(party.createdAt) }}
               </td>
               <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
-                {{ new Date(party.updatedAt).toLocaleDateString() }}
+                {{ formatDate(party.updatedAt) }}
               </td>
               <td class="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
                 <button

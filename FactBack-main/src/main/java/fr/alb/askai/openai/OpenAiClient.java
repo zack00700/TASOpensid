@@ -1,6 +1,5 @@
 package fr.alb.askai.openai;
 
-import jakarta.annotation.PostConstruct;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import org.eclipse.microprofile.config.ConfigProvider;
@@ -10,7 +9,6 @@ import org.eclipse.microprofile.faulttolerance.Timeout;
 import org.eclipse.microprofile.rest.client.annotation.ClientHeaderParam;
 import org.eclipse.microprofile.rest.client.annotation.RegisterProvider;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
-import org.jboss.logging.Logger;
 
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -38,41 +36,16 @@ public interface OpenAiClient {
     Map<String, Object> models();
 
     // --- headers ---
+    // Returns the literal sentinel "not-configured" when the key is missing so the
+    // request still goes through and OpenAI returns a 401 mapped to a clean error,
+    // instead of crashing the request with an IllegalStateException.
+    // Callers should check AskAiAvailability before invoking this client.
     default String apiKey() {
         String key = ConfigProvider.getConfig()
                 .getOptionalValue("openai.api.key", String.class)
-                .orElse("")
+                .orElse("not-configured")
                 .trim();
-        if (key.isEmpty()) {
-            throw new IllegalStateException(
-                    "Missing OpenAI API key. Set 'openai.api.key' in application.properties or define OPENAI_API_KEY.");
-        }
-        return key;
-    }
-
-    // --- startup check (optional but helpful) ---
-    @PostConstruct
-    default void init() {
-        Logger log = Logger.getLogger(OpenAiClient.class);
-
-        String key = ConfigProvider.getConfig()
-                .getOptionalValue("openai.api.key", String.class)
-                .orElse("");
-        if (key.isBlank()) {
-            throw new IllegalStateException("Missing required configuration 'openai.api.key'.");
-        }
-
-        try {
-            models(); // quick ping; if 401/403 we’ll remap to a clear error
-        } catch (WebApplicationException e) {
-            int status = e.getResponse().getStatus();
-            if (status == 401 || status == 403) {
-                throw new IllegalStateException("Provided 'openai.api.key' was rejected by OpenAI", e);
-            }
-            log.warn("Unexpected OpenAI API error during init", e);
-        } catch (RuntimeException e) {
-            log.warn("Failed to verify OpenAI models endpoint", e);
-        }
+        return key.isEmpty() ? "not-configured" : key;
     }
 
     // --- DTOs for /v1/responses ---

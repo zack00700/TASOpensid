@@ -171,6 +171,12 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+  // Restore the saved scroll position when navigating back/forward, otherwise scroll
+  // to the top of the page so menu clicks always land on the list header (TC-11).
+  scrollBehavior(_to, _from, savedPosition) {
+    if (savedPosition) return savedPosition;
+    return { top: 0, left: 0, behavior: 'smooth' };
+  },
 });
 
 // Navigation guard: redirect unauthenticated users to root (App.vue shows Login there).

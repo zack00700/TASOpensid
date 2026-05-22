@@ -146,6 +146,7 @@
   "askAiFab.chart.valueDefault": "Value",
   "askAiFab.dialog.hint": "Ask a natural-language question about your invoices, bills of lading or operational data.",
   "askAiFab.error.requestFailed": "Request failed",
+  "askAiFab.error.notConfigured": "AI assistant is not available on this environment.",
   "askAiFab.footer.poweredBy": "Powered by Claude AI",
   "askAiFab.footer.system": "TAS Terminal Billing System",
   "askAiFab.header.amount": "Amount",
@@ -1256,7 +1257,7 @@
   "itemForm.field.reeferTemperature": "Reefer Temperature (°C)",
   "itemForm.field.sealNumbers": "Seal Numbers",
   "itemForm.field.shipperName": "Shipper",
-  "itemForm.field.status": "Status",
+  "itemForm.field.status": "Item state",
   "itemForm.field.type": "Type",
   "itemForm.field.unNumber": "UN Number",
   "itemForm.field.verifiedWeight": "Verified Weight (kg)",
@@ -1384,7 +1385,7 @@
   "items.column.lastEvent": "Last event",
   "items.column.position": "Position",
   "items.column.reeferTemp": "Reefer temp",
-  "items.column.status": "Status",
+  "items.column.status": "Workflow status",
   "items.column.vgm": "VGM",
   "items.column.voyageIn": "Voyage in",
   "items.column.voyageOut": "Voyage out",
@@ -1921,5 +1922,7 @@
   "vessels.empty.descriptionFiltered": "Try adjusting your search terms.",
   "vessels.empty.title": "No vessels found",
   "vessels.placeholder.searchVessels": "Search vessels...",
-  "vessels.title": "Vessels ({count})"
+  "vessels.title": "Vessels ({count})",
+  "vessels.action.selectAll": "Select all visible vessels",
+  "vesselVisits.action.notImplemented": "{action} is not implemented yet."
 }

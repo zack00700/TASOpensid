@@ -1,5 +1,6 @@
 // src/services/vesselVisitService.ts
 
+import api from '../plugin/axios';
 import { Cache } from '../utils/cache';
 
 /**
@@ -41,7 +42,8 @@ export function sanitizeVesselQuery(raw: string): string {
     .trim();
 }
 
-const BASE = "/api/vessel-visits";
+// Relative path — the shared axios instance handles the base URL and auth headers.
+const BASE = "/vessel-visits";
 
 // Cache instances
 // Search cache: 5 minute TTL (search queries are often repeated during data entry)
@@ -65,25 +67,21 @@ async function search(raw: string): Promise<VesselVisit[]> {
     return cached;
   }
 
-  const url = `${BASE}/search?q=${encodeURIComponent(q)}`;
   try {
-    const res = await fetch(url, { method: "GET" });
-
-    if (!res.ok) {
-      const text = await res.text().catch(() => "");
-      throw new Error(`Vessel search failed (${res.status}): ${text || url}`);
-    }
-
-    const data = (await res.json()) as VesselVisit[] | { data: VesselVisit[] };
-    // Accept both plain array or { data: [] } API shapes
-    // @ts-expect-error runtime shape check
-    const results = Array.isArray(data) ? (data as VesselVisit[]) : (data as any).data ?? [];
+    // Use the shared axios instance so the Bearer token and base URL apply.
+    // Previously this called raw fetch('/api/vessel-visits/search'), which both
+    // bypassed auth and missed the proxy rewrite — every search came back 401/404.
+    const res = await api.get(`${BASE}/search`, { params: { q } });
+    const data = res.data as VesselVisit[] | { data: VesselVisit[] };
+    const results: VesselVisit[] = Array.isArray(data)
+      ? data
+      : ((data as { data?: VesselVisit[] }).data ?? []);
 
     // Cache the search results
     searchCache.set(q, results);
 
     // Also cache individual vessel visits from the search results
-    results.forEach((visit) => {
+    results.forEach((visit: VesselVisit) => {
       if (visit.id) {
         vesselVisitCache.set(visit.id, visit);
       }
@@ -109,18 +107,16 @@ async function getById(id: string): Promise<VesselVisit | null> {
   }
 
   try {
-    const res = await fetch(`${BASE}/${encodeURIComponent(id)}`, { method: "GET" });
-    if (!res.ok) return null;
+    const res = await api.get(`${BASE}/${encodeURIComponent(id)}`);
+    const visit = res.data as VesselVisit | null;
 
-    const visit = (await res.json()) as VesselVisit;
-
-    // Cache the result
     if (visit) {
       vesselVisitCache.set(id, visit);
     }
 
     return visit;
-  } catch (error) {
+  } catch (error: any) {
+    if (error?.response?.status === 404) return null;
     console.error(`[VesselVisitService] Failed to fetch vessel visit ${id}:`, error);
     throw error;
   }
