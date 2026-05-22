@@ -2,6 +2,7 @@
 import { ref, computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { VesselVisit } from "../types/vessel-visit";
+import { formatDisplayId } from "../utils/displayId";
 import {
   FileDown,
   ArrowRight,
@@ -126,7 +127,7 @@ function handleExtractEvents() { notImplemented(t('vesselVisits.button.extractEv
 
 function formatExportRows(visitList: VesselVisit[]) {
   return visitList.map((v) => ({
-    Vessel: v.vesselId ? `${v.vesselName} (${v.vesselId})` : v.vesselName,
+    Vessel: v.vesselId ? `${v.vesselName} (${formatDisplayId(v.vesselId)})` : v.vesselName,
     'Visit Reference': v.visitReference,
     Phase: v.phase,
     Service: v.serviceName ? `${v.service} - ${v.serviceName}` : v.service,
@@ -342,7 +343,7 @@ const openPreview = (visit: VesselVisit) => {
                 <div class="text-sm font-medium text-gray-900">
                   {{ visit.vesselName }}
                 </div>
-                <div class="text-sm text-gray-500">{{ visit.vesselId }}</div>
+                <div class="text-sm text-gray-500" :title="visit.vesselId">{{ formatDisplayId(visit.vesselId) }}</div>
               </td>
               <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
                 {{ visit.visitReference }}

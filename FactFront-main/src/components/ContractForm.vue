@@ -3,8 +3,12 @@ import { ref, onMounted, watch, inject, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ContractRateManagement from './ContractRateManagement.vue';
 import FilterBuilder from './FilterBuilder.vue';
+import ThirdPartyAutocomplete from './ui/ThirdPartyAutocomplete.vue';
+import { useRouter } from 'vue-router';
+import type { ThirdParty } from '../types/third-party';
 
 const { t } = useI18n();
+const router = useRouter();
 import {
   X,
   Check,
@@ -18,7 +22,8 @@ import {
   ChevronRight,
   Info,
   Link,
-  User
+  User,
+  ExternalLink
 } from 'lucide-vue-next';
 import type { EventConfig } from '../types/event-config';
 import type { CalcFilter } from '../types/calc-filter';
@@ -350,6 +355,28 @@ const handleRatesUpdate = (newRates: any[]) => {
   formData.value.rates = newRates;
 };
 
+// `formData.customerName` is typed as optional on the Contract interface, so we
+// expose a non-nullable computed proxy for the typeahead v-model (which expects
+// a string). Writes go straight back to formData.
+const customerNameModel = computed({
+  get: () => formData.value.customerName ?? '',
+  set: (v: string) => { formData.value.customerName = v; },
+});
+
+// When a third party is picked from the autocomplete, mirror its id into the
+// contract's customerId so the back can resolve the customer without the user
+// having to copy/paste it (TC-06 link tier).
+const onCustomerSelected = (tp: ThirdParty) => {
+  formData.value.customerName = tp.companyName ?? '';
+  formData.value.customerId = tp.id ?? '';
+};
+
+const openThirdParties = () => {
+  // New tab — the wizard state is preserved and the user can come back.
+  const route = router.resolve('/third-parties');
+  window.open(route.href, '_blank', 'noopener');
+};
+
 const getInputClasses = (fieldName: string) => {
   return {
     'block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors duration-200': true,
@@ -635,21 +662,30 @@ onMounted(async () => {
 
               <!-- Customer Information -->
               <div class="border border-gray-200 rounded-lg p-5 space-y-4">
-                <div class="flex items-center space-x-2 mb-1">
-                  <User class="h-5 w-5 text-gray-400" />
-                  <h3 class="text-sm font-semibold text-gray-700">{{ t('contractForm.customerInformation') }}</h3>
-                  <span class="text-xs text-gray-400 ml-1">{{ t('contractForm.optionalParen') }}</span>
+                <div class="flex items-center justify-between mb-1">
+                  <div class="flex items-center space-x-2">
+                    <User class="h-5 w-5 text-gray-400" />
+                    <h3 class="text-sm font-semibold text-gray-700">{{ t('contractForm.customerInformation') }}</h3>
+                    <span class="text-xs text-gray-400 ml-1">{{ t('contractForm.optionalParen') }}</span>
+                  </div>
+                  <!-- Direct hop to the Third Parties admin so users can create/edit a tier without leaving the wizard mentally. -->
+                  <button
+                    type="button"
+                    @click="openThirdParties"
+                    class="inline-flex items-center text-xs text-blue-600 hover:text-blue-700 hover:underline"
+                    :title="t('contractForm.manageThirdParties')"
+                  >
+                    <ExternalLink class="h-3.5 w-3.5 mr-1" />
+                    {{ t('contractForm.manageThirdParties') }}
+                  </button>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                      {{ t('contractForm.customerName') }}
-                    </label>
-                    <input
-                      v-model="formData.customerName"
-                      type="text"
-                      :class="getInputClasses('customerName')"
+                    <ThirdPartyAutocomplete
+                      v-model="customerNameModel"
+                      :label="t('contractForm.customerName')"
                       :placeholder="t('contractForm.placeholder.customerName')"
+                      @select="onCustomerSelected"
                     />
                   </div>
                   <div>
@@ -659,9 +695,11 @@ onMounted(async () => {
                     <input
                       v-model="formData.customerId"
                       type="text"
+                      readonly
                       :class="getInputClasses('customerId')"
                       :placeholder="t('contractForm.placeholder.customerId')"
                     />
+                    <p class="mt-1 text-xs text-gray-500">{{ t('contractForm.customerIdHint') }}</p>
                   </div>
                 </div>
               </div>

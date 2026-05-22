@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { RefreshCw, UserPlus, X, AlertCircle, CheckCircle, XCircle, Mail } from 'lucide-vue-next';
+import { RefreshCw, UserPlus, X, AlertCircle, CheckCircle, XCircle, Mail, Pencil } from 'lucide-vue-next';
 import {
   listEntraUsers,
   listEntraRoles,
@@ -9,6 +9,7 @@ import {
   removeRoleFromUser,
   setEntraUserEnabled,
   inviteEntraUser,
+  updateEntraUserProfile,
 } from '../services/userAdminService';
 import type { EntraUser, InviteRequest } from '../types/entra-user';
 
@@ -101,6 +102,39 @@ const replaceUser = (updated: EntraUser) => {
   const idx = users.value.findIndex((u) => u.id === updated.id);
   if (idx >= 0) users.value[idx] = updated;
   else users.value.push(updated);
+};
+
+// ── Edit profile (displayName + jobTitle) ───────────────────────────────────
+const showEdit = ref(false);
+const isEditing = ref(false);
+const editingUser = ref<EntraUser | null>(null);
+const editForm = ref<{ displayName: string; jobTitle: string }>({ displayName: '', jobTitle: '' });
+
+const openEdit = (user: EntraUser) => {
+  editingUser.value = user;
+  editForm.value = {
+    displayName: user.displayName ?? '',
+    jobTitle: user.jobTitle ?? '',
+  };
+  showEdit.value = true;
+};
+
+const submitEdit = async () => {
+  if (!editingUser.value) return;
+  isEditing.value = true;
+  try {
+    const updated = await updateEntraUserProfile(editingUser.value.id, {
+      displayName: editForm.value.displayName,
+      jobTitle: editForm.value.jobTitle,
+    });
+    replaceUser(updated);
+    showEdit.value = false;
+    editingUser.value = null;
+  } catch {
+    errorMessage.value = t('applicationUsers.error.editFailed');
+  } finally {
+    isEditing.value = false;
+  }
 };
 
 // ── Invite ────────────────────────────────────────────────────────────────────
@@ -255,13 +289,23 @@ const toggleInviteRole = (role: string) => {
                   </div>
                 </td>
                 <td class="px-4 py-3 whitespace-nowrap text-right text-sm">
-                  <button
-                    @click="toggleEnabled(user)"
-                    class="text-sm font-medium"
-                    :class="user.accountEnabled ? 'text-red-600 hover:text-red-800' : 'text-green-600 hover:text-green-800'"
-                  >
-                    {{ user.accountEnabled ? t('applicationUsers.action.disable') : t('applicationUsers.action.reactivate') }}
-                  </button>
+                  <div class="flex items-center justify-end gap-3">
+                    <button
+                      @click="openEdit(user)"
+                      class="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800"
+                      :title="t('applicationUsers.action.edit')"
+                    >
+                      <Pencil class="h-4 w-4 mr-1" />
+                      {{ t('applicationUsers.action.edit') }}
+                    </button>
+                    <button
+                      @click="toggleEnabled(user)"
+                      class="text-sm font-medium"
+                      :class="user.accountEnabled ? 'text-red-600 hover:text-red-800' : 'text-green-600 hover:text-green-800'"
+                    >
+                      {{ user.accountEnabled ? t('applicationUsers.action.disable') : t('applicationUsers.action.reactivate') }}
+                    </button>
+                  </div>
                 </td>
               </tr>
 
@@ -354,6 +398,67 @@ const toggleInviteRole = (role: string) => {
               >
                 <RefreshCw v-if="isInviting" class="h-4 w-4 mr-2 animate-spin" />
                 {{ isInviting ? t('applicationUsers.inviteModal.sending') : t('applicationUsers.inviteModal.send') }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </Teleport>
+
+    <!-- Edit profile Modal (TC-12) -->
+    <Teleport to="body">
+      <div
+        v-if="showEdit && editingUser"
+        class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 p-4"
+        @click.self="showEdit = false"
+      >
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-md">
+          <div class="flex items-center justify-between p-6 border-b border-gray-200">
+            <div class="flex items-center gap-2">
+              <Pencil class="h-5 w-5 text-blue-600" />
+              <h3 class="text-lg font-semibold text-gray-900">{{ t('applicationUsers.editModal.title') }}</h3>
+            </div>
+            <button @click="showEdit = false" class="text-gray-400 hover:text-gray-600">
+              <X class="h-5 w-5" />
+            </button>
+          </div>
+
+          <form @submit.prevent="submitEdit" class="p-6 space-y-4">
+            <p class="text-xs text-gray-500">
+              {{ t('applicationUsers.editModal.hint', { upn: editingUser.userPrincipalName ?? editingUser.id }) }}
+            </p>
+            <div>
+              <label class="block text-xs font-medium text-gray-700 mb-1">{{ t('applicationUsers.editModal.displayName') }}</label>
+              <input
+                v-model="editForm.displayName"
+                type="text"
+                class="block w-full border border-gray-300 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-gray-700 mb-1">{{ t('applicationUsers.editModal.jobTitle') }}</label>
+              <input
+                v-model="editForm.jobTitle"
+                type="text"
+                class="block w-full border border-gray-300 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+              <button
+                type="button"
+                @click="showEdit = false"
+                :disabled="isEditing"
+                class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+              >
+                {{ t('common.cancel') }}
+              </button>
+              <button
+                type="submit"
+                :disabled="isEditing"
+                class="inline-flex items-center px-4 py-2 border border-transparent rounded-lg text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
+              >
+                <RefreshCw v-if="isEditing" class="h-4 w-4 mr-2 animate-spin" />
+                {{ isEditing ? t('common.saving') : t('common.save') }}
               </button>
             </div>
           </form>

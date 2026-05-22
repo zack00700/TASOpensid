@@ -91,4 +91,19 @@ public class UserAdminResource {
     public EntraUser disable(@PathParam("id") String userId) {
         return users.setEnabled(userId, false);
     }
+
+    /** Updates the mutable Entra profile fields (displayName, jobTitle). TC-12. */
+    @jakarta.ws.rs.PATCH
+    @Path("{id}")
+    public EntraUser updateProfile(@PathParam("id") String userId, UpdateProfileRequest req) {
+        if (req == null) {
+            throw new jakarta.ws.rs.BadRequestException("request body required");
+        }
+        return users.updateProfile(userId, req.displayName, req.jobTitle);
+    }
+
+    public static class UpdateProfileRequest {
+        public String displayName;
+        public String jobTitle;
+    }
 }

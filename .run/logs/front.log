@@ -11,3 +11,28 @@
 Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
   npx update-browserslist-db@latest
   Why you should do it regularly: https://github.com/browserslist/update-db#readme
+10:59:03 [vite] (client) hmr update /src/components/Contracts.vue, /src/index.css
+10:59:26 [vite] (client) hmr update /src/components/ContractForm.vue, /src/index.css
+10:59:39 [vite] (client) hmr update /src/components/ContractForm.vue, /src/index.css
+11:00:19 [vite] (client) hmr update /src/components/ContractForm.vue, /src/index.css
+11:00:44 [vite] (client) page reload src/locales/en.json
+11:01:35 [vite] (client) hmr update /src/components/ContractForm.vue, /src/index.css
+11:01:37 [vite] (client) hmr update /src/components/ContractForm.vue, /src/index.css
+11:32:39 [vite] (client) page reload src/locales/en.json
+11:36:43 [vite] (client) page reload src/components/VesselVisitForm.vue
+11:36:46 [vite] http proxy error: /api/ask-ai/status
+Error: socket hang up
+    at Socket.socketOnEnd (node:_http_client:528:25)
+    at Socket.emit (node:events:536:35)
+    at endReadableNT (node:internal/streams/readable:1698:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)
+11:36:48 [vite] (client) page reload src/components/VesselVisitForm.vue
+11:38:07 [vite] (client) page reload src/services/userAdminService.ts
+11:39:52 [vite] (client) page reload src/locales/en.json
+11:40:13 [vite] (client) page reload src/locales/en.json
+11:41:15 [vite] (client) page reload src/components/BillOfLadingForm.vue
+11:42:02 [vite] (client) page reload src/services/itemService.ts
+11:42:04 [vite] (client) page reload src/services/itemService.ts
+11:42:28 [vite] (client) page reload src/components/BillOfLadingForm.vue
+11:43:07 [vite] (client) page reload src/components/BillOfLadingForm.vue
+11:43:30 [vite] (client) page reload src/locales/en.json

@@ -60,10 +60,35 @@ public class ItemDaoImpl implements ItemDao {
         return lifecycles.stream().collect(Collectors.toMap(lc -> lc.id, lc -> lc));
     }
 
-    /** Applies computeStatus to every item using a shared batch-loaded cache. */
+    /** Applies computeStatus to every item using a shared batch-loaded cache.
+     *  Only items without an explicit stored status fall back to the lifecycle-derived
+     *  value (mirrors {@link #getItem(String)} so list/detail stay consistent). */
     private void applyStatusBatch(List<Item> items) {
+        if (items.isEmpty()) return;
         Map<String, Lifecycle> cache = buildLifecycleCache(items);
-        items.forEach(i -> i.setStatus(i.computeStatus(cache)));
+        Set<String> idsWithStoredStatus = idsWithStoredStatus(
+                items.stream().map(Item::getId).collect(Collectors.toSet()));
+        items.forEach(i -> {
+            if (!idsWithStoredStatus.contains(i.getId())) {
+                i.setStatus(i.computeStatus(cache));
+            }
+        });
+    }
+
+    /** Single batched query returning the subset of ids whose raw `status` field is set. */
+    private Set<String> idsWithStoredStatus(Set<String> ids) {
+        if (ids.isEmpty()) return Collections.emptySet();
+        Set<String> result = new java.util.HashSet<>();
+        rawItemCollection()
+                .find(new org.bson.Document("_id", new org.bson.Document("$in", new ArrayList<>(ids)))
+                        .append("status", new org.bson.Document("$exists", true)
+                                .append("$nin", java.util.List.of(null, ""))))
+                .projection(new org.bson.Document("_id", 1))
+                .forEach(doc -> {
+                    Object id = doc.get("_id");
+                    if (id != null) result.add(id.toString());
+                });
+        return result;
     }
 
     @Override
@@ -94,10 +119,32 @@ public class ItemDaoImpl implements ItemDao {
     public Item getItem(String itemId) {
         Item item = Item.findById(itemId);
         if (item != null) {
-            // Single-item path: computeStatus() issues at most one DB query, which is acceptable.
-            item.setStatus(item.computeStatus());
+            // Respect an explicit stored status — only fall back to the lifecycle-derived
+            // value when nothing has been persisted. We deliberately do NOT call getStatus()
+            // here because that lazy-initializes the field via computeStatus(); we need to
+            // inspect the raw persisted value via a fresh reload.
+            if (!hasStoredStatus(itemId)) {
+                item.setStatus(item.computeStatus());
+            }
         }
         return item;
+    }
+
+    /** Re-fetches just the raw `status` field from MongoDB to bypass the lazy getter on Item. */
+    private boolean hasStoredStatus(String itemId) {
+        org.bson.Document raw = rawItemCollection()
+                .find(new org.bson.Document("_id", itemId))
+                .projection(new org.bson.Document("status", 1))
+                .first();
+        if (raw == null) return false;
+        Object s = raw.get("status");
+        return s instanceof String str && !str.isBlank();
+    }
+
+    /** Raw Document-typed view on the ITEM collection — avoids the PojoCodec on Item
+     *  so we can read individual fields without triggering the lazy getters. */
+    private com.mongodb.client.MongoCollection<org.bson.Document> rawItemCollection() {
+        return Item.mongoDatabase().getCollection("ITEM", org.bson.Document.class);
     }
 
     @Override

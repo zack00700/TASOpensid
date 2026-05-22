@@ -29,10 +29,17 @@ const { t, locale } = useI18n();
 const { vessels, getVessels, deleteVessel } = useVessel();
 const { snapshots, health, statusFor, loadSnapshotsForVessels, getHealth } = useVesselAis();
 
+const isRefreshing = ref(false);
 async function refresh() {
-  await getVessels();
-  await loadSnapshotsForVessels(vessels.value);
-  await getHealth();
+  if (isRefreshing.value) return;
+  isRefreshing.value = true;
+  try {
+    await getVessels();
+    await loadSnapshotsForVessels(vessels.value);
+    await getHealth();
+  } finally {
+    isRefreshing.value = false;
+  }
 }
 
 onBeforeMount(async () => {
@@ -287,11 +294,12 @@ const handleExport = () => {
             <button
               data-test="vessels-refresh"
               @click="refresh"
+              :disabled="isRefreshing"
               :title="t('vessels.button.refresh')"
-              class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+              class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              <RefreshCw class="h-4 w-4 sm:mr-2" />
-              <span class="hidden sm:inline">{{ t('vessels.button.refresh') }}</span>
+              <RefreshCw class="h-4 w-4 sm:mr-2" :class="{ 'animate-spin': isRefreshing }" />
+              <span class="hidden sm:inline">{{ isRefreshing ? t('common.loading') : t('vessels.button.refresh') }}</span>
             </button>
             <button
               @click="handleAdd"

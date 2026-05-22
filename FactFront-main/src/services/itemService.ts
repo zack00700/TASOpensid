@@ -126,6 +126,22 @@ interface ItemCreatePayload {
   itemType?: string;
 }
 
+// Lightweight search helper used by the BL form to attach an existing item.
+// Maps to the paginated /items endpoint with the `search` filter the back already supports.
+export const searchItems = async (query: string, limit = 10): Promise<any[]> => {
+  const term = (query || '').trim();
+  if (term.length < 2) return [];
+  try {
+    const response = await api.get('/items', { params: { search: term, page: 1, size: limit } });
+    const body = response.data;
+    if (Array.isArray(body)) return body;
+    return body?.items ?? body?.data ?? [];
+  } catch (error) {
+    console.error('[ItemService] Failed to search items:', error);
+    return [];
+  }
+};
+
 export const create = async (data: ItemCreatePayload): Promise<any> => {
   try {
     const response = await api.post('/items', data);
@@ -304,4 +320,5 @@ export default {
   addEventToItem,
   getLifecycles,
   cacheUtils,
+  searchItems,
 };

@@ -6,12 +6,29 @@ import { VesselVisit } from "../types/vessel-visit";
 
 import { useVesselVisit } from "../composables/use.vessel-visit";
 import { useVesselVisitAis } from "../composables/use.vessel.visit.ais";
+import { useVessel } from "../composables/use.vessel";
 import ThirdPartyAutocomplete from "./ui/ThirdPartyAutocomplete.vue";
+import TypeaheadInput from "./ui/TypeaheadInput.vue";
+import { computed } from "vue";
 
 const { t, locale } = useI18n();
 
 const { formData, validateForm, errors, addVesselVisit, updateVesselVisit } = useVesselVisit();
 const { suggestion, loadFor } = useVesselVisitAis();
+// Registry of known vessels — fed to the vessel-name typeahead so users can pick
+// from existing entries instead of typing a free-text name (TC-05).
+const { vessels } = useVessel();
+const vesselNameSuggestions = computed<string[]>(() =>
+  (vessels.value ?? []).map((v) => v.name).filter((n): n is string => !!n)
+);
+const onVesselNameSelected = (name: string) => {
+  const match = (vessels.value ?? []).find((v) => v.name === name);
+  if (match) {
+    formData.value.vesselName = match.name;
+    // Auto-link to the registry's vessel id so the back can reconcile both sides.
+    if (match.id) (formData.value as any).vesselId = match.id;
+  }
+};
 const appliedEta = ref(false);
 const appliedAta = ref(false);
 
@@ -122,10 +139,12 @@ const applyAta = () => {
             <label class="block text-sm font-medium text-gray-700">
               {{ t('vesselVisitForm.field.vesselName') }} <span class="text-red-500">*</span>
             </label>
-            <input
-              v-model="formData.vesselName"
-              type="text"
-              :class="getInputClasses('vesselName')"
+            <TypeaheadInput
+              :model-value="formData.vesselName ?? ''"
+              :suggestions="vesselNameSuggestions"
+              @update:model-value="formData.vesselName = $event"
+              @select="onVesselNameSelected"
+              :input-class="getInputClasses('vesselName')"
             />
             <p v-if="errors.vesselName" class="mt-1 text-sm text-red-600">
               {{ errors.vesselName }}

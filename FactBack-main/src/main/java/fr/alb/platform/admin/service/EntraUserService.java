@@ -125,6 +125,24 @@ public class EntraUserService {
     }
 
     /**
+     * Patches the mutable profile fields of an Entra user (display name and job title).
+     * Email/userPrincipalName are intentionally not mutable here — those are managed in Entra itself.
+     */
+    public EntraUser updateProfile(String userId, String displayName, String jobTitle) {
+        ensureEnabled();
+        try {
+            User patch = new User();
+            if (displayName != null) patch.setDisplayName(displayName);
+            if (jobTitle != null) patch.setJobTitle(jobTitle);
+            graph.users().byUserId(userId).patch(patch);
+        } catch (Exception e) {
+            LOG.errorf(e, "Failed to update profile for user %s", userId);
+            throw new ServiceUnavailableException("Cannot update user on Microsoft Graph right now.");
+        }
+        return refreshed(userId);
+    }
+
+    /**
      * Invites an external email address as a guest user and (optionally)
      * adds them to the requested role groups immediately — the role stays
      * attached even before the user redeems the invitation.

@@ -68,6 +68,24 @@ export const setEntraUserEnabled = async (userId: string, enabled: boolean): Pro
   }
 };
 
+export interface EntraUserProfileUpdate {
+  displayName?: string;
+  jobTitle?: string;
+}
+
+export const updateEntraUserProfile = async (
+  userId: string,
+  payload: EntraUserProfileUpdate,
+): Promise<EntraUser> => {
+  try {
+    const response = await api.patch(`${BASE}/${encodeURIComponent(userId)}`, payload);
+    return response.data;
+  } catch (error) {
+    console.error(`[UserAdminService] Failed to update profile for user ${userId}:`, error);
+    throw error;
+  }
+};
+
 export const userAdminService = {
   listEntraUsers,
   listEntraRoles,
@@ -75,6 +93,7 @@ export const userAdminService = {
   addRoleToUser,
   removeRoleFromUser,
   setEntraUserEnabled,
+  updateEntraUserProfile,
 };
 
 export default userAdminService;
