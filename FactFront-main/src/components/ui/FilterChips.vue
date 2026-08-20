@@ -47,13 +47,13 @@ defineEmits<{
   gap: 0.5rem;
   flex-wrap: wrap;
   padding: 0.6rem 1rem;
-  background: #f8fafc;
-  border-bottom: 1px solid #e2e8f0;
+  background: rgba(255,253,247,0.55);
+  border-bottom: 1px solid rgba(60,50,35,0.12);
 }
 .fc-prefix {
   font-size: 0.75rem;
   font-weight: 600;
-  color: #64748b;
+  color: rgba(42,36,30,0.60);
   padding-top: 3px;
   white-space: nowrap;
 }
@@ -68,12 +68,12 @@ defineEmits<{
   align-items: center;
   gap: 4px;
   padding: 2px 8px 2px 10px;
-  background: #e0e7ff;
-  color: #3730a3;
+  background: rgba(90,138,171,0.14);
+  color: #3e6080;
   border-radius: 99px;
   font-size: 0.75rem;
   font-weight: 500;
-  border: 1px solid #c7d2fe;
+  border: 1px solid rgba(90,138,171,0.28);
 }
 .fc-remove {
   background: none;
@@ -85,16 +85,16 @@ defineEmits<{
   border-radius: 50%;
   transition: background 0.1s;
 }
-.fc-remove:hover { background: #c7d2fe; }
+.fc-remove:hover { background: rgba(90,138,171,0.28); }
 .fc-x { width: 10px; height: 10px; }
 .fc-clear {
   font-size: 0.72rem;
-  color: #64748b;
+  color: rgba(42,36,30,0.60);
   background: none;
   border: none;
   cursor: pointer;
   text-decoration: underline;
   padding: 0 2px;
 }
-.fc-clear:hover { color: #1e293b; }
+.fc-clear:hover { color: #2a241e; }
 </style>

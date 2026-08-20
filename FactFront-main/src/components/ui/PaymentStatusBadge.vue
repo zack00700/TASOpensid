@@ -5,9 +5,9 @@ defineProps<{ status: PaymentStatus }>();
 
 const TONES: Record<PaymentStatus, string> = {
   PAID:    'bg-emerald-50 text-emerald-700 border-emerald-200',
-  PARTIAL: 'bg-blue-50 text-blue-700 border-blue-200',
-  UNPAID:  'bg-slate-100 text-slate-600 border-slate-200',
-  OVERDUE: 'bg-red-50 text-red-700 border-red-200',
+  PARTIAL: 'bg-[rgba(90,138,171,0.14)] text-tide-blue-deep border-[rgba(90,138,171,0.28)]',
+  UNPAID:  'bg-[rgba(42,36,30,0.06)] text-tide-ink/65 border-[rgba(42,36,30,0.12)]',
+  OVERDUE: 'bg-[rgba(181,99,88,0.14)] text-tide-rust-deep border-[rgba(181,99,88,0.28)]',
 };
 
 const LABELS: Record<PaymentStatus, string> = {

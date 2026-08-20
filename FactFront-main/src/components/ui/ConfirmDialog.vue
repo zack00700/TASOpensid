@@ -12,11 +12,11 @@
         <div :class="['mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full', tonePalette.iconBg]">
           <component :is="tonePalette.icon" data-tone-icon :class="['h-10 w-10', tonePalette.iconColor]" />
         </div>
-        <h2 :id="titleId" class="text-lg font-semibold text-slate-900">{{ title }}</h2>
+        <h2 :id="titleId" class="font-display text-xl font-normal text-tide-ink">{{ title }}</h2>
       </div>
     </template>
 
-    <p class="text-slate-600 text-center">
+    <p class="text-tide-ink/70 text-center">
       <slot />
     </p>
 
@@ -77,7 +77,7 @@ const tonePalette = computed(() => {
     case 'danger':
       return {
         icon: Trash2,
-        iconBg: 'bg-red-100',
+        iconBg: 'bg-[rgba(181,99,88,0.16)] text-tide-rust-deep',
         iconColor: 'text-red-600',
         buttonVariant: 'danger' as const,
         buttonOverride: '',
@@ -105,7 +105,7 @@ const tonePalette = computed(() => {
     default:
       return {
         icon: Info,
-        iconBg: 'bg-blue-100',
+        iconBg: 'bg-[rgba(90,138,171,0.16)] text-tide-blue-deep',
         iconColor: 'text-blue-600',
         buttonVariant: 'primary' as const,
         buttonOverride: '',

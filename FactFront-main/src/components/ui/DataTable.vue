@@ -1,12 +1,12 @@
 <template>
-  <div data-test="datatable-container" class="overflow-x-auto rounded-xl border border-slate-200 bg-white">
+  <div data-test="datatable-container" class="overflow-x-auto rounded-tide-card border border-[rgba(60,50,35,0.10)] bg-gradient-to-br from-[rgba(255,253,247,0.95)] to-[rgba(252,247,238,0.85)] backdrop-blur-[22px] shadow-glass">
     <!-- Desktop table -->
     <table :class="['min-w-full', desktopVisibility]">
-      <thead :class="['bg-slate-50', stickyHeader && 'sticky top-0 z-10']">
+      <thead :class="['bg-[rgba(252,247,238,0.75)] border-b border-[rgba(42,36,30,0.08)]', stickyHeader && 'sticky top-0 z-10']">
         <tr>
           <th
             v-if="selectable"
-            class="sticky left-0 z-15 bg-slate-50 w-10 px-2 py-3"
+            class="sticky left-0 z-15 bg-[rgba(252,247,238,0.95)] w-10 px-2 py-3"
             data-test="datatable-select-header"
           >
             <input
@@ -21,12 +21,12 @@
           <th
             v-for="col in columns"
             :key="col.key"
-            :class="[headerCellBaseClass, alignClass(col.align), col.width, ...stickyClasses(col, true), col.sticky === 'left' && stickyCol?.key === col.key ? 'bg-slate-50' : '']"
+            :class="[headerCellBaseClass, alignClass(col.align), col.width, ...stickyClasses(col, true), col.sticky === 'left' && stickyCol?.key === col.key ? 'bg-[rgba(252,247,238,0.95)]' : '']"
           >
             <button
               v-if="col.sortable"
               type="button"
-              class="flex items-center gap-1 hover:bg-slate-100 transition-colors cursor-pointer -mx-2 px-2 py-1 rounded"
+              class="flex items-center gap-1 hover:bg-[rgba(42,36,30,0.05)] transition-colors cursor-pointer -mx-2 px-2 py-1 rounded"
               :class="alignFlexClass(col.align)"
               @click="onHeaderClick(col)"
             >
@@ -66,12 +66,12 @@
       </tbody>
 
       <!-- Rows -->
-      <tbody v-else class="divide-y divide-slate-100">
+      <tbody v-else class="divide-y divide-[rgba(42,36,30,0.06)]">
         <tr
           v-for="(row, idx) in rows"
           :key="getRowKey(row, idx)"
           data-test="datatable-row"
-          :class="['group hover:bg-blue-50 transition-colors', zebra && idx % 2 === 1 && 'bg-slate-50/40']"
+          :class="['group hover:bg-[rgba(255,253,247,0.6)] transition-colors', zebra && idx % 2 === 1 && 'bg-[rgba(252,247,238,0.35)]']"
           @click="$emit('row-click', row)"
           @dblclick="$emit('row-dblclick', row)"
         >
@@ -79,7 +79,7 @@
             v-if="selectable"
             :class="[
               'sticky left-0 z-5 w-10 px-2 py-3',
-              zebra && idx % 2 === 1 ? 'bg-slate-50' : 'bg-white',
+              zebra && idx % 2 === 1 ? 'bg-[rgba(252,247,238,0.95)]' : 'bg-[rgba(255,253,247,0.95)]',
               'group-hover:bg-blue-50',
             ]"
           >
@@ -100,7 +100,7 @@
               ...stickyClasses(col, false),
               col.sticky === 'left' && stickyCol?.key === col.key
                 ? [
-                    zebra && idx % 2 === 1 ? 'bg-slate-50' : 'bg-white',
+                    zebra && idx % 2 === 1 ? 'bg-[rgba(252,247,238,0.95)]' : 'bg-[rgba(255,253,247,0.95)]',
                     'group-hover:bg-blue-50',
                   ]
                 : '',
@@ -128,7 +128,7 @@
           <div
             v-if="hasMobileHints"
             data-datatable-mobile-card
-            class="rounded-xl border border-slate-200 bg-white p-4"
+            class="rounded-tide-card border border-[rgba(60,50,35,0.10)] bg-gradient-to-br from-[rgba(255,253,247,0.95)] to-[rgba(252,247,238,0.85)] shadow-glass p-4"
           >
             <div v-if="mobileTitleCol" data-mobile-title class="font-semibold text-slate-900 text-sm">
               {{ renderCell(mobileTitleCol, row) }}
@@ -197,8 +197,8 @@ const emit = defineEmits<{
 
 const slots = useSlots();
 
-const headerCellBaseClass = 'px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider';
-const bodyCellBaseClass = 'px-4 py-3 whitespace-nowrap text-sm text-slate-900';
+const headerCellBaseClass = 'px-4 py-3 text-left text-[10.5px] font-semibold text-tide-ink/50 uppercase tracking-[0.06em]';
+const bodyCellBaseClass = 'px-4 py-3 whitespace-nowrap text-[13px] text-tide-ink';
 
 // Show desktop table on >=sm; on small screens, hide it ONLY if the mobile layer
 // has actual content (slot provided or at least one mobile hint). Otherwise we

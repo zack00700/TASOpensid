@@ -4,11 +4,11 @@ defineProps<{ status: string }>()
 // Semantic tone → Tailwind classes. Lookups are case-insensitive so back-ends
 // that emit "DRAFT", "Draft" or "draft" all render the same way.
 const TONES = {
-  warning: 'bg-amber-50 text-amber-700 border-amber-200',
-  success: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-  info:    'bg-blue-50 text-blue-700 border-blue-200',
-  neutral: 'bg-gray-100 text-gray-600 border-gray-200',
-  danger:  'bg-red-50 text-red-700 border-red-200',
+  warning: 'bg-[rgba(184,134,46,0.14)] text-tide-amber-deep border-[rgba(184,134,46,0.28)]',
+  success: 'bg-[rgba(101,153,123,0.14)] text-tide-green-deep border-[rgba(101,153,123,0.28)]',
+  info:    'bg-[rgba(90,138,171,0.14)] text-tide-blue-deep border-[rgba(90,138,171,0.28)]',
+  neutral: 'bg-[rgba(42,36,30,0.06)] text-tide-ink/65 border-[rgba(42,36,30,0.12)]',
+  danger:  'bg-[rgba(181,99,88,0.14)] text-tide-rust-deep border-[rgba(181,99,88,0.28)]',
 } as const
 
 const STATUS_TONE: Record<string, keyof typeof TONES> = {

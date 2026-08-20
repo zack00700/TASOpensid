@@ -206,8 +206,8 @@ defineExpose({
   top: calc(100% + 4px);
   left: 0;
   right: 0;
-  background: #fff;
-  border: 1px solid #e2e8f0;
+  background: rgba(255,253,247,0.92);
+  border: 1px solid rgba(60,50,35,0.12);
   border-radius: 8px;
   box-shadow: 0 10px 24px rgba(15, 23, 42, 0.1);
   max-height: 240px;
@@ -217,15 +217,15 @@ defineExpose({
 .ta-item {
   padding: 6px 10px;
   font-size: 0.875rem;
-  color: #1e293b;
+  color: #2a241e;
   cursor: pointer;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 .ta-item--active {
-  background: #eff6ff;
-  color: #1d4ed8;
+  background: rgba(90,138,171,0.10);
+  color: #3e6080;
 }
 :deep(.ta-mark) {
   background: transparent;

@@ -6,9 +6,9 @@ const rw = () => widths[r(0, widths.length - 1)]
 </script>
 
 <template>
-  <tr v-for="i in (rows ?? 8)" :key="i" class="animate-pulse border-b border-slate-100">
+  <tr v-for="i in (rows ?? 8)" :key="i" class="animate-pulse border-b border-[rgba(42,36,30,0.06)]">
     <td v-for="j in (cols ?? 5)" :key="j" class="px-4 py-3">
-      <div :class="['h-4 bg-slate-200 rounded', rw()]" />
+      <div :class="['h-4 bg-[rgba(42,36,30,0.10)] rounded', rw()]" />
     </td>
   </tr>
 </template>

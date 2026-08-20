@@ -36,18 +36,18 @@ const props = withDefaults(
 defineEmits<{ (e: 'click', event: MouseEvent): void }>();
 
 const base =
-  'inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 disabled:pointer-events-none';
+  'inline-flex items-center justify-center gap-2 rounded-tide-btn font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 disabled:pointer-events-none';
 
 const variantClass = computed<string>(() => {
   switch (props.variant) {
     case 'primary':
-      return 'bg-blue-600 text-white border border-transparent shadow-sm hover:bg-blue-700 focus-visible:ring-blue-500';
+      return 'bg-gradient-to-br from-tide-blue-btn to-tide-blue-btn-deep text-tide-paper border border-[rgba(60,50,35,0.15)] shadow-[0_1px_0_rgba(255,255,255,0.30)_inset,0_8px_20px_-8px_rgba(74,117,147,0.45)] hover:from-[#7aa1bd] hover:to-[#5786a0] focus-visible:ring-tide-blue';
     case 'secondary':
-      return 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 focus-visible:ring-blue-500';
+      return 'bg-gradient-to-br from-[rgba(255,253,248,0.78)] to-[rgba(252,246,235,0.55)] border border-[rgba(60,50,35,0.12)] shadow-[0_1px_0_rgba(255,255,255,0.65)_inset,0_2px_6px_-2px_rgba(60,50,35,0.10)] text-tide-ink hover:from-[rgba(255,253,248,0.95)] hover:to-[rgba(252,246,235,0.80)] focus-visible:ring-tide-blue';
     case 'danger':
-      return 'bg-red-600 text-white border border-transparent shadow-sm hover:bg-red-700 focus-visible:ring-red-500';
+      return 'bg-gradient-to-br from-tide-rust to-tide-rust-deep text-tide-paper border border-[rgba(60,50,35,0.15)] shadow-[0_8px_20px_-8px_rgba(181,99,88,0.45)] hover:brightness-105 focus-visible:ring-tide-rust';
     case 'ghost':
-      return 'bg-transparent text-gray-700 border border-transparent hover:bg-gray-100 focus-visible:ring-gray-400';
+      return 'bg-transparent text-tide-ink/75 border border-transparent hover:bg-[rgba(255,253,247,0.55)] hover:text-tide-ink focus-visible:ring-tide-blue';
   }
 });
 

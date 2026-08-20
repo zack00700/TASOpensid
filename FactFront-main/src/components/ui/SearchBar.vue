@@ -97,30 +97,30 @@ function clear() {
   transform: translateY(-50%);
   width: 1rem;
   height: 1rem;
-  color: #94a3b8;
+  color: rgba(42,36,30,0.45);
   pointer-events: none;
 }
 .sb-input {
   width: 100%;
   padding: 0.5rem 2rem 0.5rem 2.2rem;
-  border: 1.5px solid #e2e8f0;
+  border: 1.5px solid rgba(60,50,35,0.12);
   border-radius: 9px;
   font-size: 0.875rem;
-  color: #1e293b;
-  background: #f8fafc;
+  color: #2a241e;
+  background: rgba(255,253,247,0.55);
   outline: none;
   transition: border-color 0.15s, background 0.15s;
 }
 .sb-input:focus {
-  border-color: #3b82f6;
-  background: #fff;
+  border-color: #5a8aab;
+  background: rgba(255,253,247,0.92);
 }
 .sb-clear {
   position: absolute;
   right: 0.5rem;
   top: 50%;
   transform: translateY(-50%);
-  color: #94a3b8;
+  color: rgba(42,36,30,0.45);
   background: none;
   border: none;
   cursor: pointer;
@@ -128,17 +128,17 @@ function clear() {
   border-radius: 4px;
   line-height: 0;
 }
-.sb-clear:hover { color: #475569; }
+.sb-clear:hover { color: rgba(42,36,30,0.70); }
 
 .sb-btn-filter {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
   padding: 0.5rem 0.85rem;
-  border: 1.5px solid #e2e8f0;
+  border: 1.5px solid rgba(60,50,35,0.12);
   border-radius: 9px;
-  background: #fff;
-  color: #475569;
+  background: rgba(255,253,247,0.92);
+  color: rgba(42,36,30,0.70);
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
@@ -146,11 +146,11 @@ function clear() {
   position: relative;
   transition: border-color 0.15s, background 0.15s, color 0.15s;
 }
-.sb-btn-filter:hover { background: #f8fafc; }
+.sb-btn-filter:hover { background: rgba(255,253,247,0.55); }
 .sb-btn-filter--active {
-  border-color: #3b82f6;
-  background: #eff6ff;
-  color: #1d4ed8;
+  border-color: #5a8aab;
+  background: rgba(90,138,171,0.10);
+  color: #3e6080;
 }
 .sb-icon-filter {
   width: 0.95rem;
@@ -166,7 +166,7 @@ function clear() {
   right: 6px;
   width: 7px;
   height: 7px;
-  background: #3b82f6;
+  background: #5a8aab;
   border-radius: 50%;
   border: 1.5px solid #fff;
 }

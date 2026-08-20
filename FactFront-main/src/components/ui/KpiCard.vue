@@ -78,13 +78,17 @@ const trendUp = computed(() => (props.trend ?? 0) > 0)
 
 <style scoped>
 .kpi-card {
-  border-radius: 10px;
+  /* Tide : surface de verre sur le sol « ocean ». */
+  border-radius: 18px;
   padding: 1.1rem 1.25rem;
-  background: #fff;
-  border: 1px solid #e2e8f0;
-  border-left: 4px solid transparent;
+  background: linear-gradient(135deg, rgba(255, 253, 247, 0.95), rgba(252, 247, 238, 0.85));
+  backdrop-filter: blur(22px) saturate(140%);
+  -webkit-backdrop-filter: blur(22px) saturate(140%);
+  border: 1px solid rgba(60, 50, 35, 0.10);
+  border-left: 3px solid transparent;
   transition: transform 0.15s, box-shadow 0.15s;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset, 0 1px 2px rgba(60, 50, 35, 0.04),
+    0 20px 50px -22px rgba(60, 50, 35, 0.18);
   user-select: none;
 }
 .kpi-card--clickable {
@@ -92,7 +96,7 @@ const trendUp = computed(() => (props.trend ?? 0) > 0)
 }
 .kpi-card--clickable:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 14px rgba(0,0,0,0.10);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset, 0 24px 60px -22px rgba(60, 50, 35, 0.26);
 }
 .kpi-top {
   display: flex;
@@ -104,19 +108,20 @@ const trendUp = computed(() => (props.trend ?? 0) > 0)
   min-width: 0;
 }
 .kpi-label {
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #94a3b8;
+  color: rgba(42, 36, 30, 0.55);
   margin: 0 0 0.35rem;
 }
 .kpi-value {
-  font-size: 1.55rem;
-  font-weight: 700;
+  font-size: 1.5rem;
+  font-weight: 600;
   line-height: 1.1;
-  letter-spacing: -0.025em;
-  color: #0f172a;
+  letter-spacing: -0.03em;
+  color: #2a241e;
+  font-variant-numeric: tabular-nums;
   margin: 0 0 0.35rem;
   white-space: nowrap;
   overflow: hidden;
@@ -129,8 +134,9 @@ const trendUp = computed(() => (props.trend ?? 0) > 0)
   flex-wrap: wrap;
 }
 .kpi-sublabel {
-  font-size: 0.75rem;
-  color: #94a3b8;
+  font-size: 0.7rem;
+  color: rgba(42, 36, 30, 0.5);
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
 }
 .kpi-trend {
   display: inline-flex;

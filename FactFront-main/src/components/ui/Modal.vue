@@ -15,7 +15,7 @@
       >
         <div
           data-modal-scrim
-          class="absolute inset-0 bg-slate-900/50"
+          class="absolute inset-0 bg-[rgba(42,36,30,0.45)] backdrop-blur-[2px]"
           @click="onScrimClick"
         />
         <div
@@ -25,11 +25,11 @@
           aria-modal="true"
           :aria-labelledby="title ? titleId : undefined"
           tabindex="-1"
-          :class="['relative bg-white rounded-xl shadow-xl w-full', sizeClass]"
+          :class="['relative bg-gradient-to-br from-[rgba(255,253,247,0.98)] to-[rgba(250,243,228,0.94)] backdrop-blur-[28px] border border-[rgba(60,50,35,0.12)] rounded-tide-card shadow-glass-deep w-full', sizeClass]"
         >
           <slot name="header" :title-id="titleId">
             <div v-if="title" class="px-6 pt-6">
-              <h2 :id="titleId" class="text-lg font-semibold text-slate-900">{{ title }}</h2>
+              <h2 :id="titleId" class="font-display text-xl font-normal text-tide-ink">{{ title }}</h2>
             </div>
           </slot>
           <div class="px-6 py-4">

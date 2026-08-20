@@ -33,8 +33,9 @@ defineProps<{
 
 <style scoped>
 .page-header {
-  background: #fff;
-  border-bottom: 1px solid #e2e8f0;
+  /* Tide : l'en-tête se pose sur le sol « ocean », séparé par un simple filet. */
+  background: transparent;
+  border-bottom: 1px solid rgba(42, 36, 30, 0.07);
   padding: 1.5rem 1.5rem 0;
 }
 .page-header-inner {
@@ -54,12 +55,14 @@ defineProps<{
   gap: 0.6rem;
 }
 .page-header-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #0f172a;
+  /* Titre de page en Instrument Serif, signature typographique de Tide. */
+  font-family: 'Instrument Serif', Georgia, ui-serif, serif;
+  font-size: 2.125rem;
+  font-weight: 400;
+  color: #2a241e;
   margin: 0;
-  line-height: 1.2;
-  letter-spacing: -0.025em;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
 }
 .page-header-count {
   display: inline-flex;
@@ -68,17 +71,19 @@ defineProps<{
   min-width: 1.6rem;
   padding: 0 0.45rem;
   height: 1.4rem;
-  background: #f1f5f9;
-  color: #64748b;
+  background: rgba(90, 138, 171, 0.16);
+  color: #3e6080;
   border-radius: 99px;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 600;
   line-height: 1;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
 }
 .page-header-subtitle {
-  font-size: 0.875rem;
-  color: #64748b;
-  margin: 0.25rem 0 0;
+  font-size: 0.8125rem;
+  color: rgba(42, 36, 30, 0.6);
+  margin: 0.375rem 0 0;
+  max-width: 560px;
 }
 .page-header-actions {
   display: flex;
@@ -102,7 +107,7 @@ defineProps<{
     gap: 0.75rem;
   }
   .page-header-title {
-    font-size: 1.2rem;
+    font-size: 1.6rem;
   }
 }
 </style>

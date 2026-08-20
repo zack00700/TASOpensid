@@ -59,9 +59,9 @@ defineEmits<{ dismiss: [] }>()
   max-width: 400px;
   border: 1px solid transparent;
 }
-.tn-root--success { background: #f0fdf4; color: #166534; border-color: #bbf7d0; }
-.tn-root--error   { background: #fef2f2; color: #991b1b; border-color: #fecaca; }
-.tn-root--warning { background: #fffbeb; color: #92400e; border-color: #fde68a; }
+.tn-root--success { background: rgba(101,153,123,0.14); color: #5e8a6b; border-color: rgba(101,153,123,0.30); }
+.tn-root--error   { background: rgba(181,99,88,0.14); color: #9b4f47; border-color: rgba(181,99,88,0.30); }
+.tn-root--warning { background: rgba(184,134,46,0.14); color: #9a6f24; border-color: rgba(184,134,46,0.30); }
 
 .tn-icon  { width: 1.1rem; height: 1.1rem; flex-shrink: 0; }
 .tn-msg   { flex: 1; }
