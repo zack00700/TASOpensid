@@ -1010,32 +1010,97 @@ Scripts auxiliaires `scripts/extract-i18n-candidates.ts` et `scripts/check-i18n-
 
 ---
 
-## 4. Lancer la stack en local
+## 4. Workflow multi-repo — TASOpensid ↔ FactBack ↔ FactFront
 
-Dans deux terminaux séparés :
+**Trois dossiers distincts sur la machine, chacun avec son propre repo git :**
 
-```bash
-# Terminal 1 — backend (nécessite MongoDB ; en dev profile, Quarkus DevServices le démarre)
-cd FactBack-main
-./mvnw quarkus:dev
-# → http://localhost:8080 (Swagger UI: /swagger-ui, Dev UI: /q/dev)
-
-# Terminal 2 — frontend
-cd FactFront-main
-npm ci && npm run dev
-# → http://localhost:5173 (proxy /api → :8080)
+```
+/Users/zack/Documents/GitHub/
+├── TASOpensid/                    ← workspace de dev (repo git perso zack00700/TASOpensid)
+│   ├── CLAUDE.md                  ← ce fichier
+│   ├── CLAUDE_back.md             ← conventions back du collègue (cf. §5)
+│   ├── CLAUDE_front.md            ← conventions front du collègue (cf. §5)
+│   ├── start.sh / stop.sh         ← lance / arrête la stack complète en local
+│   ├── docker-compose.yml         ← MongoDB replica set jetable
+│   ├── scripts/seed-mvp.sh        ← charge un jeu de données de test
+│   ├── FactBack-main/             ← copie de travail du back (miroir manuel)
+│   └── FactFront-main/            ← copie de travail du front (miroir manuel)
+├── FactBack/                      ← vrai repo partagé — origin pigch/FactBack
+└── FactFront/                     ← vrai repo partagé — origin pigch/FactFront
 ```
 
-Pour l'authentification réelle, fournir un compte Azure AD du tenant configuré ; sinon utiliser le fallback login local exposé par `AuthResource` côté back.
+### Flow standard : dev → validation → PR
+
+1. **Développer + tester dans TASOpensid.** On édite `TASOpensid/FactBack-main/` ou `TASOpensid/FactFront-main/`.
+2. `./start.sh` monte la stack (mongo + back + front) à partir de ces dossiers. `./stop.sh` pour arrêter, `./scripts/seed-mvp.sh` pour peupler.
+3. **Commit + push sur TASOpensid** (`zack00700/TASOpensid`) — sauvegarde perso, historique de tes essais, non partagé.
+4. **Réplique les changements dans le vrai repo partagé** (`/FactBack` ou `/FactFront`) sur une branche dédiée (`zak_xxx` ou nommée par sujet).
+5. Commits atomiques (1 sujet = 1 commit) dans le vrai repo, respectant `CLAUDE_back.md` / `CLAUDE_front.md`.
+6. **Push sur `pigch/FactBack` ou `pigch/FactFront`** → ouvre une PR contre `main` → review du collègue → merge.
+
+### Flow inverse : sync depuis les repos partagés vers TASOpensid
+
+Quand le collègue merge une PR (ou push directement sur `main`) sur `pigch/FactBack` ou `pigch/FactFront`, ton snapshot local dans TASOpensid devient obsolète. Il faut re-synchroniser :
+
+1. **Pull** dans le vrai repo :
+   ```bash
+   cd /Users/zack/Documents/GitHub/FactBack && git pull origin main
+   cd /Users/zack/Documents/GitHub/FactFront && git pull origin main
+   ```
+2. **Copier les fichiers modifiés** vers `TASOpensid/FactBack-main/` et `TASOpensid/FactFront-main/` respectivement (rsync ou copie ciblée des fichiers changés — ne pas écraser aveuglément si tu as un dev en cours dans TASOpensid).
+3. **Commit + push sur TASOpensid** pour tracer que ton workspace est aligné avec `pigch/*/main`.
+4. Relance `./start.sh` pour re-tester avec la nouvelle version.
+
+### Lancer la stack
+
+```bash
+cd /Users/zack/Documents/GitHub/TASOpensid
+./start.sh                # démarre mongo (replica set) + back + front
+./stop.sh                 # arrête tout proprement
+./scripts/seed-mvp.sh     # (optionnel) charge un scénario maritime end-to-end
+```
+
+URLs après démarrage :
+- Front : http://localhost:5173
+- Back : http://localhost:8080 (Swagger UI : /swagger-ui, Dev UI : /q/dev)
+- Mongo : mongodb://localhost:27017 (database `tos3d`, replica set `rs0`)
+
+Auth : compte Azure AD requis (le login local par mot de passe est **désactivé volontairement** côté back, cf. `CLAUDE_back.md`).
 
 ---
 
-## 5. Conventions et points d'attention
+## 5. Conventions de code — pointeurs vers CLAUDE_back / CLAUDE_front
 
-- **MongoDB en replica set obligatoire** dès que des transactions sont en jeu (documenté dans `FactBack-main/README.md`).
+Deux fichiers de règles vivent à la racine de TASOpensid, **écrits par le collègue et à respecter strictement** :
+
+- **`CLAUDE_back.md`** — règles pour toute modif dans le back (`/FactBack` ou `TASOpensid/FactBack-main/`) :
+  - Sécurité Azure AD : login local par mot de passe **désactivé volontairement**, ne pas fabriquer de token UUID, ne pas ajouter d'override `%dev.quarkus.oidc.enabled=false` ni `%dev.quarkus.security.auth.enabled-in-dev-mode=false`.
+  - Sémantique Items : `computeStatus()` par défaut (dérivé du lifecycle) ; si on fait primer une valeur stockée, ne jamais `setStatus(null)` avant un merge JSON.
+  - Patterns : `ErrorResponse` structuré (`IllegalArgumentException → 400`, `RuntimeException → 500`) ; audit fields via `BaseEntityService.prepareForCreate/Update` (pas à la main dans une Resource) ; accès Mongo via Panache uniquement (pas de `mongoDatabase().getCollection("ITEM", Document.class)`) ; services externes (OpenAI / Anthropic / Graph) tolèrent l'absence de clé et exposent un `/status` — pas de `IllegalStateException` dans un `@PostConstruct`.
+  - Style Java : imports en tête, pas de FQN inline (type `jakarta.ws.rs.PATCH` dans une méthode).
+  - Avant de dire "c'est fait" : `./mvnw compile` + `./mvnw test` verts.
+
+- **`CLAUDE_front.md`** — règles pour toute modif dans le front (`/FactFront` ou `TASOpensid/FactFront-main/`) :
+  - Design system : réutiliser `src/components/ui/` — pas de système parallèle (classes globales type `.tide-*`, palettes doublons).
+  - Réseau : passer par `src/plugin/axios.ts` via la couche `src/services/*.ts`. **Jamais** de `fetch('/api/...')` brut.
+  - i18n : tout texte visible passe par `$t('clé')`, une seule locale `src/locales/en.json`, pas de texte français en dur.
+  - Sidebar : `Events` volontairement masqué (route câblée mais pas de lien menu) ; `Event Config / ISO Codes / Container Archetypes` sous **Configuration**, pas Opérations. Ne pas ajouter de bloc UI qui émet un event sans listener.
+  - Comportements établis : ne pas transformer une vue lecture seule en édition (ex. « Voir » d'un contrat ≠ « Éditer »).
+  - Tokens Tailwind partagés (`rounded-btn`, `rounded-card`, palette `brand`) : ne pas les modifier sans mesurer l'impact.
+  - Pas de `@import url("https://fonts.googleapis.com…")` runtime dans `index.css` — self-host si besoin.
+  - Avant de dire "c'est fait" : `npm run typecheck` + `npm run test` + `npm run build` verts.
+
+**Note** : ces deux fichiers vivent uniquement dans TASOpensid (pas versionnés dans `pigch/FactBack` ni `pigch/FactFront`). Si un agent Claude Code est lancé **directement** sur `/FactBack` ou `/FactFront` (sans TASOpensid dans son contexte), il ne les verra pas — pense à les lui référencer explicitement.
+
+---
+
+## 6. Points d'attention historiques
+
+- **MongoDB en replica set obligatoire** dès que des transactions sont en jeu (documenté dans `FactBack/README.md`). `docker-compose.yml` de TASOpensid s'en occupe pour le local.
 - **Bounded contexts** : un test ArchUnit (`BoundedContextArchitectureTest`) vérifie qu'ils ne se mélangent pas — toute nouvelle dépendance inter-domaine cassera la build.
 - **Cache Caffeine** : invalider explicitement lors des écritures sur contracts / tariffs / payments / event-config.
 - **PDF / templates** : les templates Handlebars sont sous `src/main/resources/templates/` ; les changements doivent être testés via les endpoints `/invoice/{id}/pdf`.
 - **AIS Stream** : si la clé `AISSTREAM_API_KEY` est absente, le client WS reste off — pas d'erreur fatale au démarrage.
-- **Sécurité de repo** : `FactFront-main/src/components/` contient `contract.json` et `credentialsCapetownMsc.txt` — à auditer / déplacer hors du source frontend (risque d'exposition dans le bundle).
-- **`src.zip`** dans le front est une archive ; ne pas la considérer comme du code source vivant.
+- **Sécurité de repo** (à re-vérifier périodiquement) : `FactFront/src/components/` a contenu par le passé `contract.json` et `credentialsCapetownMsc.txt` — vérifier qu'ils sont bien retirés.
+- **`FactFront/src.zip`** est une archive de sauvegarde ; ne pas la considérer comme du code source vivant.
+- **Snapshots dans TASOpensid** (`FactBack-main/` et `FactFront-main/`) sont maintenus manuellement (§4). Si les 2 dossiers divergent du vrai repo `pigch/*/main`, `start.sh` teste du code obsolète — resync avant.
