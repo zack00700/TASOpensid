@@ -2,6 +2,8 @@ import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import { PublicClientApplication, AccountInfo } from '@azure/msal-browser';
 import { msalConfig, loginRequest } from '@/config/msal';
+// LOCAL TASOpensid — ne pas répliquer vers pigch/FactFront.
+import { tryDevLocalLogin } from './devLocalLogin';
 
 interface User {
   id: string;
@@ -123,6 +125,16 @@ export const useAuthStore = defineStore('auth', () => {
     error.value = null;
 
     try {
+      // LOCAL TASOpensid — ne pas répliquer vers pigch/FactFront.
+      // Court-circuit dev uniquement ; élimine du bundle par Vite en prod.
+      // Voir src/stores/devLocalLogin.ts pour les conditions d'activation.
+      const devSession = tryDevLocalLogin(credentials);
+      if (devSession) {
+        setToken(devSession.token);
+        setUser(devSession.user);
+        return true;
+      }
+
       const loginUrl = `${API_BASE_URL}/auth/login`;
 
       // Deliberately a bare fetch, not the axios instance: the axios response

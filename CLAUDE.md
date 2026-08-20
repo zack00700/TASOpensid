@@ -1061,8 +1061,26 @@ Scripts auxiliaires `scripts/extract-i18n-candidates.ts` et `scripts/check-i18n-
 
 > **Dernier resync : 20/08/2026** — `FactBack-main` ← `pigch/FactBack@173b833` (merge PR #171),
 > `FactFront-main` ← `pigch/FactFront@409b31d` (merge PR #176 + redeploy SWA).
-> Seul `FactFront-main/.env.development` reste volontairement local
-> (`VITE_API_URL=/api`, via le proxy Vite, au lieu de `http://localhost:8080/api` en amont).
+> Deux choses restent **volontairement locales** et ne doivent **jamais** partir
+> vers `pigch/FactFront` :
+>
+> 1. `FactFront-main/.env.development` — `VITE_API_URL=/api` (via le proxy Vite)
+>    au lieu de `http://localhost:8080/api` en amont, plus les flags
+>    `VITE_DEV_LOCAL_*` du point suivant.
+> 2. **Connexion locale id/mot de passe** — `FactFront-main/src/stores/devLocalLogin.ts`
+>    et son appel en tête de `authStore.login()`. Le back refuse le login local
+>    de façon inconditionnelle (`AuthService.login()` renvoie toujours
+>    « Veuillez vous connecter via Azure AD. ») et `CLAUDE_back.md` interdit d'y
+>    toucher : le court-circuit est donc côté SPA, jamais côté serveur.
+>    S'utilise avec `./start.sh --no-auth` — le jeton produit est un marqueur
+>    local (`dev-local-no-auth`) que le back ne peut pas vérifier ; sans
+>    `--no-auth`, chaque appel `/api/*` renvoie 401 et l'intercepteur axios
+>    reboucle sur l'écran de login.
+>    Identifiants par défaut : `devuser` / `devpass123`, rôles `ROLE_ADMIN,ROLE_USER`.
+>    Deux verrous l'excluent de la prod : `import.meta.env.DEV` (éliminé à la
+>    compilation) et `.env.development`, que `npm run build` ne charge jamais.
+>    Vérifié : `grep -r dev-local-no-auth dist/` ne renvoie rien.
+>    **Au moment de répliquer vers `/FactFront`, retirer ce fichier et son import.**
 
 
 Quand le collègue merge une PR (ou push directement sur `main`) sur `pigch/FactBack` ou `pigch/FactFront`, ton snapshot local dans TASOpensid devient obsolète. Il faut re-synchroniser :
