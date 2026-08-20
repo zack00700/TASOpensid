@@ -220,7 +220,7 @@ const formatDate = (dateStr?: string) => {
             <div class="mt-2 flex items-center text-sm text-gray-500 space-x-4">
               <span class="flex items-center">
                 <Radio class="h-4 w-4 mr-1 text-blue-500" />
-                {{ t('ediMessages.messageCount', totalItems, { count: totalItems }) }}
+                {{ t('ediMessages.messageCount', { count: totalItems }, totalItems) }}
               </span>
             </div>
           </div>

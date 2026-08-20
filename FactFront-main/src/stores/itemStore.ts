@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 import { ref, reactive, computed } from 'vue'
-import itemService from '../services/itemService'
 import type { Item } from '../types/item'
 import { persistState } from '../utils/persistState'
 

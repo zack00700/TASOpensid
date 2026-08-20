@@ -9,7 +9,13 @@ const { t } = useI18n();
  * It marks the entire old string as removed and the new one as added
  * whenever they differ.
  */
-function diffWords(oldStr: string, newStr: string) {
+interface DiffPart {
+  value: string;
+  added?: boolean;
+  removed?: boolean;
+}
+
+function diffWords(oldStr: string, newStr: string): DiffPart[] {
   if (oldStr === newStr) {
     return [{ value: oldStr }];
   }

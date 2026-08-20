@@ -41,11 +41,11 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import type { LucideIcon } from 'lucide-vue-next';
+import type { FunctionalComponent } from 'vue';
 
 const props = withDefaults(
   defineProps<{
-    modelValue: string | number | null;
+    modelValue: string | number | null | undefined;
     label?: string;
     type?: string;
     placeholder?: string;
@@ -54,7 +54,7 @@ const props = withDefaults(
     required?: boolean;
     disabled?: boolean;
     readonly?: boolean;
-    iconLeading?: LucideIcon;
+    iconLeading?: FunctionalComponent<any>;
     inputmode?: 'text' | 'numeric' | 'decimal' | 'tel' | 'email' | 'url' | 'search';
     autocomplete?: string;
   }>(),

@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
 import { 
   Clock, 
   Calendar, 
-  AlertCircle, 
   ArrowDownCircle, 
   ArrowUpCircle, 
   CircleDot,
@@ -16,7 +15,7 @@ import {
   Eye,
   RefreshCw
 } from 'lucide-vue-next';
-import { Item, Lifecycle, Event } from '../types/item';
+import { Item, Lifecycle } from '../types/item';
 import { ItemService } from '../services/itemService';
 
 const props = defineProps<{
@@ -146,12 +145,12 @@ const refresh = () => {
   }, 500);
 };
 
-const sortFields = computed(() => [
+const sortFields = computed(() => ([
   { key: 'startTime', label: t('itemLifecycleView.column.startDate') },
   { key: 'endTime', label: t('itemLifecycleView.column.endDate') },
   { key: 'duration', label: t('itemLifecycleView.column.duration') },
   { key: 'status', label: t('itemLifecycleView.column.status') },
-]);
+] as const));
 </script>
 
 <template>

@@ -47,8 +47,8 @@ const formatDateTime = (date?: string) => {
             {{ event.notes || '-' }}
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm">
-            <span :class="getEventTypeClasses(event.type as EventType)">
-              {{ event.type || '-' }}
+            <span :class="getEventTypeClasses(event.eventType as EventType)">
+              {{ event.eventType || '-' }}
             </span>
           </td>
         </tr>

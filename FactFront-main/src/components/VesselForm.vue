@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, toRef, watch } from "vue";
+import { toRef } from "vue";
 import { X } from "lucide-vue-next";
 import { useI18n } from "vue-i18n";
 import { Vessel } from "../types/vessel";
@@ -54,7 +54,7 @@ const handleSubmit = async () => {
 const getInputClasses = (fieldName: keyof Vessel) => {
   return {
     "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500": true,
-    "border-red-300": errors.value[fieldName],
+    "border-red-300": !!errors.value[fieldName],
   };
 };
 

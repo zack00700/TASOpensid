@@ -77,10 +77,7 @@ const activeIsoCodes = computed(() =>
 );
 onMounted(() => { getAllIsoCodes(false); });
 
-const getLifecycleStatusDisplay = (status?: string) => {
 
-  return status || 'Unknown';
-};
 // Helper function to extract ID from various backend formats
 const extractId = (data: any): string | undefined => {
   if (!data) return undefined;
@@ -107,37 +104,6 @@ const extractId = (data: any): string | undefined => {
   return undefined;
 };
 
-const convertApiDateToInputDate = (apiDate: any): string => {
-  if (!apiDate) {
-    return '';
-  }
-
-  if (typeof apiDate !== 'string') {
-    return '';
-  }
-
-  try {
-    // For format "2025-09-13T00:00:00.000+00:00", extract "2025-09-13"
-    const datePart = apiDate.split('T')[0];
-
-    // Validate it's a proper date format (YYYY-MM-DD)
-    if (/^\d{4}-\d{2}-\d{2}$/.test(datePart)) {
-      return datePart;
-    }
-
-    // Fallback to full date parsing if needed
-    const date = new Date(apiDate.replace('+00:00', 'Z'));
-    if (!isNaN(date.getTime())) {
-      const result = date.toISOString().split('T')[0];
-      return result;
-    }
-
-    return '';
-  } catch (error) {
-    console.error('Error converting date:', apiDate, error);
-    return '';
-  }
-};
 
 watch(
   () => props.initialData,
@@ -265,14 +231,14 @@ const handleSubmit = async () => {
   } catch (error) {
     console.error("Failed to save item:", error);
     // Show user-friendly error message
-    alert(t('itemForm.alert.failedToSave', { message: error.message || t('itemForm.alert.unknownError') }));
+    alert(t('itemForm.alert.failedToSave', { message: (error as Error)?.message || t('itemForm.alert.unknownError') }));
   }
 };
 
 const getInputClasses = (fieldName: keyof ItemFormData) => {
   return {
     "w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 bg-white text-gray-900 placeholder-gray-500": true,
-    "border-red-300 focus:border-red-500 focus:ring-red-500/20": errors.value[fieldName],
+    "border-red-300 focus:border-red-500 focus:ring-red-500/20": !!errors.value[fieldName],
   };
 };
 
@@ -918,7 +884,7 @@ const itemData = computed(() => ({
                     <div class="flex-1">
                       <div class="flex items-center justify-between">
                         <span class="font-medium text-gray-900">
-                          {{ event.eventType || event.type || t('itemForm.lifecycle.event') }}
+                          {{ event.eventType || t('itemForm.lifecycle.event') }}
                         </span>
                         <span class="text-gray-500">
                           {{ event.timestamp ? new Date(event.timestamp).toLocaleString() : (event.eventDate ? new

@@ -1,8 +1,9 @@
+import type { AxiosInstance } from 'axios';
 import { inject, onBeforeMount, ref } from 'vue';
 import { Contract } from '../types/contrat';
 
 export function useContract() {
-    const $axios = inject('$axios');
+    const $axios = inject<AxiosInstance>('$axios') as AxiosInstance;
 
     const contracts = ref<Contract | null>(null);
 

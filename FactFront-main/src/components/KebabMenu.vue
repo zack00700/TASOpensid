@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { ComponentPublicInstance } from 'vue';
 import { ref, onBeforeUnmount, nextTick } from 'vue';
 
 const isOpen = ref(false);
@@ -89,7 +90,7 @@ onBeforeUnmount(removeListeners);
 
 <template>
   <span class="inline-flex">
-    <slot name="trigger" :toggle="toggle" :refEl="(el: HTMLElement) => (triggerEl = el)" :isOpen="isOpen"></slot>
+    <slot name="trigger" :toggle="toggle" :refEl="(el: Element | ComponentPublicInstance | null) => { triggerEl = (el as HTMLElement) ?? null; }" :isOpen="isOpen"></slot>
     <Teleport to="body" v-if="isOpen">
       <div
         ref="menuEl"

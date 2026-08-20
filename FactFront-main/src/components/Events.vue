@@ -16,7 +16,7 @@ const events = ref<Event[]>([
   {
     id: '1',
     timestamp: '2024-03-15T10:00:00Z',
-    type: 'IN',
+    eventType: 'IN',
     itemId: 'CMAU5984269',
     lifecycleId: 'LC001',
     location: 'Gate-In',
@@ -25,7 +25,7 @@ const events = ref<Event[]>([
   {
     id: '2',
     timestamp: '2024-03-15T14:30:00Z',
-    type: 'INTERMEDIATE',
+    eventType: 'INTERMEDIATE',
     itemId: 'CMAU5984269',
     lifecycleId: 'LC001',
     location: 'Yard-A12',
@@ -33,7 +33,6 @@ const events = ref<Event[]>([
   }
 ]);
 
-const showFilters = ref(false);
 const selectedDateRange = ref<'today' | 'week' | 'month' | 'custom'>('today');
 const customStartDate = ref('');
 const customEndDate = ref('');
@@ -50,7 +49,7 @@ const filteredEvents = computed(() => {
   return events.value;
 });
 
-const handleFilter = (filters: any[]) => {
+const handleFilter = (_filters: any[]) => {
   // Implement filter logic here
 };
 

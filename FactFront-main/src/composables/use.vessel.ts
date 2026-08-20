@@ -1,9 +1,10 @@
-import { inject, onBeforeMount, watch, unref } from "vue";
+import type { AxiosInstance } from "axios";
+import { inject, onBeforeMount, watch } from "vue";
 import { ref, type Ref } from "vue";
 import { Vessel } from "../types/vessel";
 
-export function useVessel(initialData?: Ref<Vessel | null> | Vessel | null) {
-    const $axios = inject('$axios');
+export function useVessel(initialData?: Ref<Vessel | null | undefined> | Vessel | null) {
+    const $axios = inject<AxiosInstance>('$axios') as AxiosInstance;
     const formData = ref<Vessel>({
         name: '',
         imoNumber: '',
@@ -43,9 +44,9 @@ export function useVessel(initialData?: Ref<Vessel | null> | Vessel | null) {
     // Watcher pour les données initiales - gère les refs et les valeurs directes
     if (initialData !== undefined) {
         // Si c'est une ref, on observe ses changements
-        if (typeof initialData === 'object' && 'value' in initialData) {
+        if (initialData !== null && typeof initialData === 'object' && 'value' in initialData) {
             watch(initialData, (newData) => {
-                initializeForm(newData);
+                if (newData) initializeForm(newData);
             }, { immediate: true });
         } else {
             // Si c'est une valeur directe, on l'initialise tout de suite

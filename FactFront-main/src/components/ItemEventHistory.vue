@@ -107,7 +107,7 @@ const flatEvents = computed<Event[]>(() => {
       result.push({
         id: id,
         timestamp: look?.eventDate,
-        type: look?.eventType as any,
+        eventType: look?.eventType,
         itemId: props.itemId,
         lifecycleId: lc.id,
         notes: look?.eventName,

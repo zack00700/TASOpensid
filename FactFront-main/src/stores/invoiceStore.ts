@@ -131,7 +131,7 @@ export const useInvoiceStore = defineStore('invoice', () => {
    * mutation endpoints).  Components/composables pass the injected $axios when
    * calling fetchInvoices.
    */
-  function buildParams(axiosInstance?: unknown) {
+  function buildParams() {
     pagination.sort = normalizeSort(pagination.sort)
     const [field, dir] = pagination.sort.split(':')
     const apiField = SORT_FIELD_MAP[field] || field
@@ -164,7 +164,7 @@ export const useInvoiceStore = defineStore('invoice', () => {
    * Fetch invoices.  Requires the injected axios instance because the GET
    * /invoices list endpoint is not exposed through invoiceService.
    */
-  async function fetchInvoices($axios: { get: (url: string, cfg?: unknown) => Promise<{ data: unknown }> }) {
+  async function fetchInvoices($axios: { get: (url: string, cfg?: any) => Promise<{ data: any }> }) {
     const seq = ++fetchSeq
     loading.value = true
     error.value = null

@@ -2,7 +2,7 @@
     <nav class="stepper" :aria-label="ariaLabel">
       <ol class="stepper-list" role="list">
         <li
-          v-for="(step, i) in steps"
+          v-for="(_, i) in steps"
           :key="i"
           class="step"
           :class="{ completed: i < current, current: i === current, disabled: !isStepEnabled(i) }"

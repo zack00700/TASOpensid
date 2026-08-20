@@ -44,7 +44,7 @@ interface Contract {
   status: 'Active' | 'Disable';
   startDate: string;
   endDate: string;
-  rates: any[];
+  rates?: any[];
   // N4 extensions
   customerId?: string;
   customerName?: string;
@@ -260,7 +260,6 @@ const canProceedToStep = (step: number) => {
   }
 };
 
-const isStepValid = (step: number) => completedSteps.value.includes(step);
 
 // Computed property for current step validation
 const currentStepErrors = computed(() => getValidationErrors(currentStep.value));
@@ -399,7 +398,7 @@ const getStepClasses = (step: number) => {
 };
 
 // Watch for event search changes
-watch(eventSearch, (val, oldVal) => {
+watch(eventSearch, (val) => {
   // Don't clear eventConfig if we're just setting it programmatically during initialization
   // or if the search value matches the current selected event name
   const currentEventName = formData.value.calculationMode.eventConfig?.eventName;
@@ -817,7 +816,7 @@ onMounted(async () => {
                   </label>
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div
-                      v-for="type in Object.keys(calculationModes)"
+                      v-for="type in (Object.keys(calculationModes) as (keyof typeof calculationModes)[])"
                       :key="type"
                       @click="formData.calculationMode.type = type; formData.calculationMode.subType = calculationModes[type][0].value"
                       :class="[
@@ -830,7 +829,7 @@ onMounted(async () => {
                       <div class="flex-1">
                         <div class="text-sm font-medium text-gray-900">{{ calcTypeLabel(type) }}</div>
                         <div class="text-sm text-gray-500">
-                          {{ t('contractForm.optionsAvailable', calculationModes[type].length, { count: calculationModes[type].length }) }}
+                          {{ t('contractForm.optionsAvailable', { count: calculationModes[type].length }, calculationModes[type].length) }}
                         </div>
                       </div>
                       <div v-if="formData.calculationMode.type === type" class="ml-3">
@@ -846,7 +845,7 @@ onMounted(async () => {
                   </label>
                   <div class="space-y-3">
                     <div
-                      v-for="mode in calculationModes[formData.calculationMode.type]"
+                      v-for="mode in calculationModes[formData.calculationMode.type as keyof typeof calculationModes]"
                       :key="mode.value"
                       @click="formData.calculationMode.subType = mode.value"
                       :class="[

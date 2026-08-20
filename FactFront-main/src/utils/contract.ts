@@ -92,7 +92,7 @@ export interface ContractFormState {
   calculationMode?: {
     type?: string;
     subType?: string;
-    eventConfig?: { id?: string; eventName?: string };
+    eventConfig?: { id?: string; eventName?: string } | null;
     parameters?: Record<string, unknown>;
   };
   priority?: number;

@@ -16,7 +16,6 @@ import {
   Package,
   Clock,
   Copy,
-  MoreHorizontal,
   ArrowUpDown,
   Percent
 } from "lucide-vue-next";
@@ -423,7 +422,7 @@ const getCardClasses = (rate: Rate) => {
       <div class="flex items-center justify-between">
         <div class="flex items-center">
           <span class="text-sm font-medium text-blue-900">
-            {{ t('contractRateManagement.ratesSelected', selectedRates.length, { count: selectedRates.length }) }}
+            {{ t('contractRateManagement.ratesSelected', { count: selectedRates.length }, selectedRates.length) }}
           </span>
         </div>
         <div class="flex items-center space-x-3">

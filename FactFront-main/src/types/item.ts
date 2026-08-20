@@ -10,8 +10,16 @@ export type FreightKind  = 'FCL' | 'LCL' | 'Empty' | 'Breakbulk' | 'Ro-Ro';
 
 export interface Event {
   id: string;
+  /**
+   * Set by the item lifecycle endpoints. The item-event lookup endpoints
+   * (ItemEventLookupResource, ItemResource) return `eventDate` instead, so
+   * readers must accept either — hence both fields being optional here.
+   */
   timestamp?: string;
+  eventDate?: string;
   eventType?: EventType;
+  /** Human-readable label from the event configuration. */
+  eventName?: string;
   itemId?: string;
   lifecycleId?: string;
   location?: string;
@@ -33,6 +41,11 @@ export interface Lifecycle {
 
 export interface Item {
   id?: string;
+  /**
+   * Raw Mongo identifier. `normalizeItem` folds it into `id`, but payloads read
+   * straight off the API still carry it, and several call sites fall back to it.
+   */
+  _id?: string;
   itemType?: string;
   itemNumber?: string;
   type?: string;
@@ -85,12 +98,16 @@ export interface Item {
 
 export interface ItemFormData {
   _id?: string;
+  /** Normalised identifier, mirrored from `_id` when the form is opened. */
+  id?: string;
   itemNumber: string;
   itemType: string;
   type: string;
   ownerId: string;
   position: string;
   status: "Available" | "In Use" | "Maintenance" | "Out of Service";
+  /** Legacy alias the API still returns on some payloads; read as a fallback. */
+  itemStatus?: string;
   lastInspection: string;
   nextInspection: string;
   notes: string;

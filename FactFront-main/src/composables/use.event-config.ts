@@ -1,10 +1,11 @@
+import type { AxiosInstance } from 'axios';
 import { inject, onBeforeMount, ref } from "vue";
 import { EventConfig, EventScope } from "../types/event-config";
 
 
 export function useEventConfig() {
     const errors = ref<Record<string, string>>({});
-    const $axios = inject('$axios');
+    const $axios = inject<AxiosInstance>('$axios') as AxiosInstance;
     const eventConfigs = ref<EventConfig[] | null>([]);
     const formData = ref<Omit<EventConfig, "id">>({
         eventName: "",

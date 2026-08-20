@@ -35,6 +35,13 @@ export interface ThirdParty {
   accessType: string;
   modulesRequired: string[];
 
+  /**
+   * Lifecycle status, sent by the backend (fr.alb.type.Status, serialised by its
+   * string value). Beware the backend enum: PENDING serialises to "Inactive",
+   * and "Draft" / "Disable" are also possible values.
+   */
+  status?: 'Active' | 'Inactive' | 'Draft' | 'Disable' | string;
+
   // Security and Compliance
   identificationType: string;
   identificationNumber: string;

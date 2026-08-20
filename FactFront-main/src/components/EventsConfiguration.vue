@@ -124,6 +124,7 @@ const handleSubmit = async () => {
       return;
     }
   } else {
+    if (!eventConfigs.value) eventConfigs.value = [];
     eventConfigs.value.push({
       ...formData.value,
       id: uuidv4(),
@@ -136,10 +137,10 @@ const handleSubmit = async () => {
   editingEvent.value = null;
 };
 
-const getInputClasses = (fieldName: keyof typeof formData.value) => {
+const getInputClasses = (fieldName: string) => {
   return {
     "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500": true,
-    "border-red-300": errors.value[fieldName],
+    "border-red-300": !!errors.value[fieldName],
   };
 };
 </script>

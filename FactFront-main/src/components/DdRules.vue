@@ -5,7 +5,6 @@ import {
   Plus,
   Pencil,
   Trash2,
-  Filter,
   RefreshCw,
   Sliders,
   XCircle,

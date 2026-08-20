@@ -27,18 +27,6 @@ export class ItemService {
     return item.lifeCycles.filter(lifecycle => lifecycle.status === 'Completed');
   }
 
-  public getLifecyclesInDateRange(
-    item: Item,
-    startDate: Date,
-    endDate: Date
-  ): Lifecycle[] {
-    return item.lifeCycles.filter(lifecycle => {
-      const lifecycleStart = new Date(lifecycle.startTime);
-      const lifecycleEnd = lifecycle.endTime ? new Date(lifecycle.endTime) : new Date();
-      return lifecycleStart >= startDate && lifecycleEnd <= endDate;
-    });
-  }
-
   public async addEvent(item: Item, event: Event): Promise<string> {
     try {
       console.debug('addEvent called', { event, item });
@@ -49,40 +37,8 @@ export class ItemService {
     }
   }
 
-  public cancelCurrentLifecycle(item: Item, reason: string): Item {
-    if (!item.currentLifecycleId) {
-      throw new Error('No active lifecycle to cancel');
-    }
-
-    const cancelEvent: Event = {
-      id: "1",
-      timestamp: new Date().toISOString(),
-      eventType: 'OUT',
-      itemId: item.id,
-      lifecycleId: item.currentLifecycleId,
-      notes: reason
-    };
-
-    const updatedLifecycles = item.lifeCycles.map(lifecycle => {
-      if (lifecycle.id === item.currentLifecycleId) {
-        return {
-          ...lifecycle,
-          endTime: cancelEvent.timestamp,
-          status: 'Cancelled',
-          events: [...lifecycle.events, cancelEvent]
-        };
-      }
-      return lifecycle;
-    });
-
-    return {
-      ...item,
-      currentLifecycleId: undefined,
-      lifeCycles: updatedLifecycles
-    };
-  }
-
   public getLifecycleDuration(lifecycle: Lifecycle): number {
+    if (!lifecycle.startTime) return 0;
     const start = new Date(lifecycle.startTime);
     const end = lifecycle.endTime ? new Date(lifecycle.endTime) : new Date();
     return end.getTime() - start.getTime();

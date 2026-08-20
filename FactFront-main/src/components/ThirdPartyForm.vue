@@ -62,7 +62,7 @@ onMounted(() => {
     // Populate form with initial data for editing
     Object.keys(formData.value).forEach((key) => {
       if (key in props.initialData) {
-        formData.value[key as keyof FormData] = props.initialData[key];
+        (formData.value as Record<string, any>)[key] = (props.initialData as Record<string, any>)[key];
       }
     });
     originalData.value = { ...(props.initialData as any) };

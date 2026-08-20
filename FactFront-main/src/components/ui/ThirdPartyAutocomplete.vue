@@ -4,7 +4,7 @@
       {{ label }}<span v-if="required" class="text-red-500 ml-0.5">*</span>
     </label>
     <TypeaheadInput
-      :model-value="modelValue"
+      :model-value="modelValue ?? ''"
       :suggestions="suggestions"
       :placeholder="placeholder"
       :disabled="disabled"
@@ -50,7 +50,7 @@ type IndustryType =
   | 'Other';
 
 const props = defineProps<{
-  modelValue: string;
+  modelValue: string | undefined;
   label?: string;
   industryType?: IndustryType;
   required?: boolean;
@@ -98,7 +98,7 @@ const showCreateFooter = computed(
   () =>
     canCreate.value &&
     !!props.modelValue?.trim() &&
-    !filtered.value.some((tp) => tp.companyName === props.modelValue.trim()),
+    !filtered.value.some((tp) => tp.companyName === props.modelValue?.trim()),
 );
 
 const modalOpen = ref(false);

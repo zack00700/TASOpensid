@@ -30,7 +30,7 @@ import { computed } from 'vue';
 import { ChevronDown } from 'lucide-vue-next';
 
 const props = defineProps<{
-  modelValue: string | number | null;
+  modelValue: string | number | null | undefined;
   label?: string;
   error?: string;
   hint?: string;
