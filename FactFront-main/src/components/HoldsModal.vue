@@ -1,11 +1,11 @@
 <template>
   <div v-if="open" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-    <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+    <div class="bg-[rgba(255,253,247,0.92)] rounded-lg shadow-xl p-6 w-full max-w-2xl space-y-4 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center">
-        <h2 class="text-lg font-semibold text-gray-900">
+        <h2 class="text-lg font-semibold text-tide-ink">
           {{ t('holdsModal.title', { vesselName: visit?.vesselName ?? '' }) }}
         </h2>
-        <button type="button" class="text-gray-500" @click="emit('close')" :aria-label="t('common.close')">
+        <button type="button" class="text-tide-ink/55" @click="emit('close')" :aria-label="t('common.close')">
           <X class="h-5 w-5" />
         </button>
       </div>
@@ -14,11 +14,11 @@
 
       <!-- Holds list -->
       <div>
-        <div class="text-sm font-medium text-gray-700 mb-2">{{ t('holdsModal.list.title') }}</div>
-        <div v-if="holds.length === 0" data-test="holds-empty" class="text-sm text-gray-500">
+        <div class="text-sm font-medium text-tide-ink/80 mb-2">{{ t('holdsModal.list.title') }}</div>
+        <div v-if="holds.length === 0" data-test="holds-empty" class="text-sm text-tide-ink/55">
           {{ t('holdsModal.list.empty') }}
         </div>
-        <ul v-else class="divide-y divide-gray-200 border border-gray-200 rounded-md max-h-72 overflow-y-auto">
+        <ul v-else class="divide-y divide-[rgba(42,36,30,0.08)] border border-[rgba(60,50,35,0.12)] rounded-md max-h-72 overflow-y-auto">
           <li
             v-for="h in holds"
             :key="h.id"
@@ -31,17 +31,17 @@
                   <span
                     :class="[
                       'inline-block px-2 py-0.5 text-xs font-medium rounded-full',
-                      h.active ? 'bg-amber-100 text-amber-800' : 'bg-gray-100 text-gray-600',
+                      h.active ? 'bg-amber-100 text-amber-800' : 'bg-[rgba(42,36,30,0.05)] text-tide-ink/70',
                     ]"
                   >{{ h.type }}</span>
                   <span v-if="h.active" class="text-xs font-medium text-amber-700">{{ t('holdsModal.status.active') }}</span>
-                  <span v-else class="text-xs text-gray-500">{{ t('holdsModal.status.released') }}</span>
+                  <span v-else class="text-xs text-tide-ink/55">{{ t('holdsModal.status.released') }}</span>
                 </div>
-                <div class="mt-1 text-gray-700">{{ h.reason }}</div>
-                <div class="mt-1 text-xs text-gray-500">
+                <div class="mt-1 text-tide-ink/80">{{ h.reason }}</div>
+                <div class="mt-1 text-xs text-tide-ink/55">
                   {{ t('holdsModal.opened', { who: h.openedBy, when: formatDate(h.openedAt) }) }}
                 </div>
-                <div v-if="!h.active" class="text-xs text-gray-500">
+                <div v-if="!h.active" class="text-xs text-tide-ink/55">
                   {{ t('holdsModal.released', { who: h.releasedBy ?? '?', when: formatDate(h.releasedAt) }) }}
                   <span v-if="h.releaseNotes"> — “{{ h.releaseNotes }}”</span>
                 </div>
@@ -51,7 +51,7 @@
                   type="button"
                   :data-test="`hold-release-${h.id}`"
                   :disabled="releasingId === h.id"
-                  class="text-xs px-2 py-1 rounded border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+                  class="text-xs px-2 py-1 rounded border border-[rgba(60,50,35,0.16)] text-tide-ink/80 hover:bg-[rgba(252,247,238,0.55)] disabled:opacity-50"
                   @click="openReleaseFor(h)"
                 >
                   {{ t('holdsModal.action.release') }}
@@ -67,19 +67,19 @@
                 maxlength="500"
                 :placeholder="t('holdsModal.release.notesPlaceholder')"
                 :data-test="`hold-release-notes-${h.id}`"
-                class="block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm text-sm"
+                class="block w-full rounded-md border border-[rgba(60,50,35,0.16)] px-3 py-2 shadow-sm text-sm"
               ></textarea>
               <div class="flex justify-end gap-2">
                 <button
                   type="button"
-                  class="px-3 py-1 text-xs text-gray-700"
+                  class="px-3 py-1 text-xs text-tide-ink/80"
                   @click="cancelRelease"
                 >{{ t('common.cancel') }}</button>
                 <button
                   type="button"
                   :data-test="`hold-release-confirm-${h.id}`"
                   :disabled="releasingId === h.id"
-                  class="px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+                  class="px-3 py-1 text-xs bg-tide-blue-btn-deep text-white rounded hover:bg-tide-blue-deep disabled:opacity-50"
                   @click="confirmRelease(h)"
                 >{{ t('holdsModal.release.confirm') }}</button>
               </div>
@@ -89,28 +89,28 @@
       </div>
 
       <!-- Add hold form -->
-      <div class="border-t border-gray-200 pt-4">
-        <div class="text-sm font-medium text-gray-700 mb-2">{{ t('holdsModal.add.title') }}</div>
+      <div class="border-t border-[rgba(60,50,35,0.12)] pt-4">
+        <div class="text-sm font-medium text-tide-ink/80 mb-2">{{ t('holdsModal.add.title') }}</div>
         <div class="space-y-3">
           <div>
-            <label class="block text-xs font-medium text-gray-600">{{ t('holdsModal.add.type') }} <span class="text-red-500">*</span></label>
+            <label class="block text-xs font-medium text-tide-ink/70">{{ t('holdsModal.add.type') }} <span class="text-red-500">*</span></label>
             <select
               v-model="newType"
               data-test="hold-add-type"
-              class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm text-sm"
+              class="mt-1 block w-full rounded-md border border-[rgba(60,50,35,0.16)] px-3 py-2 shadow-sm text-sm"
             >
               <option v-for="t_ in HOLD_TYPES" :key="t_" :value="t_">{{ t_ }}</option>
             </select>
           </div>
           <div>
-            <label class="block text-xs font-medium text-gray-600">{{ t('holdsModal.add.reason') }} <span class="text-red-500">*</span></label>
+            <label class="block text-xs font-medium text-tide-ink/70">{{ t('holdsModal.add.reason') }} <span class="text-red-500">*</span></label>
             <textarea
               v-model="newReason"
               rows="2"
               maxlength="500"
               data-test="hold-add-reason"
               :placeholder="t('holdsModal.add.reasonPlaceholder')"
-              class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm text-sm"
+              class="mt-1 block w-full rounded-md border border-[rgba(60,50,35,0.16)] px-3 py-2 shadow-sm text-sm"
             ></textarea>
           </div>
           <div class="flex justify-end">
@@ -118,7 +118,7 @@
               type="button"
               data-test="hold-add-submit"
               :disabled="!canAdd || adding"
-              class="px-3 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 disabled:opacity-50"
+              class="px-3 py-2 bg-tide-blue-btn-deep text-white text-sm rounded hover:bg-tide-blue-deep disabled:opacity-50"
               @click="submitAdd"
             >{{ t('holdsModal.add.submit') }}</button>
           </div>

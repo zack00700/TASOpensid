@@ -48,21 +48,21 @@ onMounted(loadSequences)
     <!-- Header -->
     <div class="flex items-center justify-between mb-6">
       <div>
-        <h1 class="text-xl font-semibold text-gray-900">{{ t('nav.invoiceSequences') }}</h1>
-        <p class="text-sm text-gray-500 mt-1">
+        <h1 class="text-xl font-semibold text-tide-ink">{{ t('nav.invoiceSequences') }}</h1>
+        <p class="text-sm text-tide-ink/55 mt-1">
           {{ t('sequences.subtitle') }}
         </p>
       </div>
       <button
         @click="openCreate"
-        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-md font-medium"
+        class="px-4 py-2 bg-tide-blue-btn-deep hover:bg-tide-blue-deep text-white text-sm rounded-md font-medium"
       >
         {{ t('sequences.newSequence') }}
       </button>
     </div>
 
     <!-- Info box -->
-    <div class="mb-5 bg-blue-50 border border-blue-200 rounded-lg p-4 text-sm text-blue-800">
+    <div class="mb-5 bg-[rgba(90,138,171,0.10)] border border-blue-200 rounded-lg p-4 text-sm text-blue-800">
       <strong>{{ t('sequences.howItWorks.title') }}</strong>
       <i18n-t keypath="sequences.howItWorks.body" tag="span">
         <template #format><span class="font-mono">{{ t('sequences.howItWorks.format') }}</span></template>
@@ -71,7 +71,7 @@ onMounted(loadSequences)
     </div>
 
     <!-- Loading -->
-    <div v-if="loading" class="text-center py-12 text-gray-400 text-sm animate-pulse">
+    <div v-if="loading" class="text-center py-12 text-tide-ink/40 text-sm animate-pulse">
       {{ t('sequences.loadingSequences') }}
     </div>
 
@@ -82,48 +82,48 @@ onMounted(loadSequences)
     </div>
 
     <!-- Table -->
-    <div v-else class="border border-gray-200 rounded-lg overflow-hidden">
+    <div v-else class="border border-[rgba(60,50,35,0.12)] rounded-lg overflow-hidden">
       <table class="w-full text-sm">
-        <thead class="bg-gray-50 border-b border-gray-200">
+        <thead class="bg-[rgba(252,247,238,0.55)] border-b border-[rgba(60,50,35,0.12)]">
           <tr>
-            <th class="px-4 py-3 text-left font-medium text-gray-600">{{ t('sequences.column.sequenceId') }}</th>
-            <th class="px-4 py-3 text-left font-medium text-gray-600">{{ t('sequences.column.prefix') }}</th>
-            <th class="px-4 py-3 text-left font-medium text-gray-600">{{ t('sequences.column.nextValue') }}</th>
-            <th class="px-4 py-3 text-left font-medium text-gray-600">{{ t('sequences.column.maxDigits') }}</th>
-            <th class="px-4 py-3 text-left font-medium text-gray-600">{{ t('sequences.column.nextNumber') }}</th>
-            <th class="px-4 py-3 text-left font-medium text-gray-600">{{ t('sequences.column.scope') }}</th>
+            <th class="px-4 py-3 text-left font-medium text-tide-ink/70">{{ t('sequences.column.sequenceId') }}</th>
+            <th class="px-4 py-3 text-left font-medium text-tide-ink/70">{{ t('sequences.column.prefix') }}</th>
+            <th class="px-4 py-3 text-left font-medium text-tide-ink/70">{{ t('sequences.column.nextValue') }}</th>
+            <th class="px-4 py-3 text-left font-medium text-tide-ink/70">{{ t('sequences.column.maxDigits') }}</th>
+            <th class="px-4 py-3 text-left font-medium text-tide-ink/70">{{ t('sequences.column.nextNumber') }}</th>
+            <th class="px-4 py-3 text-left font-medium text-tide-ink/70">{{ t('sequences.column.scope') }}</th>
             <th class="px-4 py-3"></th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-gray-100">
-          <tr v-for="seq in sequences" :key="seq.id" class="hover:bg-gray-50">
+        <tbody class="divide-y divide-[rgba(42,36,30,0.06)]">
+          <tr v-for="seq in sequences" :key="seq.id" class="hover:bg-[rgba(252,247,238,0.55)]">
             <td class="px-4 py-3">
-              <span class="font-mono font-medium text-gray-900">{{ seq.sequenceId }}</span>
+              <span class="font-mono font-medium text-tide-ink">{{ seq.sequenceId }}</span>
               <span
                 v-if="seq.isDefault"
-                class="ml-2 text-xs px-1.5 py-0.5 bg-blue-50 text-blue-700 rounded font-medium"
+                class="ml-2 text-xs px-1.5 py-0.5 bg-[rgba(90,138,171,0.10)] text-tide-blue-deep rounded font-medium"
               >{{ t('sequences.defaultBadge') }}</span>
             </td>
-            <td class="px-4 py-3 font-mono text-gray-600">{{ seq.prefix || '—' }}</td>
-            <td class="px-4 py-3 text-gray-600 tabular-nums">{{ seq.nextValue }}</td>
-            <td class="px-4 py-3 text-gray-600">{{ seq.maximumDigits }}</td>
+            <td class="px-4 py-3 font-mono text-tide-ink/70">{{ seq.prefix || '—' }}</td>
+            <td class="px-4 py-3 text-tide-ink/70 tabular-nums">{{ seq.nextValue }}</td>
+            <td class="px-4 py-3 text-tide-ink/70">{{ seq.maximumDigits }}</td>
             <td class="px-4 py-3">
               <span class="font-mono font-semibold text-green-700">{{ seq.previewExample }}</span>
             </td>
-            <td class="px-4 py-3 text-gray-500 text-xs">
+            <td class="px-4 py-3 text-tide-ink/55 text-xs">
               {{ seq.invoiceTypeId || t('sequences.scope.global') }}
             </td>
             <td class="px-4 py-3 text-right">
               <button
                 @click="openEdit(seq)"
-                class="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                class="text-sm text-tide-blue-deep hover:text-blue-800 font-medium"
               >
                 {{ t('common.edit') }}
               </button>
             </td>
           </tr>
           <tr v-if="sequences.length === 0">
-            <td colspan="7" class="px-4 py-10 text-center text-gray-400">
+            <td colspan="7" class="px-4 py-10 text-center text-tide-ink/40">
               {{ t('sequences.empty') }}
             </td>
           </tr>

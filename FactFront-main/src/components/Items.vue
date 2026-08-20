@@ -465,7 +465,7 @@ const { toast, showToast, dismissToast } = useToast();
     >
       <template #actions>
         <button
-          class="hidden sm:inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-40"
+          class="hidden sm:inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-tide-blue-btn-deep hover:bg-tide-blue-deep disabled:opacity-40"
           @click="handleCustomerToBill"
           :disabled="selectedItemIds.length === 0"
         >
@@ -473,7 +473,7 @@ const { toast, showToast, dismissToast } = useToast();
           {{ t('items.button.invoice', { count: selectedItemIds.length }) }}
         </button>
         <button
-          class="hidden sm:inline-flex items-center px-3 py-2 border border-slate-200 text-sm font-medium rounded-lg text-slate-700 bg-white hover:bg-slate-50"
+          class="hidden sm:inline-flex items-center px-3 py-2 border border-[rgba(60,50,35,0.12)] text-sm font-medium rounded-lg text-tide-ink/80 bg-[rgba(255,253,247,0.92)] hover:bg-[rgba(252,247,238,0.55)]"
           :aria-label="t('items.aria.exportItems')"
         >
           <Download class="h-4 w-4 mr-2" />
@@ -490,9 +490,9 @@ const { toast, showToast, dismissToast } = useToast();
     </PageHeader>
 
     <!-- List View -->
-    <div v-if="!showForm && !showHistory" class="bg-white shadow rounded-lg mt-4">
+    <div v-if="!showForm && !showHistory" class="bg-[rgba(255,253,247,0.92)] shadow rounded-lg mt-4">
       <!-- Search + filters header -->
-      <div class="px-4 py-3 border-b border-gray-200 space-y-3">
+      <div class="px-4 py-3 border-b border-[rgba(60,50,35,0.12)] space-y-3">
 
         <!-- Row 2: Search + Filters -->
         <SearchBar
@@ -506,7 +506,7 @@ const { toast, showToast, dismissToast } = useToast();
             <button
               @click="handleRefresh"
               :disabled="loading"
-              class="inline-flex items-center p-2 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 flex-shrink-0"
+              class="inline-flex items-center p-2 border border-[rgba(60,50,35,0.16)] rounded-lg text-tide-ink/80 bg-[rgba(255,253,247,0.92)] hover:bg-[rgba(252,247,238,0.55)] disabled:opacity-50 flex-shrink-0"
               :aria-label="t('items.aria.refresh')"
             >
               <RefreshCw class="h-4 w-4" :class="{ 'animate-spin': loading }" />
@@ -517,7 +517,7 @@ const { toast, showToast, dismissToast } = useToast();
         <!-- Row 3 (mobile only): Make Invoice — contextual, shown only when items selected -->
         <div v-if="selectedItemIds.length > 0" class="sm:hidden">
           <button
-            class="w-full inline-flex items-center justify-center px-4 py-2.5 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700"
+            class="w-full inline-flex items-center justify-center px-4 py-2.5 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-tide-blue-btn-deep hover:bg-tide-blue-deep"
             @click="handleCustomerToBill"
           >
             <BadgeDollarSign class="h-4 w-4 mr-2" />
@@ -539,13 +539,13 @@ const { toast, showToast, dismissToast } = useToast();
         v-if="showFilters"
         type="items" 
         @filter="handleFilter" 
-        class="border-b border-gray-200"
+        class="border-b border-[rgba(60,50,35,0.12)]"
       />
 
       <!-- Loading State -->
       <div v-if="loading" class="px-6 py-12 text-center">
-        <RefreshCw class="h-8 w-8 animate-spin mx-auto text-gray-400 mb-4" />
-        <p class="text-gray-500">{{ t('items.label.loading') }}</p>
+        <RefreshCw class="h-8 w-8 animate-spin mx-auto text-tide-ink/40 mb-4" />
+        <p class="text-tide-ink/55">{{ t('items.label.loading') }}</p>
       </div>
 
       <!-- Error State -->
@@ -556,7 +556,7 @@ const { toast, showToast, dismissToast } = useToast();
         </div>
         <button
           @click="handleRefresh"
-          class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          class="px-4 py-2 bg-tide-blue-btn-deep text-white rounded-lg hover:bg-tide-blue-deep"
         >
           {{ t('items.button.tryAgain') }}
         </button>
@@ -596,11 +596,11 @@ const { toast, showToast, dismissToast } = useToast();
           <template #cell-identity="{ row }">
             <div class="space-y-0.5 min-w-0">
               <div class="flex items-center gap-1.5 flex-wrap">
-                <span class="font-mono font-semibold text-sm text-slate-900 tracking-wide">
+                <span class="font-mono font-semibold text-sm text-tide-ink tracking-wide">
                   {{ (row as Item).containerNumber || (row as Item).itemNumber }}
                 </span>
                 <span v-if="(row as Item).containerType"
-                      class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-600">
+                      class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-[rgba(42,36,30,0.05)] text-tide-ink/70">
                   {{ (row as Item).containerType }}
                 </span>
                 <span v-if="(row as Item).hazmatFlag" :title="t('items.badge.hazmat')" class="text-sm leading-none">🔺</span>
@@ -609,7 +609,7 @@ const { toast, showToast, dismissToast } = useToast();
                       class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-red-50 text-red-600"
                       :title="t('items.badge.oog')">OOG</span>
               </div>
-              <div v-if="(row as Item).bookingNumber" class="text-xs text-slate-500">
+              <div v-if="(row as Item).bookingNumber" class="text-xs text-tide-ink/55">
                 BKG&nbsp;{{ (row as Item).bookingNumber }}
               </div>
             </div>
@@ -622,7 +622,7 @@ const { toast, showToast, dismissToast } = useToast();
           <template #cell-customs="{ row }">
             <StatusBadge v-if="(row as Item).customsStatus"
                          :status="(row as Item).customsStatus!" />
-            <span v-else class="text-slate-400">—</span>
+            <span v-else class="text-tide-ink/40">—</span>
           </template>
 
           <template #cell-dwellTime="{ row }">
@@ -630,7 +630,7 @@ const { toast, showToast, dismissToast } = useToast();
                   :class="dwellColorClass(getDwellDays(row as Item)!)">
               {{ getDwellDays(row as Item) }}d
             </span>
-            <span v-else class="text-slate-400">—</span>
+            <span v-else class="text-tide-ink/40">—</span>
           </template>
 
           <template #cell-vgm="{ row }">
@@ -647,7 +647,7 @@ const { toast, showToast, dismissToast } = useToast();
           </template>
 
           <template #cell-emptyFull="{ row }">
-            <span :class="(row as Item).emptyStatus === 'EMPTY' ? 'text-slate-500' : 'text-slate-900 font-medium'">
+            <span :class="(row as Item).emptyStatus === 'EMPTY' ? 'text-tide-ink/55' : 'text-tide-ink font-medium'">
               {{ (row as Item).emptyStatus ?? '—' }}
             </span>
           </template>
@@ -659,16 +659,16 @@ const { toast, showToast, dismissToast } = useToast();
           <template #cell-lastEvent="{ row }">
             <div v-if="getLastEvent(row as Item)" class="text-xs">
               <div>
-                <span class="font-medium text-slate-900">{{ getLastEvent(row as Item)?.eventType ?? '—' }}</span>
-                <span v-if="getLastEvent(row as Item)?.location" class="text-slate-500">
+                <span class="font-medium text-tide-ink">{{ getLastEvent(row as Item)?.eventType ?? '—' }}</span>
+                <span v-if="getLastEvent(row as Item)?.location" class="text-tide-ink/55">
                   @ {{ getLastEvent(row as Item)?.location }}
                 </span>
               </div>
-              <div v-if="getLastEvent(row as Item)?.timestamp" class="text-slate-400">
+              <div v-if="getLastEvent(row as Item)?.timestamp" class="text-tide-ink/40">
                 {{ formatRelativeDate(getLastEvent(row as Item)!.timestamp!) }}
               </div>
             </div>
-            <span v-else class="text-slate-400">—</span>
+            <span v-else class="text-tide-ink/40">—</span>
           </template>
 
           <template #cell-charging="{ row }">
@@ -678,7 +678,7 @@ const { toast, showToast, dismissToast } = useToast();
                   class="text-red-600 text-xs font-medium">
               {{ t('items.charging.past', { days: getChargingStatus(row as Item)!.days }) }}
             </span>
-            <span v-else class="text-slate-400">—</span>
+            <span v-else class="text-tide-ink/40">—</span>
           </template>
 
           <template #cell-voyageIn="{ row }">
@@ -692,7 +692,7 @@ const { toast, showToast, dismissToast } = useToast();
           <template #cell-hazmat="{ row }">
             <div v-if="(row as Item).hazmatFlag" class="text-xs">
               <span class="font-medium">{{ (row as Item).hazmatClass ?? '?' }}</span>
-              <span v-if="(row as Item).unNumber" class="text-slate-500">
+              <span v-if="(row as Item).unNumber" class="text-tide-ink/55">
                 · UN{{ (row as Item).unNumber }}
               </span>
             </div>
@@ -710,7 +710,7 @@ const { toast, showToast, dismissToast } = useToast();
             <KebabMenu>
               <template #trigger="{ toggle, refEl, isOpen }">
                 <button
-                  class="text-gray-400 hover:text-gray-700 p-1.5 rounded hover:bg-gray-100"
+                  class="text-tide-ink/40 hover:text-tide-ink/80 p-1.5 rounded hover:bg-[rgba(42,36,30,0.05)]"
                   @click.stop="toggle()"
                   :ref="refEl"
                   :aria-label="t('items.aria.rowActions')"
@@ -720,23 +720,23 @@ const { toast, showToast, dismissToast } = useToast();
                 </button>
               </template>
               <template #content="{ close }">
-                <button class="flex w-full items-center gap-2 px-4 py-2 text-sm hover:bg-gray-100"
+                <button class="flex w-full items-center gap-2 px-4 py-2 text-sm hover:bg-[rgba(42,36,30,0.05)]"
                   @click="handleViewHistory(row as Item); close()">
                   <History class="w-4 h-4" /><span>{{ t('items.action.eventHistory') }}</span>
                 </button>
-                <button class="flex w-full items-center gap-2 px-4 py-2 text-sm hover:bg-gray-100"
+                <button class="flex w-full items-center gap-2 px-4 py-2 text-sm hover:bg-[rgba(42,36,30,0.05)]"
                   @click="handleAddEvent(row as Item); close()">
                   <Clock class="w-4 h-4" /><span>{{ t('items.action.addEvent') }}</span>
                 </button>
-                <button class="flex w-full items-center gap-2 px-4 py-2 text-sm hover:bg-gray-100"
+                <button class="flex w-full items-center gap-2 px-4 py-2 text-sm hover:bg-[rgba(42,36,30,0.05)]"
                   @click="handleEdit(row as Item); close()">
                   <Pencil class="w-4 h-4" /><span>{{ t('common.edit') }}</span>
                 </button>
-                <button class="flex w-full items-center gap-2 px-4 py-2 text-sm hover:bg-gray-100"
+                <button class="flex w-full items-center gap-2 px-4 py-2 text-sm hover:bg-[rgba(42,36,30,0.05)]"
                   @click="openChargeHistory(row as Item); close()">
                   <span>{{ t('items.action.chargeHistory') }}</span>
                 </button>
-                <button class="flex w-full items-center gap-2 px-4 py-2 text-sm hover:bg-gray-100 text-red-600"
+                <button class="flex w-full items-center gap-2 px-4 py-2 text-sm hover:bg-[rgba(42,36,30,0.05)] text-red-600"
                   @click="handleDelete(row as Item); close()">
                   <Trash2 class="w-4 h-4" /><span>{{ t('common.delete') }}</span>
                 </button>
@@ -771,11 +771,11 @@ const { toast, showToast, dismissToast } = useToast();
         class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50"
         @click.self="showDeleteConfirm = false"
       >
-        <div class="bg-white rounded-lg p-6 max-w-md w-full">
+        <div class="bg-[rgba(255,253,247,0.92)] rounded-lg p-6 max-w-md w-full">
           <div class="text-center">
             <X class="mx-auto h-12 w-12 text-red-500" />
-            <h3 class="mt-4 text-lg font-medium text-gray-900">{{ t('items.confirm.deleteTitle') }}</h3>
-            <p class="mt-2 text-sm text-gray-500">
+            <h3 class="mt-4 text-lg font-medium text-tide-ink">{{ t('items.confirm.deleteTitle') }}</h3>
+            <p class="mt-2 text-sm text-tide-ink/55">
               {{ t('items.confirm.deleteBody', { number: itemToDelete?.itemNumber }) }}
             </p>
           </div>
@@ -828,33 +828,33 @@ const { toast, showToast, dismissToast } = useToast();
         class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50"
         @click.self="showCustomerToBillModal = false"
       >
-        <div class="bg-white rounded-lg p-6 max-w-2xl w-full">
+        <div class="bg-[rgba(255,253,247,0.92)] rounded-lg p-6 max-w-2xl w-full">
           <div class="flex justify-between items-center mb-4">
-            <h3 class="text-lg font-medium text-gray-900">{{ t('items.modal.customerToBillTitle') }}</h3>
+            <h3 class="text-lg font-medium text-tide-ink">{{ t('items.modal.customerToBillTitle') }}</h3>
             <button
               @click="showCustomerToBillModal = false"
-              class="text-gray-400 hover:text-gray-500"
+              class="text-tide-ink/40 hover:text-tide-ink/55"
               :aria-label="t('common.close')"
             >
               <X class="h-6 w-6" />
             </button>
           </div>
           <div class="space-y-4">
-            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+            <div class="flex items-center justify-between p-4 bg-[rgba(252,247,238,0.55)] rounded-lg">
               <input
                 v-model="customerToBill"
                 type="text"
                 :placeholder="t('items.placeholder.customerName')"
-                class="block w-full text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                class="block w-full text-sm border-[rgba(60,50,35,0.16)] rounded-md focus:ring-tide-blue focus:border-tide-blue"
               />
             </div>
-            <div class="text-sm text-gray-600">
+            <div class="text-sm text-tide-ink/70">
               {{ t('items.modal.selectedForInvoicing', { count: selectedItemIds.length }) }}
             </div>
             <button
               @click="billCustomer"
               :disabled="!customerToBill || selectedItemIds.length === 0"
-              class="px-3 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              class="px-3 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-tide-blue-btn-deep hover:bg-tide-blue-deep disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {{ t('items.button.makeInvoiceSubmit') }}
             </button>

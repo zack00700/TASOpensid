@@ -94,44 +94,44 @@ async function submit() {
 <template>
   <Teleport to="body">
     <div class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-      <div class="bg-white rounded-lg shadow-xl w-full max-w-lg p-6">
-        <h2 class="text-lg font-semibold text-gray-900 mb-5">
+      <div class="bg-[rgba(255,253,247,0.92)] rounded-lg shadow-xl w-full max-w-lg p-6">
+        <h2 class="text-lg font-semibold text-tide-ink mb-5">
           {{ isEdit ? t('sequenceForm.header.editTitle') : t('sequenceForm.header.newTitle') }}
         </h2>
 
         <div class="space-y-4">
           <!-- Sequence ID -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('sequences.column.sequenceId') }}</label>
+            <label class="block text-sm font-medium text-tide-ink/80 mb-1">{{ t('sequences.column.sequenceId') }}</label>
             <input
               v-model="form.sequenceId"
               :disabled="isEdit"
-              class="w-full border rounded px-3 py-2 text-sm font-mono uppercase disabled:bg-gray-100 disabled:text-gray-500"
-              :class="errors.sequenceId ? 'border-red-400' : 'border-gray-300'"
+              class="w-full border rounded px-3 py-2 text-sm font-mono uppercase disabled:bg-[rgba(42,36,30,0.05)] disabled:text-tide-ink/55"
+              :class="errors.sequenceId ? 'border-red-400' : 'border-[rgba(60,50,35,0.16)]'"
               :placeholder="t('sequenceForm.placeholder.invoiceFinal')"
             />
             <p v-if="errors.sequenceId" class="text-red-500 text-xs mt-1">{{ errors.sequenceId }}</p>
-            <p v-if="isEdit" class="text-gray-400 text-xs mt-1">{{ t('sequenceForm.sequenceIdCannotBeChanged') }}</p>
+            <p v-if="isEdit" class="text-tide-ink/40 text-xs mt-1">{{ t('sequenceForm.sequenceIdCannotBeChanged') }}</p>
           </div>
 
           <!-- Prefix + MaxDigits -->
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('sequences.column.prefix') }}</label>
+              <label class="block text-sm font-medium text-tide-ink/80 mb-1">{{ t('sequences.column.prefix') }}</label>
               <input
                 v-model="form.prefix"
-                class="w-full border border-gray-300 rounded px-3 py-2 text-sm font-mono"
+                class="w-full border border-[rgba(60,50,35,0.16)] rounded px-3 py-2 text-sm font-mono"
                 :placeholder="t('sequenceForm.placeholder.inv')"
               />
-              <p class="text-gray-400 text-xs mt-1">{{ t('sequenceForm.emptyNoPrefix') }}</p>
+              <p class="text-tide-ink/40 text-xs mt-1">{{ t('sequenceForm.emptyNoPrefix') }}</p>
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('sequenceForm.maximumDigits') }}</label>
+              <label class="block text-sm font-medium text-tide-ink/80 mb-1">{{ t('sequenceForm.maximumDigits') }}</label>
               <input
                 v-model.number="form.maximumDigits"
                 type="number" min="1" max="10"
                 class="w-full border rounded px-3 py-2 text-sm"
-                :class="errors.maximumDigits ? 'border-red-400' : 'border-gray-300'"
+                :class="errors.maximumDigits ? 'border-red-400' : 'border-[rgba(60,50,35,0.16)]'"
               />
               <p v-if="errors.maximumDigits" class="text-red-500 text-xs mt-1">{{ errors.maximumDigits }}</p>
             </div>
@@ -139,21 +139,21 @@ async function submit() {
 
           <!-- Next Value -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('sequenceForm.nextSequenceValue') }}</label>
+            <label class="block text-sm font-medium text-tide-ink/80 mb-1">{{ t('sequenceForm.nextSequenceValue') }}</label>
             <input
               v-model.number="form.nextValue"
               type="number" min="1"
               class="w-full border rounded px-3 py-2 text-sm"
-              :class="errors.nextValue ? 'border-red-400' : 'border-gray-300'"
+              :class="errors.nextValue ? 'border-red-400' : 'border-[rgba(60,50,35,0.16)]'"
             />
             <p v-if="errors.nextValue" class="text-red-500 text-xs mt-1">{{ errors.nextValue }}</p>
           </div>
 
           <!-- Live Preview -->
-          <div class="bg-gray-50 border border-gray-200 rounded p-3">
-            <p class="text-xs text-gray-500 mb-1">{{ t('sequenceForm.nextNumberPreview') }}</p>
+          <div class="bg-[rgba(252,247,238,0.55)] border border-[rgba(60,50,35,0.12)] rounded p-3">
+            <p class="text-xs text-tide-ink/55 mb-1">{{ t('sequenceForm.nextNumberPreview') }}</p>
             <p class="font-mono text-lg font-semibold text-green-700">{{ localPreview }}</p>
-            <p class="text-xs text-gray-400 mt-1">{{ t('sequenceForm.range', { range: rangeInfo }) }}</p>
+            <p class="text-xs text-tide-ink/40 mt-1">{{ t('sequenceForm.range', { range: rangeInfo }) }}</p>
           </div>
 
           <!-- Error -->
@@ -165,14 +165,14 @@ async function submit() {
         <div class="flex justify-end gap-3 mt-6">
           <button
             @click="emit('cancel')"
-            class="px-4 py-2 border border-gray-300 rounded text-sm text-gray-700 hover:bg-gray-50"
+            class="px-4 py-2 border border-[rgba(60,50,35,0.16)] rounded text-sm text-tide-ink/80 hover:bg-[rgba(252,247,238,0.55)]"
           >
             {{ t('common.cancel') }}
           </button>
           <button
             @click="submit"
             :disabled="saving"
-            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded font-medium disabled:opacity-60"
+            class="px-4 py-2 bg-tide-blue-btn-deep hover:bg-tide-blue-deep text-white text-sm rounded font-medium disabled:opacity-60"
           >
             {{ saving ? t('sequenceForm.button.saving') : (isEdit ? t('sequenceForm.button.saveChanges') : t('sequenceForm.button.createSequence')) }}
           </button>

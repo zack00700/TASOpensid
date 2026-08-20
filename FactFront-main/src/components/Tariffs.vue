@@ -112,7 +112,7 @@ const getStatusBadgeClasses = (status?: string) => {
   const base = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium';
   return status === 'Active'
     ? `${base} bg-green-100 text-green-800 border border-green-200`
-    : `${base} bg-gray-100 text-gray-800 border border-gray-200`;
+    : `${base} bg-[rgba(42,36,30,0.05)] text-tide-ink border border-[rgba(60,50,35,0.12)]`;
 };
 
 const formatDate = (d?: Date | string) => {
@@ -217,7 +217,7 @@ const removeRate = (index: number) => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-[rgba(252,247,238,0.55)]">
 
     <!-- ── List View ──────────────────────────────────────────────────── -->
     <div v-if="!showForm">
@@ -237,27 +237,27 @@ const removeRate = (index: number) => {
       <div class="px-6 py-6 space-y-6">
 
       <!-- Search & Filter Bar -->
-      <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
+      <div class="bg-[rgba(255,253,247,0.92)] rounded-lg shadow-sm border border-[rgba(60,50,35,0.12)] mb-6">
         <div class="p-6">
           <div class="flex flex-col sm:flex-row gap-4">
             <!-- Search -->
             <div class="flex-1 relative">
               <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search class="h-5 w-5 text-gray-400" />
+                <Search class="h-5 w-5 text-tide-ink/40" />
               </div>
               <input
                 v-model="searchQuery"
                 type="text"
                 :placeholder="t('tariffs.placeholder.search')"
-                class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                class="block w-full pl-10 pr-3 py-3 border border-[rgba(60,50,35,0.16)] rounded-lg leading-5 bg-[rgba(255,253,247,0.92)] placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-tide-blue focus:border-tide-blue"
               />
             </div>
             <!-- Service Type filter -->
             <div class="flex items-center space-x-2">
-              <Filter class="h-4 w-4 text-gray-400 flex-shrink-0" />
+              <Filter class="h-4 w-4 text-tide-ink/40 flex-shrink-0" />
               <select
                 v-model="serviceTypeFilter"
-                class="block pl-3 pr-8 py-3 border border-gray-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                class="block pl-3 pr-8 py-3 border border-[rgba(60,50,35,0.16)] rounded-lg text-sm bg-[rgba(255,253,247,0.92)] focus:outline-none focus:ring-1 focus:ring-tide-blue focus:border-tide-blue"
               >
                 <option value="">{{ t('tariffs.filter.allServiceTypes') }}</option>
                 <option v-for="st in SERVICE_TYPES" :key="st" :value="st">{{ st }}</option>
@@ -268,33 +268,33 @@ const removeRate = (index: number) => {
       </div>
 
       <!-- Table -->
-      <div class="bg-white shadow-sm rounded-lg border border-gray-200 overflow-hidden">
+      <div class="bg-[rgba(255,253,247,0.92)] shadow-sm rounded-lg border border-[rgba(60,50,35,0.12)] overflow-hidden">
 
         <!-- Desktop table -->
         <div class="hidden sm:block overflow-x-auto">
-          <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
+          <table class="min-w-full divide-y divide-[rgba(42,36,30,0.08)]">
+            <thead class="bg-[rgba(252,247,238,0.55)]">
               <tr>
                 <th
                   v-for="header in tableHeaders"
                   :key="header"
-                  class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  class="px-4 py-3 text-left text-xs font-medium text-tide-ink/55 uppercase tracking-wider"
                 >
                   {{ header }}
                 </th>
               </tr>
             </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
+            <tbody class="bg-[rgba(255,253,247,0.92)] divide-y divide-[rgba(42,36,30,0.08)]">
               <tr
                 v-for="tariff in filteredTariffs"
                 :key="tariff.id"
-                class="hover:bg-gray-50 transition-colors duration-150"
+                class="hover:bg-[rgba(252,247,238,0.55)] transition-colors duration-150"
               >
                 <!-- Name -->
                 <td class="px-4 py-3">
                   <div class="max-w-xs">
-                    <div class="text-sm font-semibold text-gray-900 truncate">{{ tariff.name }}</div>
-                    <div class="text-sm text-gray-500 truncate">{{ tariff.description }}</div>
+                    <div class="text-sm font-semibold text-tide-ink truncate">{{ tariff.name }}</div>
+                    <div class="text-sm text-tide-ink/55 truncate">{{ tariff.description }}</div>
                   </div>
                 </td>
 
@@ -306,7 +306,7 @@ const removeRate = (index: number) => {
                   >
                     {{ tariff.serviceType }}
                   </span>
-                  <span v-else class="text-gray-400 text-sm">—</span>
+                  <span v-else class="text-tide-ink/40 text-sm">—</span>
                 </td>
 
                 <!-- Status -->
@@ -317,7 +317,7 @@ const removeRate = (index: number) => {
                 </td>
 
                 <!-- Start Date -->
-                <td class="px-4 py-3 text-sm text-gray-700">
+                <td class="px-4 py-3 text-sm text-tide-ink/80">
                   {{ formatDate(tariff.startDate) }}
                 </td>
 
@@ -327,7 +327,7 @@ const removeRate = (index: number) => {
                     :class="[
                       isDateExpired(tariff.endDate) ? 'text-red-600 font-medium' :
                       isDateExpiringSoon(tariff.endDate) ? 'text-orange-600 font-medium' :
-                      'text-gray-700'
+                      'text-tide-ink/80'
                     ]"
                   >
                     {{ formatDate(tariff.endDate) }}
@@ -339,7 +339,7 @@ const removeRate = (index: number) => {
                   <div class="flex items-center space-x-2">
                     <button
                       @click="handleEdit(tariff)"
-                      class="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                      class="p-1.5 text-tide-ink/40 hover:text-tide-blue-deep hover:bg-[rgba(90,138,171,0.10)] rounded-lg transition-colors"
                       :title="t('tariffs.action.editTariff')"
                       :aria-label="t('tariffs.action.editTariff')"
                     >
@@ -347,7 +347,7 @@ const removeRate = (index: number) => {
                     </button>
                     <button
                       @click="handleDelete(tariff)"
-                      class="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                      class="p-1.5 text-tide-ink/40 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                       :title="t('tariffs.action.deleteTariff')"
                       :aria-label="t('tariffs.action.deleteTariff')"
                     >
@@ -362,23 +362,23 @@ const removeRate = (index: number) => {
 
         <!-- Mobile cards -->
         <div class="sm:hidden p-4">
-          <div v-if="filteredTariffs.length === 0" class="bg-white rounded-xl border border-slate-200 p-8 text-center">
-            <p class="text-sm text-slate-500">{{ t('tariffs.empty.noTariffsFound') }}</p>
+          <div v-if="filteredTariffs.length === 0" class="bg-[rgba(255,253,247,0.92)] rounded-xl border border-[rgba(60,50,35,0.12)] p-8 text-center">
+            <p class="text-sm text-tide-ink/55">{{ t('tariffs.empty.noTariffsFound') }}</p>
           </div>
           <div v-else class="space-y-3">
             <div
               v-for="tariff in filteredTariffs"
               :key="tariff.id"
-              class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm"
+              class="bg-[rgba(255,253,247,0.92)] rounded-xl border border-[rgba(60,50,35,0.12)] p-4 shadow-sm"
             >
               <div class="flex items-start justify-between gap-2 mb-2">
                 <div>
-                  <p class="font-semibold text-slate-900 text-sm">{{ tariff.name }}</p>
-                  <p class="text-xs text-slate-500 mt-0.5">{{ tariff.description || '—' }}</p>
+                  <p class="font-semibold text-tide-ink text-sm">{{ tariff.name }}</p>
+                  <p class="text-xs text-tide-ink/55 mt-0.5">{{ tariff.description || '—' }}</p>
                 </div>
                 <span :class="getStatusBadgeClasses(tariff.status)">{{ tariff.status ?? '—' }}</span>
               </div>
-              <div class="flex items-center justify-between text-xs text-slate-500 mb-3">
+              <div class="flex items-center justify-between text-xs text-tide-ink/55 mb-3">
                 <span v-if="tariff.serviceType" class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                   {{ tariff.serviceType }}
                 </span>
@@ -387,14 +387,14 @@ const removeRate = (index: number) => {
               <div class="flex justify-end space-x-2">
                 <button
                   @click="handleEdit(tariff)"
-                  class="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                  class="p-1.5 text-tide-ink/40 hover:text-tide-blue-deep hover:bg-[rgba(90,138,171,0.10)] rounded-lg transition-colors"
                   :aria-label="t('tariffs.action.editTariff')"
                 >
                   <Pencil class="h-4 w-4" />
                 </button>
                 <button
                   @click="handleDelete(tariff)"
-                  class="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                  class="p-1.5 text-tide-ink/40 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                   :aria-label="t('tariffs.action.deleteTariff')"
                 >
                   <Trash2 class="h-4 w-4" />
@@ -406,18 +406,18 @@ const removeRate = (index: number) => {
 
         <!-- Empty State -->
         <div v-if="filteredTariffs.length === 0" class="text-center py-12">
-          <DollarSign class="mx-auto h-12 w-12 text-gray-400" />
-          <h3 class="mt-2 text-sm font-medium text-gray-900">
+          <DollarSign class="mx-auto h-12 w-12 text-tide-ink/40" />
+          <h3 class="mt-2 text-sm font-medium text-tide-ink">
             {{ searchQuery || serviceTypeFilter ? t('tariffs.empty.noTariffsFound') : t('tariffs.empty.noTariffs') }}
           </h3>
-          <p class="mt-1 text-sm text-gray-500">
+          <p class="mt-1 text-sm text-tide-ink/55">
             {{ searchQuery || serviceTypeFilter ? t('tariffs.empty.adjustSearchOrFilter') : t('tariffs.empty.getStarted') }}
           </p>
           <div class="mt-6">
             <button
               v-if="!searchQuery && !serviceTypeFilter"
               @click="handleAdd"
-              class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700"
+              class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-tide-blue-btn-deep hover:bg-tide-blue-deep"
             >
               <Plus class="h-4 w-4 mr-2" />
               {{ t('tariffs.button.newTariff') }}
@@ -433,10 +433,10 @@ const removeRate = (index: number) => {
 
       <!-- Form Header -->
       <div class="mb-8">
-        <h1 class="text-2xl font-bold text-gray-900">
+        <h1 class="text-2xl font-bold text-tide-ink">
           {{ editingTariff ? t('tariffs.header.editTitle') : t('tariffs.header.newTitle') }}
         </h1>
-        <p class="mt-1 text-sm text-gray-500">
+        <p class="mt-1 text-sm text-tide-ink/55">
           {{ editingTariff ? t('tariffs.header.editSubtitle') : t('tariffs.header.newSubtitle') }}
         </p>
       </div>
@@ -444,13 +444,13 @@ const removeRate = (index: number) => {
       <form @submit.prevent="handleFormSubmit" class="space-y-6">
 
         <!-- Basic Info Card -->
-        <div class="bg-white shadow-sm rounded-lg border border-gray-200 p-6">
-          <h2 class="text-base font-semibold text-gray-900 mb-4">{{ t('tariffs.section.basicInformation') }}</h2>
+        <div class="bg-[rgba(255,253,247,0.92)] shadow-sm rounded-lg border border-[rgba(60,50,35,0.12)] p-6">
+          <h2 class="text-base font-semibold text-tide-ink mb-4">{{ t('tariffs.section.basicInformation') }}</h2>
           <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
 
             <!-- Name -->
             <div class="sm:col-span-2">
-              <label class="block text-sm font-medium text-gray-700 mb-1">
+              <label class="block text-sm font-medium text-tide-ink/80 mb-1">
                 {{ t('tariffs.field.name') }} <span class="text-red-500">*</span>
               </label>
               <input
@@ -458,27 +458,27 @@ const removeRate = (index: number) => {
                 type="text"
                 required
                 :placeholder="t('tariffs.placeholder.name')"
-                class="block w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                class="block w-full px-3 py-2 border border-[rgba(60,50,35,0.16)] rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-tide-blue focus:border-tide-blue"
               />
             </div>
 
             <!-- Description -->
             <div class="sm:col-span-2">
-              <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('tariffs.field.description') }}</label>
+              <label class="block text-sm font-medium text-tide-ink/80 mb-1">{{ t('tariffs.field.description') }}</label>
               <textarea
                 v-model="form.description"
                 rows="2"
                 :placeholder="t('tariffs.placeholder.description')"
-                class="block w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                class="block w-full px-3 py-2 border border-[rgba(60,50,35,0.16)] rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-tide-blue focus:border-tide-blue"
               />
             </div>
 
             <!-- Service Type -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('tariffs.field.serviceType') }}</label>
+              <label class="block text-sm font-medium text-tide-ink/80 mb-1">{{ t('tariffs.field.serviceType') }}</label>
               <select
                 v-model="form.serviceType"
-                class="block w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                class="block w-full px-3 py-2 border border-[rgba(60,50,35,0.16)] rounded-lg text-sm bg-[rgba(255,253,247,0.92)] focus:outline-none focus:ring-1 focus:ring-tide-blue focus:border-tide-blue"
               >
                 <option value="">{{ t('tariffs.option.select') }}</option>
                 <option v-for="st in SERVICE_TYPES" :key="st" :value="st">{{ st }}</option>
@@ -487,10 +487,10 @@ const removeRate = (index: number) => {
 
             <!-- Status -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('tariffs.field.status') }}</label>
+              <label class="block text-sm font-medium text-tide-ink/80 mb-1">{{ t('tariffs.field.status') }}</label>
               <select
                 v-model="form.status"
-                class="block w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                class="block w-full px-3 py-2 border border-[rgba(60,50,35,0.16)] rounded-lg text-sm bg-[rgba(255,253,247,0.92)] focus:outline-none focus:ring-1 focus:ring-tide-blue focus:border-tide-blue"
               >
                 <option value="Active">{{ t('tariffs.status.active') }}</option>
                 <option value="Disable">{{ t('tariffs.status.disable') }}</option>
@@ -499,69 +499,69 @@ const removeRate = (index: number) => {
 
             <!-- Start Date -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('tariffs.field.startDate') }}</label>
+              <label class="block text-sm font-medium text-tide-ink/80 mb-1">{{ t('tariffs.field.startDate') }}</label>
               <input
                 v-model="(form as any).startDate"
                 type="date"
-                class="block w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                class="block w-full px-3 py-2 border border-[rgba(60,50,35,0.16)] rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-tide-blue focus:border-tide-blue"
               />
             </div>
 
             <!-- End Date -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('tariffs.field.endDate') }}</label>
+              <label class="block text-sm font-medium text-tide-ink/80 mb-1">{{ t('tariffs.field.endDate') }}</label>
               <input
                 v-model="(form as any).endDate"
                 type="date"
-                class="block w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                class="block w-full px-3 py-2 border border-[rgba(60,50,35,0.16)] rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-tide-blue focus:border-tide-blue"
               />
             </div>
 
             <!-- Notes -->
             <div class="sm:col-span-2">
-              <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('tariffs.field.notes') }}</label>
+              <label class="block text-sm font-medium text-tide-ink/80 mb-1">{{ t('tariffs.field.notes') }}</label>
               <textarea
                 v-model="form.notes"
                 rows="3"
                 :placeholder="t('tariffs.placeholder.notes')"
-                class="block w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                class="block w-full px-3 py-2 border border-[rgba(60,50,35,0.16)] rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-tide-blue focus:border-tide-blue"
               />
             </div>
           </div>
         </div>
 
         <!-- Rates Card -->
-        <div class="bg-white shadow-sm rounded-lg border border-gray-200 p-6">
+        <div class="bg-[rgba(255,253,247,0.92)] shadow-sm rounded-lg border border-[rgba(60,50,35,0.12)] p-6">
           <div class="flex items-center justify-between mb-4">
-            <h2 class="text-base font-semibold text-gray-900">{{ t('tariffs.section.rates') }}</h2>
+            <h2 class="text-base font-semibold text-tide-ink">{{ t('tariffs.section.rates') }}</h2>
             <button
               type="button"
               @click="addRate"
-              class="inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              class="inline-flex items-center px-3 py-1.5 border border-[rgba(60,50,35,0.16)] rounded-lg text-sm font-medium text-tide-ink/80 bg-[rgba(255,253,247,0.92)] hover:bg-[rgba(252,247,238,0.55)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-tide-blue"
             >
               <Plus class="h-4 w-4 mr-1" />
               {{ t('tariffs.button.addRate') }}
             </button>
           </div>
 
-          <div v-if="!form.rates || form.rates.length === 0" class="text-center py-8 text-sm text-gray-400">
+          <div v-if="!form.rates || form.rates.length === 0" class="text-center py-8 text-sm text-tide-ink/40">
             {{ t('tariffs.empty.noRatesDefined') }}
           </div>
 
           <div v-else class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-              <thead class="bg-gray-50">
+            <table class="min-w-full divide-y divide-[rgba(42,36,30,0.08)]">
+              <thead class="bg-[rgba(252,247,238,0.55)]">
                 <tr>
                   <th
                     v-for="h in rateHeaders"
                     :key="h"
-                    class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    class="px-3 py-2 text-left text-xs font-medium text-tide-ink/55 uppercase tracking-wider"
                   >
                     {{ h }}
                   </th>
                 </tr>
               </thead>
-              <tbody class="bg-white divide-y divide-gray-100">
+              <tbody class="bg-[rgba(255,253,247,0.92)] divide-y divide-[rgba(42,36,30,0.06)]">
                 <tr v-for="(rate, idx) in form.rates" :key="idx">
                   <!-- Amount -->
                   <td class="px-3 py-2">
@@ -571,14 +571,14 @@ const removeRate = (index: number) => {
                       min="0"
                       step="0.01"
                       :placeholder="t('tariffs.placeholder.amount')"
-                      class="block w-24 px-2 py-1.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                      class="block w-24 px-2 py-1.5 border border-[rgba(60,50,35,0.16)] rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-tide-blue focus:border-tide-blue"
                     />
                   </td>
                   <!-- Currency -->
                   <td class="px-3 py-2">
                     <select
                       v-model="rate.currency"
-                      class="block w-24 px-2 py-1.5 border border-gray-300 rounded-md text-sm bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                      class="block w-24 px-2 py-1.5 border border-[rgba(60,50,35,0.16)] rounded-md text-sm bg-[rgba(255,253,247,0.92)] focus:outline-none focus:ring-1 focus:ring-tide-blue focus:border-tide-blue"
                     >
                       <option v-for="c in CURRENCIES" :key="c" :value="c">{{ c }}</option>
                     </select>
@@ -589,14 +589,14 @@ const removeRate = (index: number) => {
                       v-model="rate.unitOfMeasurement"
                       type="text"
                       :placeholder="t('tariffs.placeholder.unitOfMeasure')"
-                      class="block w-28 px-2 py-1.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                      class="block w-28 px-2 py-1.5 border border-[rgba(60,50,35,0.16)] rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-tide-blue focus:border-tide-blue"
                     />
                   </td>
                   <!-- Rate Type -->
                   <td class="px-3 py-2">
                     <select
                       v-model="rate.rateType"
-                      class="block w-28 px-2 py-1.5 border border-gray-300 rounded-md text-sm bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                      class="block w-28 px-2 py-1.5 border border-[rgba(60,50,35,0.16)] rounded-md text-sm bg-[rgba(255,253,247,0.92)] focus:outline-none focus:ring-1 focus:ring-tide-blue focus:border-tide-blue"
                     >
                       <option v-for="rt in RATE_TYPES" :key="rt" :value="rt">{{ rt }}</option>
                     </select>
@@ -607,7 +607,7 @@ const removeRate = (index: number) => {
                       v-model="rate.glCode"
                       type="text"
                       :placeholder="t('tariffs.placeholder.glCode')"
-                      class="block w-24 px-2 py-1.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                      class="block w-24 px-2 py-1.5 border border-[rgba(60,50,35,0.16)] rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-tide-blue focus:border-tide-blue"
                     />
                   </td>
                   <!-- Remove -->
@@ -615,7 +615,7 @@ const removeRate = (index: number) => {
                     <button
                       type="button"
                       @click="removeRate(idx)"
-                      class="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                      class="p-1.5 text-tide-ink/40 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                       :aria-label="t('tariffs.action.removeRate')"
                     >
                       <Trash2 class="h-4 w-4" />
@@ -632,14 +632,14 @@ const removeRate = (index: number) => {
           <button
             type="button"
             @click="handleFormCancel"
-            class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            class="px-4 py-2 border border-[rgba(60,50,35,0.16)] rounded-lg text-sm font-medium text-tide-ink/80 bg-[rgba(255,253,247,0.92)] hover:bg-[rgba(252,247,238,0.55)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-tide-blue"
           >
             {{ t('common.cancel') }}
           </button>
           <button
             type="submit"
             :disabled="isSaving"
-            class="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-tide-blue-btn-deep hover:bg-tide-blue-deep focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-tide-blue disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span v-if="isSaving">{{ t('tariffs.button.saving') }}</span>
             <span v-else>{{ editingTariff ? t('tariffs.button.updateTariff') : t('tariffs.button.createTariff') }}</span>
@@ -651,15 +651,15 @@ const removeRate = (index: number) => {
     <!-- ── Delete Confirmation Modal ──────────────────────────────────── -->
     <Teleport to="body">
       <div v-if="showDeleteConfirm" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-xl shadow-xl max-w-md w-full">
+        <div class="bg-[rgba(255,253,247,0.92)] rounded-xl shadow-xl max-w-md w-full">
           <div class="p-6">
             <div class="flex items-center space-x-3">
               <div class="flex-shrink-0">
                 <XCircle class="h-10 w-10 text-red-500" />
               </div>
               <div class="flex-1">
-                <h3 class="text-lg font-semibold text-gray-900">{{ t('tariffs.deleteModal.title') }}</h3>
-                <p class="mt-1 text-sm text-gray-600">
+                <h3 class="text-lg font-semibold text-tide-ink">{{ t('tariffs.deleteModal.title') }}</h3>
+                <p class="mt-1 text-sm text-tide-ink/70">
                   <i18n-t keypath="tariffs.deleteModal.confirm" tag="span">
                     <template #name><strong>{{ tariffToDelete?.name }}</strong></template>
                   </i18n-t>
@@ -667,10 +667,10 @@ const removeRate = (index: number) => {
               </div>
             </div>
           </div>
-          <div class="px-4 py-3 bg-gray-50 rounded-b-xl flex justify-end space-x-3">
+          <div class="px-4 py-3 bg-[rgba(252,247,238,0.55)] rounded-b-xl flex justify-end space-x-3">
             <button
               @click="showDeleteConfirm = false"
-              class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              class="px-4 py-2 border border-[rgba(60,50,35,0.16)] rounded-lg text-sm font-medium text-tide-ink/80 hover:bg-[rgba(252,247,238,0.55)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-tide-blue"
             >
               {{ t('common.cancel') }}
             </button>

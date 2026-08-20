@@ -661,8 +661,8 @@ const refreshSnapshot = async () => {
 
 const getInputClasses = (fieldName: string, variant: 'default' | 'sm' = 'default') => {
   const baseClasses = variant === 'sm' 
-    ? "block w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-    : "block w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200";
+    ? "block w-full px-3 py-2 text-sm border border-[rgba(60,50,35,0.12)] rounded-lg focus:ring-2 focus:ring-tide-blue focus:border-transparent transition-all duration-200"
+    : "block w-full px-4 py-3 border border-[rgba(60,50,35,0.12)] rounded-lg focus:ring-2 focus:ring-tide-blue focus:border-transparent transition-all duration-200";
   
   return {
     [baseClasses]: true,
@@ -672,7 +672,7 @@ const getInputClasses = (fieldName: string, variant: 'default' | 'sm' = 'default
 
 const getItemInputClasses = (item: Item, field: string) => {
   return {
-    "block w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200": true,
+    "block w-full px-3 py-2 text-sm border border-[rgba(60,50,35,0.12)] rounded-lg focus:ring-2 focus:ring-tide-blue focus:border-transparent transition-all duration-200": true,
     "border-red-300 bg-red-50": item.errors && item.errors[field],
   };
 };
@@ -1131,23 +1131,23 @@ const generateInvoice = async () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-[rgba(252,247,238,0.55)]">
     <!-- Header -->
-    <div class="bg-white border-b border-gray-200 sticky top-0 z-40">
+    <div class="bg-[rgba(255,253,247,0.92)] border-b border-[rgba(60,50,35,0.12)] sticky top-0 z-40">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
           <div class="flex items-center space-x-4">
             <button 
               @click="emit('cancel')" 
-              class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+              class="p-2 text-tide-ink/40 hover:text-tide-ink/70 hover:bg-[rgba(42,36,30,0.05)] rounded-lg transition-colors"
             >
               <ArrowLeft class="h-5 w-5" />
             </button>
             <div>
-              <h1 class="text-xl font-semibold text-gray-900">
+              <h1 class="text-xl font-semibold text-tide-ink">
                 {{ editMode ? t("billOfLadingForm.header.editTitle") : t("billOfLadingForm.header.newTitle") }}
               </h1>
-              <p class="text-sm text-gray-500 mt-0.5">
+              <p class="text-sm text-tide-ink/55 mt-0.5">
                 {{ editMode ? t("billOfLadingForm.header.editSubtitle", { number: formData.blNumber || t("billOfLadingForm.header.draft") }) : t("billOfLadingForm.header.newSubtitle") }}
               </p>
             </div>
@@ -1168,7 +1168,7 @@ const generateInvoice = async () => {
             <button
               @click="handleSubmit"
               :disabled="isSubmitting"
-              class="inline-flex items-center px-6 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors disabled:opacity-50"
+              class="inline-flex items-center px-6 py-2 text-sm font-medium text-white bg-tide-blue-btn-deep border border-transparent rounded-lg hover:bg-tide-blue-deep focus:ring-2 focus:ring-offset-2 focus:ring-tide-blue transition-colors disabled:opacity-50"
             >
               <Loader2 v-if="isSubmitting" class="h-4 w-4 mr-2 animate-spin" />
               <Save v-else class="h-4 w-4 mr-2" />
@@ -1180,7 +1180,7 @@ const generateInvoice = async () => {
     </div>
 
    <!-- Progress Steps -->
-<div class="bg-white border-b border-gray-200">
+<div class="bg-[rgba(255,253,247,0.92)] border-b border-[rgba(60,50,35,0.12)]">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="py-6">
       <nav :aria-label="t('billOfLadingForm.aria.progress')">
@@ -1201,7 +1201,7 @@ const generateInvoice = async () => {
                   v-if="stepIdx !== 0"
                   :class="[
                     'absolute top-1/2 -translate-y-1/2 left-0 right-1/2 h-0.5',
-                    currentStepIndex >= stepIdx ? 'bg-blue-600' : 'bg-gray-200'
+                    currentStepIndex >= stepIdx ? 'bg-tide-blue-btn-deep' : 'bg-gray-200'
                   ]"
                   aria-hidden="true"
                 />
@@ -1210,7 +1210,7 @@ const generateInvoice = async () => {
                   v-if="stepIdx !== steps.length - 1"
                   :class="[
                     'absolute top-1/2 -translate-y-1/2 left-1/2 right-0 h-0.5',
-                    currentStepIndex > stepIdx ? 'bg-blue-600' : 'bg-gray-200'
+                    currentStepIndex > stepIdx ? 'bg-tide-blue-btn-deep' : 'bg-gray-200'
                   ]"
                   aria-hidden="true"
                 />
@@ -1220,8 +1220,8 @@ const generateInvoice = async () => {
                   :class="[
                     'relative z-10 flex h-8 w-8 items-center justify-center rounded-full transition-colors',
                     (activeStep === step.id || currentStepIndex > stepIdx)
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-white border-2 border-gray-300 text-gray-500'
+                      ? 'bg-tide-blue-btn-deep text-white'
+                      : 'bg-[rgba(255,253,247,0.92)] border-2 border-[rgba(60,50,35,0.16)] text-tide-ink/55'
                   ]"
                 >
                   <component :is="step.icon" class="h-4 w-4" />
@@ -1233,10 +1233,10 @@ const generateInvoice = async () => {
                 :class="[
                   'mt-2 text-[13px] leading-5 font-medium tracking-wide',
                   activeStep === step.id
-                    ? 'text-blue-600'
+                    ? 'text-tide-blue-deep'
                     : currentStepIndex > stepIdx
-                    ? 'text-gray-800'
-                    : 'text-gray-400'
+                    ? 'text-tide-ink'
+                    : 'text-tide-ink/40'
                 ]"
               >
                 {{ step.label }}
@@ -1252,13 +1252,13 @@ const generateInvoice = async () => {
 
     <!-- Main Content -->
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+      <div class="bg-[rgba(255,253,247,0.92)] rounded-xl shadow-sm border border-[rgba(60,50,35,0.12)]">
         
         <!-- Basic -->
         <div v-show="activeStep === 'basic'" class="p-8">
           <div class="mb-8">
-            <h2 class="text-lg font-semibold text-gray-900 mb-2">{{ t("billOfLadingForm.section.basicInformation") }}</h2>
-            <p class="text-gray-600">{{ t("billOfLadingForm.section.basicInformationSub") }}</p>
+            <h2 class="text-lg font-semibold text-tide-ink mb-2">{{ t("billOfLadingForm.section.basicInformation") }}</h2>
+            <p class="text-tide-ink/70">{{ t("billOfLadingForm.section.basicInformationSub") }}</p>
           </div>
 
           <!-- Identifiants principaux -->
@@ -1290,8 +1290,8 @@ const generateInvoice = async () => {
           </div>
 
           <!-- Références & conditions commerciales -->
-          <div class="border-t border-gray-100 pt-6 mb-8">
-            <h3 class="text-sm font-semibold text-gray-700 mb-4 flex items-center gap-2">
+          <div class="border-t border-[rgba(42,36,30,0.07)] pt-6 mb-8">
+            <h3 class="text-sm font-semibold text-tide-ink/80 mb-4 flex items-center gap-2">
               <span class="w-3 h-3 rounded-full bg-amber-400 inline-block"></span>
               {{ t("billOfLadingForm.section.referencesConditions") }}
             </h3>
@@ -1343,23 +1343,23 @@ const generateInvoice = async () => {
           </div>
 
           <!-- Quick Stats -->
-          <div class="bg-gray-50 rounded-lg p-4 mb-6">
+          <div class="bg-[rgba(252,247,238,0.55)] rounded-lg p-4 mb-6">
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
               <div>
-                <div class="text-2xl font-bold text-blue-600">{{ formData.items.length }}</div>
-                <div class="text-xs text-gray-500">{{ t("billOfLadingForm.stats.units") }}</div>
+                <div class="text-2xl font-bold text-tide-blue-deep">{{ formData.items.length }}</div>
+                <div class="text-xs text-tide-ink/55">{{ t("billOfLadingForm.stats.units") }}</div>
               </div>
               <div>
                 <div class="text-2xl font-bold text-green-600">{{ totalWeightKg.toFixed(1) }}</div>
-                <div class="text-xs text-gray-500">{{ t("billOfLadingForm.stats.weightKg") }}</div>
+                <div class="text-xs text-tide-ink/55">{{ t("billOfLadingForm.stats.weightKg") }}</div>
               </div>
               <div>
                 <div class="text-lg font-semibold text-amber-600">{{ formData.incoterms || '—' }}</div>
-                <div class="text-xs text-gray-500">{{ t("billOfLadingForm.field.incoterms") }}</div>
+                <div class="text-xs text-tide-ink/55">{{ t("billOfLadingForm.field.incoterms") }}</div>
               </div>
               <div>
-                <div class="text-lg font-semibold text-slate-600">{{ formData.freightPayableAt || '—' }}</div>
-                <div class="text-xs text-gray-500">{{ t("billOfLadingForm.stats.freight") }}</div>
+                <div class="text-lg font-semibold text-tide-ink/70">{{ formData.freightPayableAt || '—' }}</div>
+                <div class="text-xs text-tide-ink/55">{{ t("billOfLadingForm.stats.freight") }}</div>
               </div>
             </div>
           </div>
@@ -1367,7 +1367,7 @@ const generateInvoice = async () => {
           <div class="flex justify-end">
             <button
               @click="nextStep"
-              class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              class="px-6 py-2 bg-tide-blue-btn-deep text-white rounded-lg hover:bg-tide-blue-deep transition-colors"
             >
               {{ t("billOfLadingForm.button.nextParties") }}
             </button>
@@ -1377,8 +1377,8 @@ const generateInvoice = async () => {
         <!-- Parties -->
         <div v-show="activeStep === 'parties'" class="p-8">
           <div class="mb-8">
-            <h2 class="text-lg font-semibold text-gray-900 mb-2">{{ t("billOfLadingForm.section.partyInformation") }}</h2>
-            <p class="text-gray-600">{{ t("billOfLadingForm.section.partyInformationSub") }}</p>
+            <h2 class="text-lg font-semibold text-tide-ink mb-2">{{ t("billOfLadingForm.section.partyInformation") }}</h2>
+            <p class="text-tide-ink/70">{{ t("billOfLadingForm.section.partyInformationSub") }}</p>
           </div>
 
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -1436,13 +1436,13 @@ const generateInvoice = async () => {
           <div class="flex justify-between mt-8">
             <button
               @click="prevStep"
-              class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              class="px-6 py-2 border border-[rgba(60,50,35,0.16)] text-tide-ink/80 rounded-lg hover:bg-[rgba(252,247,238,0.55)] transition-colors"
             >
               {{ t("invoices.button.previous") }}
             </button>
             <button
               @click="nextStep"
-              class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              class="px-6 py-2 bg-tide-blue-btn-deep text-white rounded-lg hover:bg-tide-blue-deep transition-colors"
             >
               {{ t("billOfLadingForm.button.nextTransport") }}
             </button>
@@ -1452,13 +1452,13 @@ const generateInvoice = async () => {
         <!-- Transport -->
         <div v-show="activeStep === 'transport'" class="p-8">
           <div class="mb-8">
-            <h2 class="text-lg font-semibold text-gray-900 mb-2">{{ t("billOfLadingForm.section.transportInformation") }}</h2>
-            <p class="text-gray-600">{{ t("billOfLadingForm.section.transportInformationSub") }}</p>
+            <h2 class="text-lg font-semibold text-tide-ink mb-2">{{ t("billOfLadingForm.section.transportInformation") }}</h2>
+            <p class="text-tide-ink/70">{{ t("billOfLadingForm.section.transportInformationSub") }}</p>
           </div>
 
           <div class="space-y-8">
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-4">{{ t("billOfLadingForm.field.transportType") }}</label>
+              <label class="block text-sm font-medium text-tide-ink/80 mb-4">{{ t("billOfLadingForm.field.transportType") }}</label>
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div
                   v-for="type in (['Vessel', 'Train', 'Truck'] as const)"
@@ -1467,17 +1467,17 @@ const generateInvoice = async () => {
                   :class="[
                     'relative flex cursor-pointer rounded-lg border p-4 focus:outline-none',
                     formData.transportType === type
-                      ? 'border-blue-600 bg-blue-50'
-                      : 'border-gray-300 bg-white hover:bg-gray-50',
+                      ? 'border-blue-600 bg-[rgba(90,138,171,0.10)]'
+                      : 'border-[rgba(60,50,35,0.16)] bg-[rgba(255,253,247,0.92)] hover:bg-[rgba(252,247,238,0.55)]',
                     formData.status === 'Final' ? 'cursor-not-allowed opacity-50' : ''
                   ]"
                 >
                   <div class="flex items-center">
                     <div class="flex-shrink-0">
-                      <component :is="TRANSPORT_ICONS[type]" class="h-6 w-6 text-gray-600" />
+                      <component :is="TRANSPORT_ICONS[type]" class="h-6 w-6 text-tide-ink/70" />
                     </div>
                     <div class="ml-3">
-                      <div class="text-sm font-medium text-gray-900">{{ type }}</div>
+                      <div class="text-sm font-medium text-tide-ink">{{ type }}</div>
                     </div>
                   </div>
                   <div
@@ -1491,7 +1491,7 @@ const generateInvoice = async () => {
             <!-- Vessel -->
             <div v-if="formData.transportType === 'Vessel'" class="space-y-6">
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">
+                <label class="block text-sm font-medium text-tide-ink/80 mb-2">
                   <Search class="inline h-4 w-4 mr-1" />
                   {{ t("billOfLadingForm.field.searchVesselVisit") }}
                 </label>
@@ -1503,15 +1503,15 @@ const generateInvoice = async () => {
                   :class="getInputClasses('vessel')"
                 />
                 <div v-if="vesselSearchResults.length" class="relative">
-                  <div class="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-lg border border-gray-200 overflow-auto">
+                  <div class="absolute z-10 mt-1 w-full bg-[rgba(255,253,247,0.92)] shadow-lg max-h-60 rounded-lg border border-[rgba(60,50,35,0.12)] overflow-auto">
                     <div
                       v-for="visit in vesselSearchResults"
                       :key="visit.id"
                       @click="selectVesselVisit(visit)"
-                      class="cursor-pointer px-4 py-3 hover:bg-blue-50 border-b border-gray-100 last:border-b-0"
+                      class="cursor-pointer px-4 py-3 hover:bg-[rgba(90,138,171,0.10)] border-b border-[rgba(42,36,30,0.07)] last:border-b-0"
                     >
-                      <div class="font-medium text-gray-900">{{ visit.vesselName }}</div>
-                      <div class="text-sm text-gray-500">
+                      <div class="font-medium text-tide-ink">{{ visit.vesselName }}</div>
+                      <div class="text-sm text-tide-ink/55">
                         {{ t("billOfLadingForm.vesselResult.info", { imo: visit.imo || '-', voyageIn: visit.voyageIn || '-', voyageOut: visit.voyageOut || '-', terminal: visit.terminal || '-', eta: visit.eta || '-', etd: visit.etd || '-' }) }}
                       </div>
                     </div>
@@ -1524,23 +1524,23 @@ const generateInvoice = async () => {
               </div>
 
               <!-- Vessel Snapshot -->
-              <div v-if="formData.transportSnapshot" class="bg-gray-50 rounded-lg p-6">
+              <div v-if="formData.transportSnapshot" class="bg-[rgba(252,247,238,0.55)] rounded-lg p-6">
                 <div class="flex justify-between items-center mb-4">
-                  <h3 class="text-sm font-medium text-gray-900">{{ t("billOfLadingForm.label.selectedVesselVisit") }}</h3>
+                  <h3 class="text-sm font-medium text-tide-ink">{{ t("billOfLadingForm.label.selectedVesselVisit") }}</h3>
                   <div class="flex space-x-2">
                     <button
                       v-if="!refreshDisabled && formData.status !== 'Final'"
                       type="button"
                       @click="refreshSnapshot"
                       :disabled="isRefreshingTransport"
-                      class="text-sm text-blue-600 hover:text-blue-900"
+                      class="text-sm text-tide-blue-deep hover:text-tide-blue-deep"
                     >
                       {{ isRefreshingTransport ? t("billOfLadingForm.button.refreshing") : t("billOfLadingForm.button.refresh") }}
                     </button>
                     <a
                       v-if="formData.transportSnapshot.id"
                       :href="`/vessel-visits/${formData.transportSnapshot.id}`"
-                      class="text-sm text-blue-600 hover:text-blue-900"
+                      class="text-sm text-tide-blue-deep hover:text-tide-blue-deep"
                     >
                       {{ t("billOfLadingForm.button.viewDetails") }}
                     </a>
@@ -1558,10 +1558,10 @@ const generateInvoice = async () => {
                     { key: 'berth', label: t('billOfLadingForm.vessel.berth') },
                     { key: 'eta', label: t('billOfLadingForm.vessel.eta') }
                   ]" :key="field.key" class="space-y-1">
-                    <label class="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                    <label class="text-xs font-medium text-tide-ink/55 uppercase tracking-wide">
                       {{ field.label }}
                     </label>
-                    <div class="text-sm text-gray-900">
+                    <div class="text-sm text-tide-ink">
                       {{ (formData.transportSnapshot as Record<string, any>)[field.key] || '-' }}
                     </div>
                   </div>
@@ -1609,13 +1609,13 @@ const generateInvoice = async () => {
           <div class="flex justify-between mt-8">
             <button
               @click="prevStep"
-              class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              class="px-6 py-2 border border-[rgba(60,50,35,0.16)] text-tide-ink/80 rounded-lg hover:bg-[rgba(252,247,238,0.55)] transition-colors"
             >
               {{ t("invoices.button.previous") }}
             </button>
             <button
               @click="nextStep"
-              class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              class="px-6 py-2 bg-tide-blue-btn-deep text-white rounded-lg hover:bg-tide-blue-deep transition-colors"
             >
               {{ t("billOfLadingForm.button.nextCommodity") }}
             </button>
@@ -1625,14 +1625,14 @@ const generateInvoice = async () => {
         <!-- Commodity -->
         <div v-show="activeStep === 'commodity'" class="p-8">
           <div class="mb-8">
-            <h2 class="text-lg font-semibold text-gray-900 mb-2">{{ t("billOfLadingForm.section.commodityInformation") }}</h2>
-            <p class="text-gray-600">{{ t("billOfLadingForm.section.commodityInformationSub") }}</p>
+            <h2 class="text-lg font-semibold text-tide-ink mb-2">{{ t("billOfLadingForm.section.commodityInformation") }}</h2>
+            <p class="text-tide-ink/70">{{ t("billOfLadingForm.section.commodityInformationSub") }}</p>
           </div>
 
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div class="lg:col-span-2 space-y-6">
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">
+                <label class="block text-sm font-medium text-tide-ink/80 mb-2">
                   {{ t("billOfLadingForm.field.description") }} <span class="text-red-500">*</span>
                 </label>
                 <textarea
@@ -1649,7 +1649,7 @@ const generateInvoice = async () => {
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
+                  <label class="block text-sm font-medium text-tide-ink/80 mb-2">
                     {{ t("billOfLadingForm.field.numberOfPackages") }} <span class="text-red-500">*</span>
                   </label>
                   <input
@@ -1669,9 +1669,9 @@ const generateInvoice = async () => {
                   <input
                     v-model="formData.commodity.hazardous"
                     type="checkbox"
-                    class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    class="h-4 w-4 text-tide-blue-deep border-[rgba(60,50,35,0.16)] rounded focus:ring-tide-blue"
                   />
-                  <label class="ml-2 text-sm text-gray-700 font-medium">
+                  <label class="ml-2 text-sm text-tide-ink/80 font-medium">
                     {{ t("billOfLadingForm.field.hazardousCargo") }}
                   </label>
                 </div>
@@ -1689,7 +1689,7 @@ const generateInvoice = async () => {
                       v-model="formData.commodity.hazardClass"
                       type="text"
                       :placeholder="t('billOfLadingForm.placeholder.hazardClass')"
-                      class="block w-full px-3 py-2 text-sm border border-amber-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white"
+                      class="block w-full px-3 py-2 text-sm border border-amber-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-[rgba(255,253,247,0.92)]"
                     />
                   </div>
                   <div>
@@ -1698,39 +1698,39 @@ const generateInvoice = async () => {
                       v-model="formData.commodity.unNumber"
                       type="text"
                       :placeholder="t('billOfLadingForm.placeholder.unNumber')"
-                      class="block w-full px-3 py-2 text-sm border border-amber-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white"
+                      class="block w-full px-3 py-2 text-sm border border-amber-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-[rgba(255,253,247,0.92)]"
                     />
                   </div>
                 </div>
               </div>
             </div>
 
-            <div class="bg-gray-50 rounded-lg p-6">
-              <h3 class="text-sm font-medium text-gray-900 mb-4">{{ t("billOfLadingForm.label.commoditySummary") }}</h3>
+            <div class="bg-[rgba(252,247,238,0.55)] rounded-lg p-6">
+              <h3 class="text-sm font-medium text-tide-ink mb-4">{{ t("billOfLadingForm.label.commoditySummary") }}</h3>
               <div class="space-y-4">
                 <div class="flex justify-between">
-                  <span class="text-sm text-gray-500">{{ t("billOfLadingForm.label.totalWeight") }}</span>
-                  <span class="text-sm font-medium text-gray-900">{{ totalWeightKg.toFixed(1) }} kg</span>
+                  <span class="text-sm text-tide-ink/55">{{ t("billOfLadingForm.label.totalWeight") }}</span>
+                  <span class="text-sm font-medium text-tide-ink">{{ totalWeightKg.toFixed(1) }} kg</span>
                 </div>
                 <div class="flex justify-between">
-                  <span class="text-sm text-gray-500">{{ t("billOfLadingForm.label.totalVolume") }}</span>
-                  <span class="text-sm font-medium text-gray-900">{{ totalVolumeM3.toFixed(1) }} m³</span>
+                  <span class="text-sm text-tide-ink/55">{{ t("billOfLadingForm.label.totalVolume") }}</span>
+                  <span class="text-sm font-medium text-tide-ink">{{ totalVolumeM3.toFixed(1) }} m³</span>
                 </div>
                 <div class="flex justify-between">
-                  <span class="text-sm text-gray-500">{{ t("billOfLading.field.packages") }}</span>
-                  <span class="text-sm font-medium text-gray-900">{{ formData.commodity.packagesNumber || 0 }}</span>
+                  <span class="text-sm text-tide-ink/55">{{ t("billOfLading.field.packages") }}</span>
+                  <span class="text-sm font-medium text-tide-ink">{{ formData.commodity.packagesNumber || 0 }}</span>
                 </div>
                 <div class="flex justify-between">
-                  <span class="text-sm text-gray-500">{{ t("billOfLadingForm.label.hazardous") }}</span>
+                  <span class="text-sm text-tide-ink/55">{{ t("billOfLadingForm.label.hazardous") }}</span>
                   <span :class="[
                     'text-sm font-medium',
-                    formData.commodity.hazardous ? 'text-amber-600' : 'text-gray-900'
+                    formData.commodity.hazardous ? 'text-amber-600' : 'text-tide-ink'
                   ]">
                     {{ formData.commodity.hazardous ? t("common.yes") : t("common.no") }}
                   </span>
                 </div>
               </div>
-              <div class="mt-4 pt-4 border-t border-gray-200 text-xs text-gray-500">
+              <div class="mt-4 pt-4 border-t border-[rgba(60,50,35,0.12)] text-xs text-tide-ink/55">
                 {{ t("billOfLadingForm.label.weightVolumeCalculated") }}
               </div>
             </div>
@@ -1739,13 +1739,13 @@ const generateInvoice = async () => {
           <div class="flex justify-between mt-8">
             <button
               @click="prevStep"
-              class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              class="px-6 py-2 border border-[rgba(60,50,35,0.16)] text-tide-ink/80 rounded-lg hover:bg-[rgba(252,247,238,0.55)] transition-colors"
             >
               {{ t("invoices.button.previous") }}
             </button>
             <button
               @click="nextStep"
-              class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              class="px-6 py-2 bg-tide-blue-btn-deep text-white rounded-lg hover:bg-tide-blue-deep transition-colors"
             >
               {{ t("billOfLadingForm.button.nextItems") }}
             </button>
@@ -1757,13 +1757,13 @@ const generateInvoice = async () => {
           <div class="mb-8">
             <div class="flex justify-between items-center">
               <div>
-                <h2 class="text-lg font-semibold text-gray-900 mb-2">{{ t("billOfLadingForm.section.items") }}</h2>
-                <p class="text-gray-600">{{ t("billOfLadingForm.section.itemsSub") }}</p>
+                <h2 class="text-lg font-semibold text-tide-ink mb-2">{{ t("billOfLadingForm.section.items") }}</h2>
+                <p class="text-tide-ink/70">{{ t("billOfLadingForm.section.itemsSub") }}</p>
               </div>
               <div class="flex items-center gap-2">
                 <button
                   @click="openAttachItem"
-                  class="inline-flex items-center px-4 py-2 border border-blue-300 text-blue-700 bg-white rounded-lg hover:bg-blue-50 transition-colors"
+                  class="inline-flex items-center px-4 py-2 border border-blue-300 text-tide-blue-deep bg-[rgba(255,253,247,0.92)] rounded-lg hover:bg-[rgba(90,138,171,0.10)] transition-colors"
                   type="button"
                 >
                   <Search class="h-4 w-4 mr-2" />
@@ -1771,7 +1771,7 @@ const generateInvoice = async () => {
                 </button>
                 <button
                   @click="addItem"
-                  class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  class="inline-flex items-center px-4 py-2 bg-tide-blue-btn-deep text-white rounded-lg hover:bg-tide-blue-deep transition-colors"
                   type="button"
                 >
                   <Plus class="h-4 w-4 mr-2" />
@@ -1786,13 +1786,13 @@ const generateInvoice = async () => {
             {{ errors.items }}
           </p>
 
-          <div v-if="formData.items.length === 0" class="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-            <Package class="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 class="text-sm font-medium text-gray-900 mb-2">{{ t("billOfLadingForm.label.noItemsYet") }}</h3>
-            <p class="text-sm text-gray-500 mb-4">{{ t("billOfLadingForm.label.noItemsHint") }}</p>
+          <div v-if="formData.items.length === 0" class="text-center py-12 bg-[rgba(252,247,238,0.55)] rounded-lg border-2 border-dashed border-[rgba(60,50,35,0.16)]">
+            <Package class="h-12 w-12 text-tide-ink/40 mx-auto mb-4" />
+            <h3 class="text-sm font-medium text-tide-ink mb-2">{{ t("billOfLadingForm.label.noItemsYet") }}</h3>
+            <p class="text-sm text-tide-ink/55 mb-4">{{ t("billOfLadingForm.label.noItemsHint") }}</p>
             <button
               @click="addItem"
-              class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              class="inline-flex items-center px-4 py-2 bg-tide-blue-btn-deep text-white rounded-lg hover:bg-tide-blue-deep transition-colors"
             >
               <Plus class="h-4 w-4 mr-2" />
               {{ t("billOfLadingForm.button.addFirstItem") }}
@@ -1803,14 +1803,14 @@ const generateInvoice = async () => {
             <div
               v-for="(item, index) in formData.items"
               :key="item.clientId"
-              class="bg-white border border-gray-200 rounded-lg overflow-hidden"
+              class="bg-[rgba(255,253,247,0.92)] border border-[rgba(60,50,35,0.12)] rounded-lg overflow-hidden"
             >
               <div class="p-6">
                 <div class="flex items-center justify-between">
                   <div class="flex items-center space-x-4">
                     <button
                       @click="toggleItem(item)"
-                      class="p-1 text-gray-400 hover:text-gray-600 transition-colors"
+                      class="p-1 text-tide-ink/40 hover:text-tide-ink/70 transition-colors"
                     >
                       <ChevronDown v-if="!item.expanded" class="h-5 w-5" />
                       <ChevronUp v-else class="h-5 w-5" />
@@ -1819,7 +1819,7 @@ const generateInvoice = async () => {
                     <div class="flex items-center space-x-3">
                       <div :class="[
                         'w-10 h-10 rounded-lg flex items-center justify-center',
-                        item.itemType === 'container' ? 'bg-blue-100 text-blue-600' :
+                        item.itemType === 'container' ? 'bg-blue-100 text-tide-blue-deep' :
                         item.itemType === 'vehicle' ? 'bg-green-100 text-green-600' :
                         'bg-purple-100 text-purple-600'
                       ]">
@@ -1832,9 +1832,9 @@ const generateInvoice = async () => {
                             v-model="item.itemNumber"
                             :placeholder="t('billOfLadingForm.placeholder.itemNumber')"
                             class="text-sm font-medium bg-transparent border-none p-0 focus:ring-0 focus:outline-none"
-                            :class="item.errors?.itemNumber ? 'text-red-600' : 'text-gray-900'"
+                            :class="item.errors?.itemNumber ? 'text-red-600' : 'text-tide-ink'"
                           />
-                          <span class="text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded-full capitalize">
+                          <span class="text-xs px-2 py-1 bg-[rgba(42,36,30,0.05)] text-tide-ink/70 rounded-full capitalize">
                             {{ item.itemType }}
                           </span>
                         </div>
@@ -1848,7 +1848,7 @@ const generateInvoice = async () => {
                   <div class="flex items-center space-x-2">
                     <button
                       @click="duplicateItem(index)"
-                      class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                      class="p-2 text-tide-ink/40 hover:text-tide-ink/70 hover:bg-[rgba(42,36,30,0.05)] rounded-lg transition-colors"
                       :title="t('billOfLadingForm.button.duplicateItem')"
                     >
                       <Copy class="h-4 w-4" />
@@ -1865,7 +1865,7 @@ const generateInvoice = async () => {
 
                 <div class="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div>
-                    <label class="block text-xs font-medium text-gray-500 mb-1">{{ t("billOfLading.itemsModal.colType") }}</label>
+                    <label class="block text-xs font-medium text-tide-ink/55 mb-1">{{ t("billOfLading.itemsModal.colType") }}</label>
                     <select
                       v-model="item.itemType"
                       :class="getItemInputClasses(item, 'itemType')"
@@ -1877,7 +1877,7 @@ const generateInvoice = async () => {
                   </div>
 
                   <div>
-                    <label class="block text-xs font-medium text-gray-500 mb-1">{{ t("billOfLadingForm.field.weightKg") }}</label>
+                    <label class="block text-xs font-medium text-tide-ink/55 mb-1">{{ t("billOfLadingForm.field.weightKg") }}</label>
                     <input
                       v-model.number="item.weightKg"
                       type="number"
@@ -1889,7 +1889,7 @@ const generateInvoice = async () => {
                   </div>
 
                   <div>
-                    <label class="block text-xs font-medium text-gray-500 mb-1">{{ t("billOfLadingForm.field.volumeM3") }}</label>
+                    <label class="block text-xs font-medium text-tide-ink/55 mb-1">{{ t("billOfLadingForm.field.volumeM3") }}</label>
                     <input
                       v-model.number="item.volumeM3"
                       type="number"
@@ -1901,7 +1901,7 @@ const generateInvoice = async () => {
                   </div>
 
                   <div>
-                    <label class="block text-xs font-medium text-gray-500 mb-1">{{ t("invoices.column.status") }}</label>
+                    <label class="block text-xs font-medium text-tide-ink/55 mb-1">{{ t("invoices.column.status") }}</label>
                     <select
                       v-model="item.status"
                       :class="getItemInputClasses(item, 'status')"
@@ -1916,7 +1916,7 @@ const generateInvoice = async () => {
                 </div>
               </div>
 
-              <div v-if="item.expanded" class="bg-gray-50 px-6 py-4 border-t border-gray-200">
+              <div v-if="item.expanded" class="bg-[rgba(252,247,238,0.55)] px-6 py-4 border-t border-[rgba(60,50,35,0.12)]">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <Input
                     v-model="item.ownerId"
@@ -1968,7 +1968,7 @@ const generateInvoice = async () => {
                   />
 
                   <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">{{ t("payments.field.notes") }}</label>
+                    <label class="block text-sm font-medium text-tide-ink/80 mb-2">{{ t("payments.field.notes") }}</label>
                     <textarea
                       v-model="item.notes"
                       rows="3"
@@ -1981,7 +1981,7 @@ const generateInvoice = async () => {
                 <div class="flex justify-end mt-4">
                   <button
                     @click="saveItem(item)"
-                    class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+                    class="px-4 py-2 text-sm font-medium text-white bg-tide-blue-btn-deep hover:bg-tide-blue-deep rounded-lg transition-colors"
                   >
                     {{ t("billOfLadingForm.button.saveItem") }}
                   </button>
@@ -1993,7 +1993,7 @@ const generateInvoice = async () => {
           <div class="flex justify-between mt-8">
             <button
               @click="prevStep"
-              class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              class="px-6 py-2 border border-[rgba(60,50,35,0.16)] text-tide-ink/80 rounded-lg hover:bg-[rgba(252,247,238,0.55)] transition-colors"
             >
               {{ t("invoices.button.previous") }}
             </button>
@@ -2027,15 +2027,15 @@ const generateInvoice = async () => {
         class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-start justify-center z-50 p-4 pt-24"
         @click.self="showAttachItem = false"
       >
-        <div class="bg-white rounded-xl shadow-xl w-full max-w-xl">
-          <div class="flex items-center justify-between p-4 border-b border-gray-200">
+        <div class="bg-[rgba(255,253,247,0.92)] rounded-xl shadow-xl w-full max-w-xl">
+          <div class="flex items-center justify-between p-4 border-b border-[rgba(60,50,35,0.12)]">
             <div class="flex items-center gap-2">
-              <Search class="h-5 w-5 text-blue-600" />
-              <h3 class="text-lg font-semibold text-gray-900">
+              <Search class="h-5 w-5 text-tide-blue-deep" />
+              <h3 class="text-lg font-semibold text-tide-ink">
                 {{ t('billOfLadingForm.attachItem.title') }}
               </h3>
             </div>
-            <button @click="showAttachItem = false" class="text-gray-400 hover:text-gray-600">
+            <button @click="showAttachItem = false" class="text-tide-ink/40 hover:text-tide-ink/70">
               <X class="h-5 w-5" />
             </button>
           </div>
@@ -2044,39 +2044,39 @@ const generateInvoice = async () => {
               v-model="attachItemQuery"
               type="search"
               :placeholder="t('billOfLadingForm.attachItem.placeholder')"
-              class="block w-full border border-gray-300 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+              class="block w-full border border-[rgba(60,50,35,0.16)] rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-tide-blue focus:border-tide-blue"
               autofocus
             />
-            <div v-if="attachItemLoading" class="py-6 text-center text-sm text-gray-500">
+            <div v-if="attachItemLoading" class="py-6 text-center text-sm text-tide-ink/55">
               <Loader2 class="h-4 w-4 animate-spin inline mr-2" />
               {{ t('common.loading') }}
             </div>
-            <ul v-else-if="attachItemResults.length" class="max-h-80 overflow-y-auto divide-y divide-gray-100 border border-gray-200 rounded-lg">
+            <ul v-else-if="attachItemResults.length" class="max-h-80 overflow-y-auto divide-y divide-[rgba(42,36,30,0.06)] border border-[rgba(60,50,35,0.12)] rounded-lg">
               <li
                 v-for="item in attachItemResults"
                 :key="item.id"
-                class="px-3 py-2 hover:bg-blue-50 cursor-pointer flex items-center justify-between"
+                class="px-3 py-2 hover:bg-[rgba(90,138,171,0.10)] cursor-pointer flex items-center justify-between"
                 @click="attachExistingItem(item)"
               >
                 <div>
-                  <div class="text-sm font-medium text-gray-900">
+                  <div class="text-sm font-medium text-tide-ink">
                     {{ item.itemNumber || item.containerNumber || item.id }}
                   </div>
-                  <div class="text-xs text-gray-500">
+                  <div class="text-xs text-tide-ink/55">
                     {{ item.itemType }} · {{ item.status }}
                     <span v-if="item.position"> · {{ item.position }}</span>
                   </div>
                 </div>
-                <Plus class="h-4 w-4 text-blue-600" />
+                <Plus class="h-4 w-4 text-tide-blue-deep" />
               </li>
             </ul>
             <p
               v-else-if="attachItemQuery.trim().length >= 2"
-              class="py-6 text-center text-sm text-gray-500"
+              class="py-6 text-center text-sm text-tide-ink/55"
             >
               {{ t('billOfLadingForm.attachItem.empty') }}
             </p>
-            <p v-else class="py-6 text-center text-xs text-gray-400">
+            <p v-else class="py-6 text-center text-xs text-tide-ink/40">
               {{ t('billOfLadingForm.attachItem.hint') }}
             </p>
           </div>

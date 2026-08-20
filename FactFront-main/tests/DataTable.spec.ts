@@ -195,13 +195,14 @@ describe('DataTable', () => {
   it('applies the canonical visual style classes', () => {
     const wrapper = trackedMount(DataTable, { props: { rows: baseRows, columns: baseColumns } });
     const container = wrapper.find('[data-test="datatable-container"]');
-    expect(container.classes()).toContain('rounded-xl');
-    expect(container.classes()).toContain('border-slate-200');
+    // Habillage Tide : carte de verre, en-tête sable, survol nacré.
+    expect(container.classes()).toContain('rounded-tide-card');
+    expect(container.classes().some((c) => c.includes('border-[rgba(60,50,35'))).toBe(true);
     const thead = wrapper.find('thead');
-    expect(thead.classes()).toContain('bg-slate-50');
+    expect(thead.classes().some((c) => c.includes('bg-[rgba(252,247,238'))).toBe(true);
     expect(thead.classes()).toContain('sticky');
     const firstRow = wrapper.find('tbody tr');
-    expect(firstRow.classes().some((c) => c.includes('hover:bg-blue-50'))).toBe(true);
+    expect(firstRow.classes().some((c) => c.includes('hover:bg-[rgba(255,253,247'))).toBe(true);
   });
 
   it('applies sticky CSS classes to a column flagged sticky="left"', () => {

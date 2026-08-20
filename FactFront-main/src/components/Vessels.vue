@@ -133,7 +133,7 @@ const getStatusBadgeClasses = (status: string) => {
     case "INACTIVE":
       return `${baseClasses} bg-red-100 text-red-800`;
     default:
-      return `${baseClasses} bg-gray-100 text-gray-800`;
+      return `${baseClasses} bg-[rgba(42,36,30,0.05)] text-tide-ink`;
   }
 };
 
@@ -171,7 +171,7 @@ const aisStatusClasses = (status: AisStatus): string => {
   switch (status) {
     case 'live': return `${base} bg-emerald-50 text-emerald-700 border-emerald-200`;
     case 'lost': return `${base} bg-red-50 text-red-700 border-red-200`;
-    case 'no-mmsi': return `${base} bg-slate-100 text-slate-600 border-slate-200`;
+    case 'no-mmsi': return `${base} bg-[rgba(42,36,30,0.05)] text-tide-ink/70 border-[rgba(60,50,35,0.12)]`;
     default: return base;
   }
 };
@@ -275,11 +275,11 @@ const handleExport = () => {
 <template>
   <div>
     <!-- List View -->
-    <div v-if="!showForm" class="bg-white shadow rounded-lg">
+    <div v-if="!showForm" class="bg-[rgba(255,253,247,0.92)] shadow rounded-lg">
       <!-- Header -->
-      <div class="px-4 py-3 border-b border-gray-200">
+      <div class="px-4 py-3 border-b border-[rgba(60,50,35,0.12)]">
         <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-          <h2 class="text-lg font-semibold text-gray-900">
+          <h2 class="text-lg font-semibold text-tide-ink">
             {{ t('vessels.title', { count: filteredVessels.length }) }}
           </h2>
           <div class="flex flex-wrap items-center gap-2">
@@ -291,7 +291,7 @@ const handleExport = () => {
             <button
               @click="handleExport"
               :title="t('common.export')"
-              class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+              class="inline-flex items-center px-3 py-2 border border-[rgba(60,50,35,0.16)] shadow-sm text-sm font-medium rounded-md text-tide-ink/80 bg-[rgba(255,253,247,0.92)] hover:bg-[rgba(252,247,238,0.55)]"
             >
               <Download class="h-4 w-4 sm:mr-2" />
               <span class="hidden sm:inline">{{ t('common.export') }}</span>
@@ -301,7 +301,7 @@ const handleExport = () => {
               @click="refresh"
               :disabled="isRefreshing"
               :title="t('vessels.button.refresh')"
-              class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-60 disabled:cursor-not-allowed"
+              class="inline-flex items-center px-3 py-2 border border-[rgba(60,50,35,0.16)] shadow-sm text-sm font-medium rounded-md text-tide-ink/80 bg-[rgba(255,253,247,0.92)] hover:bg-[rgba(252,247,238,0.55)] disabled:opacity-60 disabled:cursor-not-allowed"
             >
               <RefreshCw class="h-4 w-4 sm:mr-2" :class="{ 'animate-spin': isRefreshing }" />
               <span class="hidden sm:inline">{{ isRefreshing ? t('common.loading') : t('vessels.button.refresh') }}</span>
@@ -309,7 +309,7 @@ const handleExport = () => {
             <button
               @click="handleAdd"
               :title="t('vessels.button.addVessel')"
-              class="inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+              class="inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-tide-blue-btn-deep hover:bg-tide-blue-deep"
             >
               <Plus class="h-4 w-4 sm:mr-2" />
               <span class="hidden sm:inline">{{ t('vessels.button.addVessel') }}</span>
@@ -333,15 +333,15 @@ const handleExport = () => {
 
       <!-- Empty State -->
       <div v-if="filteredVessels.length === 0" class="text-center py-12">
-        <Ship class="mx-auto h-12 w-12 text-gray-400" />
-        <h3 class="mt-2 text-sm font-medium text-gray-900">{{ t('vessels.empty.title') }}</h3>
-        <p class="mt-1 text-sm text-gray-500">
+        <Ship class="mx-auto h-12 w-12 text-tide-ink/40" />
+        <h3 class="mt-2 text-sm font-medium text-tide-ink">{{ t('vessels.empty.title') }}</h3>
+        <p class="mt-1 text-sm text-tide-ink/55">
           {{ searchQuery ? t('vessels.empty.descriptionFiltered') : t('vessels.empty.description') }}
         </p>
         <div v-if="!searchQuery" class="mt-6">
           <button
             @click="handleAdd"
-            class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+            class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-tide-blue-btn-deep hover:bg-tide-blue-deep"
           >
             <Plus class="h-4 w-4 mr-2" />
             {{ t('vessels.button.addVessel') }}
@@ -351,8 +351,8 @@ const handleExport = () => {
 
       <!-- Table -->
       <div v-else class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
+        <table class="min-w-full divide-y divide-[rgba(42,36,30,0.08)]">
+          <thead class="bg-[rgba(252,247,238,0.55)]">
             <tr>
               <th class="px-3 py-3 w-8">
                 <input
@@ -368,20 +368,20 @@ const handleExport = () => {
                 v-for="(header, idx) in tableHeaders"
                 :key="header"
                 :class="[
-                  'px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider',
-                  idx === tableHeaders.length - 1 ? 'sticky right-0 bg-gray-50 shadow-[-4px_0_4px_-4px_rgba(0,0,0,0.06)]' : '',
+                  'px-4 py-3 text-left text-xs font-medium text-tide-ink/55 uppercase tracking-wider',
+                  idx === tableHeaders.length - 1 ? 'sticky right-0 bg-[rgba(252,247,238,0.55)] shadow-[-4px_0_4px_-4px_rgba(0,0,0,0.06)]' : '',
                 ]"
               >
                 {{ header }}
               </th>
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
+          <tbody class="bg-[rgba(255,253,247,0.92)] divide-y divide-[rgba(42,36,30,0.08)]">
             <tr
               v-for="vessel in filteredVessels"
               :key="vessel.id || vessel.name"
               :data-test="'row-' + vessel.id"
-              class="group hover:bg-gray-50 transition-colors duration-150"
+              class="group hover:bg-[rgba(252,247,238,0.55)] transition-colors duration-150"
             >
               <td class="px-3 py-3 w-8">
                 <input
@@ -394,35 +394,35 @@ const handleExport = () => {
               </td>
               <td class="px-4 py-3 whitespace-nowrap">
                 <div class="flex items-center">
-                  <Ship class="h-5 w-5 text-gray-400 mr-2 flex-shrink-0" />
-                  <div class="text-sm font-medium text-gray-900">{{ vessel.name }}</div>
+                  <Ship class="h-5 w-5 text-tide-ink/40 mr-2 flex-shrink-0" />
+                  <div class="text-sm font-medium text-tide-ink">{{ vessel.name }}</div>
                 </div>
               </td>
-              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-tide-ink">
                 {{ vessel.imoNumber }}
               </td>
-              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-tide-ink">
                 {{ vessel.callSign }}
               </td>
               <td class="px-4 py-3 whitespace-nowrap">
                 <div class="flex items-center">
-                  <Flag class="h-4 w-4 text-gray-400 mr-2 flex-shrink-0" />
-                  <span class="text-sm text-gray-900">{{ vessel.flag }}</span>
+                  <Flag class="h-4 w-4 text-tide-ink/40 mr-2 flex-shrink-0" />
+                  <span class="text-sm text-tide-ink">{{ vessel.flag }}</span>
                 </div>
               </td>
               <td class="px-4 py-3 whitespace-nowrap">
                 <div class="flex items-center">
-                  <Building class="h-4 w-4 text-gray-400 mr-2 flex-shrink-0" />
+                  <Building class="h-4 w-4 text-tide-ink/40 mr-2 flex-shrink-0" />
                   <div>
-                    <div class="text-sm text-gray-900">{{ vessel.owner }}</div>
+                    <div class="text-sm text-tide-ink">{{ vessel.owner }}</div>
                     <div v-if="vessel.operator && vessel.operator !== vessel.owner"
-                         class="text-sm text-gray-500">
+                         class="text-sm text-tide-ink/55">
                       {{ vessel.operator }}
                     </div>
                   </div>
                 </div>
               </td>
-              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-tide-ink">
                 {{ vessel.vesselType }}
               </td>
               <td class="px-4 py-3 whitespace-nowrap">
@@ -431,19 +431,19 @@ const handleExport = () => {
                 </span>
               </td>
               <!-- Position -->
-              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-tide-ink">
                 <template v-if="snapshotFor(vessel.id)">
                   <a
                     :href="openSeaMapUrl(snapshotFor(vessel.id)!)"
                     target="_blank"
                     rel="noopener"
-                    class="text-blue-600 hover:underline"
+                    class="text-tide-blue-deep hover:underline"
                   >{{ formatPos(snapshotFor(vessel.id)!) }}</a>
                 </template>
                 <template v-else>—</template>
               </td>
               <!-- Speed -->
-              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-tide-ink">
                 <template v-if="snapshotFor(vessel.id)?.sog != null">{{ snapshotFor(vessel.id)!.sog!.toFixed(1) }} kn</template>
                 <template v-else>—</template>
               </td>
@@ -452,14 +452,14 @@ const handleExport = () => {
                 <span :class="aisStatusClasses(statusFor(vessel))">{{ aisStatusLabel(statusFor(vessel)) }}</span>
               </td>
               <!-- Last seen -->
-              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-tide-ink/55">
                 {{ formatRelative(snapshotFor(vessel.id)?.lastSeen) }}
               </td>
-              <td class="sticky right-0 bg-white group-hover:bg-gray-50 transition-colors duration-150 px-4 py-3 whitespace-nowrap text-right text-sm font-medium shadow-[-4px_0_4px_-4px_rgba(0,0,0,0.06)]">
+              <td class="sticky right-0 bg-[rgba(255,253,247,0.92)] group-hover:bg-[rgba(252,247,238,0.55)] transition-colors duration-150 px-4 py-3 whitespace-nowrap text-right text-sm font-medium shadow-[-4px_0_4px_-4px_rgba(0,0,0,0.06)]">
                 <div class="flex items-center justify-end space-x-2">
                   <button
                     @click="handleEdit(vessel)"
-                    class="text-blue-600 hover:text-blue-900 p-1 rounded hover:bg-blue-50 transition-colors duration-150"
+                    class="text-tide-blue-deep hover:text-tide-blue-deep p-1 rounded hover:bg-[rgba(90,138,171,0.10)] transition-colors duration-150"
                     :title="t('vessels.aria.editVessel')"
                   >
                     <Pencil class="h-4 w-4" />
@@ -497,20 +497,20 @@ const handleExport = () => {
         class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50 p-4"
         @click.self="showDeleteConfirm = false"
       >
-        <div class="bg-white rounded-lg p-6 max-w-md w-full shadow-xl">
+        <div class="bg-[rgba(255,253,247,0.92)] rounded-lg p-6 max-w-md w-full shadow-xl">
           <div class="text-center">
             <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
               <Ship class="h-6 w-6 text-red-600" />
             </div>
-            <h3 class="mt-4 text-lg font-medium text-gray-900">{{ t('vessels.confirm.deleteTitle') }}</h3>
-            <p class="mt-2 text-sm text-gray-500">
+            <h3 class="mt-4 text-lg font-medium text-tide-ink">{{ t('vessels.confirm.deleteTitle') }}</h3>
+            <p class="mt-2 text-sm text-tide-ink/55">
               {{ t('vessels.confirm.deleteBody', { name: vesselToDelete?.name }) }}
             </p>
           </div>
           <div class="mt-6 flex justify-end space-x-3">
             <button
               @click="showDeleteConfirm = false"
-              class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="px-4 py-2 border border-[rgba(60,50,35,0.16)] rounded-md text-sm font-medium text-tide-ink/80 hover:bg-[rgba(252,247,238,0.55)] focus:outline-none focus:ring-2 focus:ring-tide-blue"
             >
               {{ t('common.cancel') }}
             </button>

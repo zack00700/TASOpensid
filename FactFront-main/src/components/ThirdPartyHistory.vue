@@ -136,14 +136,14 @@ const sanitize = (html: string) => DOMPurify.sanitize(html ?? '');
       <button
 
         class="px-2 py-1 border rounded focus:outline-none focus:ring"
-        :class="mode === 'accordion' ? 'bg-blue-500 text-white' : 'bg-white dark:bg-gray-700 dark:text-gray-200'"
+        :class="mode === 'accordion' ? 'bg-blue-500 text-white' : 'bg-[rgba(255,253,247,0.92)] dark:bg-gray-700 dark:text-gray-200'"
         @click="mode = 'accordion'"
       >
         {{ t('thirdPartyHistory.mode.accordion') }}
       </button>
       <button
         class="px-2 py-1 border rounded focus:outline-none focus:ring"
-        :class="mode === 'timeline' ? 'bg-blue-500 text-white' : 'bg-white dark:bg-gray-700 dark:text-gray-200'"
+        :class="mode === 'timeline' ? 'bg-blue-500 text-white' : 'bg-[rgba(255,253,247,0.92)] dark:bg-gray-700 dark:text-gray-200'"
         @click="mode = 'timeline'"
       >
         {{ t('thirdPartyHistory.mode.timeline') }}
@@ -164,14 +164,14 @@ const sanitize = (html: string) => DOMPurify.sanitize(html ?? '');
     <p
       v-else-if="loaded && history.length === 0"
       data-test="third-party-history-empty"
-      class="text-sm text-gray-500 italic"
+      class="text-sm text-tide-ink/55 italic"
     >
       {{ t('thirdPartyHistory.empty') }}
     </p>
     <p
       v-else-if="loaded && history.length === 1"
       data-test="third-party-history-no-changes"
-      class="text-sm text-gray-500 italic"
+      class="text-sm text-tide-ink/55 italic"
     >
       {{ t('thirdPartyHistory.noChangesSinceCreation') }}
     </p>
@@ -183,19 +183,19 @@ const sanitize = (html: string) => DOMPurify.sanitize(html ?? '');
           class="border rounded mb-2 dark:border-gray-700"
         >
           <summary class="cursor-pointer px-2 py-1 flex justify-between items-center focus:outline-none focus-visible:ring">
-            <span class="text-xs text-gray-600 dark:text-gray-300">{{ t('thirdPartyHistory.versionLabel', { version: entry.version, updatedAt: entry.updatedAt }) }}</span>
+            <span class="text-xs text-tide-ink/70 dark:text-gray-300">{{ t('thirdPartyHistory.versionLabel', { version: entry.version, updatedAt: entry.updatedAt }) }}</span>
           </summary>
           <div class="p-2 text-xs">
             <div class="overflow-x-auto">
-              <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead class="bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300">
+              <table class="min-w-full divide-y divide-[rgba(42,36,30,0.08)] dark:divide-gray-700">
+                <thead class="bg-[rgba(252,247,238,0.55)] dark:bg-gray-800 text-tide-ink/70 dark:text-gray-300">
                   <tr>
                     <th class="px-2 py-1 text-left font-medium">{{ t('thirdPartyHistory.column.field') }}</th>
                     <th class="px-2 py-1 text-left font-medium">{{ t('thirdPartyHistory.column.old') }}</th>
                     <th class="px-2 py-1 text-left font-medium">{{ t('thirdPartyHistory.column.new') }}</th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                <tbody class="divide-y divide-[rgba(42,36,30,0.08)] dark:divide-gray-700">
                   <tr v-for="d in computeDiff(idx)" :key="d.field">
                     <td class="px-2 py-1 align-top break-all">{{ d.field }}</td>
                     <td class="px-2 py-1 align-top break-all" v-html="sanitize(d.oldHtml)"></td>
@@ -208,8 +208,8 @@ const sanitize = (html: string) => DOMPurify.sanitize(html ?? '');
         </details>
         <div v-else class="relative pl-6 mb-4">
           <div class="absolute left-1 top-2 w-3 h-3 bg-blue-500 rounded-full"></div>
-          <div class="border rounded p-2 bg-white dark:bg-gray-800 dark:border-gray-700">
-            <div class="text-xs text-gray-600 dark:text-gray-300 mb-2">{{ t('thirdPartyHistory.versionLabel', { version: entry.version, updatedAt: entry.updatedAt }) }}</div>
+          <div class="border rounded p-2 bg-[rgba(255,253,247,0.92)] dark:bg-gray-800 dark:border-gray-700">
+            <div class="text-xs text-tide-ink/70 dark:text-gray-300 mb-2">{{ t('thirdPartyHistory.versionLabel', { version: entry.version, updatedAt: entry.updatedAt }) }}</div>
             <div class="space-y-1">
               <div v-for="d in computeDiff(idx)" :key="d.field" class="text-xs">
                 <div class="font-semibold">{{ d.field }}</div>

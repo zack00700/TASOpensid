@@ -232,23 +232,23 @@ const metricLabel = (m: string) => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-[rgba(252,247,238,0.55)]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
       <!-- Page header -->
       <div class="mb-6 flex items-center justify-between">
         <div>
-          <h1 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl">
+          <h1 class="text-2xl font-bold leading-7 text-tide-ink sm:text-3xl">
             {{ t('capacityForecastDashboard.header.title') }}
           </h1>
-          <p class="mt-1 text-sm text-gray-500">
+          <p class="mt-1 text-sm text-tide-ink/55">
             {{ t('capacityForecastDashboard.header.subtitle', { months: lookbackMonths }) }}
           </p>
         </div>
         <button
           @click="fetchForecast"
           :disabled="isLoading"
-          class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
+          class="inline-flex items-center px-4 py-2 border border-[rgba(60,50,35,0.16)] rounded-lg text-sm font-medium text-tide-ink/80 bg-[rgba(255,253,247,0.92)] hover:bg-[rgba(252,247,238,0.55)] disabled:opacity-50"
         >
           <RefreshCw class="h-4 w-4 mr-2" :class="{ 'animate-spin': isLoading }" />
           {{ t('capacityForecastDashboard.action.refresh') }}
@@ -256,37 +256,37 @@ const metricLabel = (m: string) => {
       </div>
 
       <!-- Controls -->
-      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+      <div class="bg-[rgba(255,253,247,0.92)] rounded-lg shadow-sm border border-[rgba(60,50,35,0.12)] p-6 mb-6">
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
-            <label class="block text-xs font-medium text-gray-700 mb-1">{{ t('capacityForecastDashboard.field.metric') }}</label>
+            <label class="block text-xs font-medium text-tide-ink/80 mb-1">{{ t('capacityForecastDashboard.field.metric') }}</label>
             <select
               v-model="selectedMetric"
-              class="block w-full border border-gray-300 rounded-lg py-2.5 px-3 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+              class="block w-full border border-[rgba(60,50,35,0.16)] rounded-lg py-2.5 px-3 text-sm bg-[rgba(255,253,247,0.92)] focus:outline-none focus:ring-1 focus:ring-tide-blue focus:border-tide-blue"
             >
               <option v-for="m in metrics" :key="m" :value="m">{{ metricLabel(m) }}</option>
             </select>
           </div>
           <div>
-            <label class="block text-xs font-medium text-gray-700 mb-1">
-              {{ t('capacityForecastDashboard.field.lookbackMonths') }} <span class="text-gray-400">{{ t('capacityForecastDashboard.field.lookbackMonthsHint') }}</span>
+            <label class="block text-xs font-medium text-tide-ink/80 mb-1">
+              {{ t('capacityForecastDashboard.field.lookbackMonths') }} <span class="text-tide-ink/40">{{ t('capacityForecastDashboard.field.lookbackMonthsHint') }}</span>
             </label>
             <input
               v-model.number="lookbackMonths"
               type="number"
               min="2"
               max="36"
-              class="block w-full border border-gray-300 rounded-lg py-2.5 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+              class="block w-full border border-[rgba(60,50,35,0.16)] rounded-lg py-2.5 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-tide-blue focus:border-tide-blue"
             />
           </div>
           <div>
-            <label class="block text-xs font-medium text-gray-700 mb-1">{{ t('capacityForecastDashboard.field.horizonMonths') }}</label>
+            <label class="block text-xs font-medium text-tide-ink/80 mb-1">{{ t('capacityForecastDashboard.field.horizonMonths') }}</label>
             <input
               v-model.number="horizonMonths"
               type="number"
               min="1"
               max="24"
-              class="block w-full border border-gray-300 rounded-lg py-2.5 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+              class="block w-full border border-[rgba(60,50,35,0.16)] rounded-lg py-2.5 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-tide-blue focus:border-tide-blue"
             />
           </div>
         </div>
@@ -300,32 +300,32 @@ const metricLabel = (m: string) => {
 
       <!-- Stats row -->
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
-        <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-4">
-          <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ t('capacityForecastDashboard.stats.currentMonth') }}</p>
-          <p class="mt-2 text-2xl font-bold text-gray-900">
+        <div class="bg-[rgba(255,253,247,0.92)] rounded-lg border border-[rgba(60,50,35,0.12)] shadow-sm p-4">
+          <p class="text-xs font-medium text-tide-ink/55 uppercase tracking-wide">{{ t('capacityForecastDashboard.stats.currentMonth') }}</p>
+          <p class="mt-2 text-2xl font-bold text-tide-ink">
             <span v-if="isLoading" class="h-6 w-16 bg-gray-200 rounded animate-pulse inline-block"></span>
             <span v-else>{{ latestHistorical ?? '—' }}</span>
           </p>
         </div>
-        <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-4">
-          <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ t('capacityForecastDashboard.stats.nextMonthForecast') }}</p>
-          <p class="mt-2 text-2xl font-bold text-blue-600">
+        <div class="bg-[rgba(255,253,247,0.92)] rounded-lg border border-[rgba(60,50,35,0.12)] shadow-sm p-4">
+          <p class="text-xs font-medium text-tide-ink/55 uppercase tracking-wide">{{ t('capacityForecastDashboard.stats.nextMonthForecast') }}</p>
+          <p class="mt-2 text-2xl font-bold text-tide-blue-deep">
             <span v-if="isLoading" class="h-6 w-16 bg-gray-200 rounded animate-pulse inline-block"></span>
             <span v-else>{{ nextMonthForecast != null ? Math.round(nextMonthForecast) : '—' }}</span>
           </p>
         </div>
-        <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-4">
-          <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ t('capacityForecastDashboard.stats.trend') }}</p>
-          <p class="mt-2 text-2xl font-bold text-gray-900 flex items-center">
+        <div class="bg-[rgba(255,253,247,0.92)] rounded-lg border border-[rgba(60,50,35,0.12)] shadow-sm p-4">
+          <p class="text-xs font-medium text-tide-ink/55 uppercase tracking-wide">{{ t('capacityForecastDashboard.stats.trend') }}</p>
+          <p class="mt-2 text-2xl font-bold text-tide-ink flex items-center">
             <TrendingUp v-if="(forecast?.slopePerMonth ?? 0) >= 0" class="h-5 w-5 text-green-500 mr-2" />
             <TrendingUp v-else class="h-5 w-5 text-red-500 mr-2 rotate-180" />
             <span v-if="isLoading" class="h-6 w-20 bg-gray-200 rounded animate-pulse inline-block"></span>
             <span v-else>{{ slopeLabel }}</span>
           </p>
         </div>
-        <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-4">
-          <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ t('capacityForecastDashboard.stats.r2Fit') }}</p>
-          <p class="mt-2 text-2xl font-bold text-gray-900">
+        <div class="bg-[rgba(255,253,247,0.92)] rounded-lg border border-[rgba(60,50,35,0.12)] shadow-sm p-4">
+          <p class="text-xs font-medium text-tide-ink/55 uppercase tracking-wide">{{ t('capacityForecastDashboard.stats.r2Fit') }}</p>
+          <p class="mt-2 text-2xl font-bold text-tide-ink">
             <span v-if="isLoading" class="h-6 w-12 bg-gray-200 rounded animate-pulse inline-block"></span>
             <span v-else>{{ r2Label }}</span>
           </p>
@@ -338,10 +338,10 @@ const metricLabel = (m: string) => {
       </div>
 
       <!-- Chart card -->
-      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div class="bg-[rgba(255,253,247,0.92)] rounded-lg shadow-sm border border-[rgba(60,50,35,0.12)] p-6">
         <div class="h-96">
           <div v-if="isLoading" class="h-full flex items-center justify-center">
-            <div class="flex items-center space-x-3 text-gray-400">
+            <div class="flex items-center space-x-3 text-tide-ink/40">
               <RefreshCw class="h-5 w-5 animate-spin" />
               <span class="text-sm">{{ t('capacityForecastDashboard.state.computing') }}</span>
             </div>
@@ -351,7 +351,7 @@ const metricLabel = (m: string) => {
             :data="chartData"
             :options="chartOptions"
           />
-          <div v-else class="h-full flex items-center justify-center text-sm text-gray-500">
+          <div v-else class="h-full flex items-center justify-center text-sm text-tide-ink/55">
             {{ t('capacityForecastDashboard.state.noData') }}
           </div>
         </div>

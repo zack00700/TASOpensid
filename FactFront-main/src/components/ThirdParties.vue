@@ -75,7 +75,7 @@ const getStatusBadgeClasses = (status: string) => {
     case "Active":
       return `${baseClasses} bg-green-100 text-green-800`;
     case "Inactive":
-      return `${baseClasses} bg-gray-100 text-gray-800`;
+      return `${baseClasses} bg-[rgba(42,36,30,0.05)] text-tide-ink`;
     case "Pending":
       return `${baseClasses} bg-yellow-100 text-yellow-800`;
     default:
@@ -156,7 +156,7 @@ const closeHistory = () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-[rgba(252,247,238,0.55)]">
     <!-- List View -->
     <div v-if="!showForm">
       <PageHeader :title="t('nav.thirdParties')" :count="thirdParties?.length ?? null">
@@ -173,35 +173,35 @@ const closeHistory = () => {
         </template>
       </PageHeader>
 
-      <div class="px-6 py-6 space-y-4 bg-white shadow rounded-lg mx-6">
+      <div class="px-6 py-6 space-y-4 bg-[rgba(255,253,247,0.92)] shadow rounded-lg mx-6">
 
       <!-- Advanced Filter -->
       <AdvancedFilter type="users" @filter="handleFilter" />
 
       <!-- Table -->
       <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
+        <table class="min-w-full divide-y divide-[rgba(42,36,30,0.08)]">
+          <thead class="bg-[rgba(252,247,238,0.55)]">
             <tr>
               <th
                 v-for="header in tableHeaders"
                 :key="header"
-                class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                class="px-4 py-3 text-left text-xs font-medium text-tide-ink/55 uppercase tracking-wider"
               >
                 {{ header }}
               </th>
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
-            <tr v-for="party in filteredThirdParties" :key="party.id" class="hover:bg-gray-50">
+          <tbody class="bg-[rgba(255,253,247,0.92)] divide-y divide-[rgba(42,36,30,0.08)]">
+            <tr v-for="party in filteredThirdParties" :key="party.id" class="hover:bg-[rgba(252,247,238,0.55)]">
               <td class="px-4 py-3 whitespace-nowrap">
-                <div class="text-sm font-medium text-gray-900">{{ party.fullName }}</div>
-                <div class="text-sm text-gray-500">{{ party.email }}</div>
+                <div class="text-sm font-medium text-tide-ink">{{ party.fullName }}</div>
+                <div class="text-sm text-tide-ink/55">{{ party.email }}</div>
               </td>
-              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-tide-ink">
                 {{ party.companyName }}
               </td>
-              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-tide-ink">
                 {{ party.accessType }}
               </td>
               <td class="px-4 py-3 whitespace-nowrap">
@@ -209,23 +209,23 @@ const closeHistory = () => {
                   {{ getStatusLabel(party.status ?? '') }}
                 </span>
               </td>
-              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-tide-ink">
                 {{ formatDate(party.createdAt) }}
               </td>
-              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-tide-ink">
                 {{ formatDate(party.updatedAt) }}
               </td>
               <td class="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
                 <button
                   @click="handleEdit(party)"
-                  class="text-blue-600 hover:text-blue-900 mr-3"
+                  class="text-tide-blue-deep hover:text-tide-blue-deep mr-3"
                   :aria-label="t('common.edit')"
                 >
                   <Pencil class="h-5 w-5" />
                 </button>
                 <button
                   @click="handleShowHistory(party)"
-                  class="text-blue-600 hover:text-blue-900 mr-3"
+                  class="text-tide-blue-deep hover:text-tide-blue-deep mr-3"
                   :aria-label="t('thirdParties.action.viewHistory')"
                 >
                   <History class="h-5 w-5" />
@@ -266,10 +266,10 @@ const closeHistory = () => {
         v-if="showHistory"
         class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50"
       >
-        <div class="bg-white rounded-lg p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="bg-[rgba(255,253,247,0.92)] rounded-lg p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
           <div class="flex justify-between items-center mb-4">
-            <h3 class="text-lg font-medium text-gray-900">{{ t('thirdParties.history.title') }}</h3>
-            <button @click="closeHistory" class="text-gray-400 hover:text-gray-500" :aria-label="t('common.close')">
+            <h3 class="text-lg font-medium text-tide-ink">{{ t('thirdParties.history.title') }}</h3>
+            <button @click="closeHistory" class="text-tide-ink/40 hover:text-tide-ink/55" :aria-label="t('common.close')">
               <X class="h-6 w-6" />
             </button>
           </div>
@@ -284,18 +284,18 @@ const closeHistory = () => {
         v-if="showDeleteConfirm"
         class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50"
       >
-        <div class="bg-white rounded-lg p-6 max-w-md w-full">
+        <div class="bg-[rgba(255,253,247,0.92)] rounded-lg p-6 max-w-md w-full">
           <div class="text-center">
             <XCircle class="mx-auto h-12 w-12 text-red-500" />
-            <h3 class="mt-4 text-lg font-medium text-gray-900">{{ t('thirdParties.dialog.deleteTitle') }}</h3>
-            <p class="mt-2 text-sm text-gray-500">
+            <h3 class="mt-4 text-lg font-medium text-tide-ink">{{ t('thirdParties.dialog.deleteTitle') }}</h3>
+            <p class="mt-2 text-sm text-tide-ink/55">
               {{ t('thirdParties.dialog.deleteConfirm', { name: thirdPartyToDelete?.fullName }) }}
             </p>
           </div>
           <div class="mt-6 flex justify-end space-x-3">
             <button
               @click="showDeleteConfirm = false"
-              class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50"
+              class="px-4 py-2 border border-[rgba(60,50,35,0.16)] rounded-lg text-sm font-medium text-tide-ink/80 hover:bg-[rgba(252,247,238,0.55)]"
             >
               {{ t('common.cancel') }}
             </button>

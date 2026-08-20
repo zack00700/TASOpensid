@@ -57,8 +57,8 @@ const kpis = computed(() => [
     label: t('featureRequestDashboard.kpi.totalRequests'),
     value: total.value,
     icon: Lightbulb,
-    color: 'bg-blue-50 text-blue-600 border-blue-100',
-    badge: 'bg-blue-100 text-blue-700',
+    color: 'bg-[rgba(90,138,171,0.10)] text-tide-blue-deep border-blue-100',
+    badge: 'bg-blue-100 text-tide-blue-deep',
   },
   {
     label: t('featureRequestDashboard.kpi.pendingReview'),
@@ -165,10 +165,10 @@ function lastMessage(r: FeatureRequest): string {
 }
 
 const statusConfig = computed<Record<FeatureRequestStatus, { label: string; cls: string }>>(() => ({
-  DRAFT:            { label: t('featureRequestDashboard.status.draft'),           cls: 'bg-gray-100 text-gray-600' },
+  DRAFT:            { label: t('featureRequestDashboard.status.draft'),           cls: 'bg-[rgba(42,36,30,0.05)] text-tide-ink/70' },
   CLARIFYING:       { label: t('featureRequestDashboard.status.clarifying'),      cls: 'bg-yellow-100 text-yellow-700' },
   READY_FOR_REVIEW: { label: t('featureRequestDashboard.status.readyForReview'),  cls: 'bg-amber-100 text-amber-700' },
-  APPROVED:         { label: t('featureRequestDashboard.status.approved'),        cls: 'bg-blue-100 text-blue-700' },
+  APPROVED:         { label: t('featureRequestDashboard.status.approved'),        cls: 'bg-blue-100 text-tide-blue-deep' },
   REJECTED:         { label: t('featureRequestDashboard.status.rejected'),        cls: 'bg-red-100 text-red-600' },
   IN_PROGRESS:      { label: t('featureRequestDashboard.status.inProgress'),      cls: 'bg-indigo-100 text-indigo-700' },
   DONE:             { label: t('featureRequestDashboard.status.done'),            cls: 'bg-green-100 text-green-700' },
@@ -181,13 +181,13 @@ const statusConfig = computed<Record<FeatureRequestStatus, { label: string; cls:
     <!-- Header -->
     <div class="flex items-center justify-between">
       <div>
-        <h1 class="text-2xl font-bold text-slate-800">{{ t('featureRequestDashboard.header.title') }}</h1>
-        <p class="text-sm text-slate-500 mt-0.5">{{ t('featureRequestDashboard.header.subtitle') }}</p>
+        <h1 class="text-2xl font-bold text-tide-ink">{{ t('featureRequestDashboard.header.title') }}</h1>
+        <p class="text-sm text-tide-ink/55 mt-0.5">{{ t('featureRequestDashboard.header.subtitle') }}</p>
       </div>
       <button
         @click="load"
         :disabled="isLoading"
-        class="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium transition-colors disabled:opacity-50"
+        class="flex items-center gap-2 px-4 py-2 rounded-lg bg-[rgba(42,36,30,0.05)] hover:bg-slate-200 text-tide-ink/80 text-sm font-medium transition-colors disabled:opacity-50"
       >
         <RefreshCw class="w-4 h-4" :class="{ 'animate-spin': isLoading }" />
         {{ t('featureRequestDashboard.button.refresh') }}
@@ -219,14 +219,14 @@ const statusConfig = computed<Record<FeatureRequestStatus, { label: string; cls:
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
       <!-- Pipeline funnel -->
-      <div class="bg-white rounded-xl border border-slate-200 p-5">
-        <h2 class="text-sm font-semibold text-slate-700 mb-4 flex items-center gap-2">
-          <TrendingUp class="w-4 h-4 text-slate-400" /> {{ t('featureRequestDashboard.section.pipeline') }}
+      <div class="bg-[rgba(255,253,247,0.92)] rounded-xl border border-[rgba(60,50,35,0.12)] p-5">
+        <h2 class="text-sm font-semibold text-tide-ink/80 mb-4 flex items-center gap-2">
+          <TrendingUp class="w-4 h-4 text-tide-ink/40" /> {{ t('featureRequestDashboard.section.pipeline') }}
         </h2>
         <div class="space-y-2.5">
           <div v-for="stage in pipeline" :key="stage.key" class="flex items-center gap-3">
-            <span class="text-xs text-slate-500 w-36 shrink-0 truncate">{{ stage.label }}</span>
-            <div class="flex-1 bg-slate-100 rounded-full h-5 overflow-hidden">
+            <span class="text-xs text-tide-ink/55 w-36 shrink-0 truncate">{{ stage.label }}</span>
+            <div class="flex-1 bg-[rgba(42,36,30,0.05)] rounded-full h-5 overflow-hidden">
               <div
                 class="h-full rounded-full transition-all duration-500 flex items-center justify-end pr-2"
                 :class="stage.color"
@@ -234,7 +234,7 @@ const statusConfig = computed<Record<FeatureRequestStatus, { label: string; cls:
               >
               </div>
             </div>
-            <span class="text-sm font-bold text-slate-700 w-6 text-right shrink-0">
+            <span class="text-sm font-bold text-tide-ink/80 w-6 text-right shrink-0">
               {{ byStatus[stage.key] ?? 0 }}
             </span>
           </div>
@@ -242,12 +242,12 @@ const statusConfig = computed<Record<FeatureRequestStatus, { label: string; cls:
       </div>
 
       <!-- Distribution stacked bar + effort -->
-      <div class="bg-white rounded-xl border border-slate-200 p-5 flex flex-col gap-5">
+      <div class="bg-[rgba(255,253,247,0.92)] rounded-xl border border-[rgba(60,50,35,0.12)] p-5 flex flex-col gap-5">
 
         <!-- Status distribution -->
         <div>
-          <h2 class="text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
-            <List class="w-4 h-4 text-slate-400" /> {{ t('featureRequestDashboard.section.distribution') }}
+          <h2 class="text-sm font-semibold text-tide-ink/80 mb-3 flex items-center gap-2">
+            <List class="w-4 h-4 text-tide-ink/40" /> {{ t('featureRequestDashboard.section.distribution') }}
           </h2>
           <div v-if="distribution.length" class="flex h-6 rounded-full overflow-hidden gap-0.5">
             <div
@@ -259,9 +259,9 @@ const statusConfig = computed<Record<FeatureRequestStatus, { label: string; cls:
               :title="t('featureRequestDashboard.distribution.tooltip', { label: d.label, count: d.count, pct: d.pct })"
             />
           </div>
-          <div v-else class="h-6 bg-slate-100 rounded-full" />
+          <div v-else class="h-6 bg-[rgba(42,36,30,0.05)] rounded-full" />
           <div class="flex flex-wrap gap-x-4 gap-y-1 mt-2">
-            <div v-for="d in distribution" :key="d.key" class="flex items-center gap-1.5 text-xs text-slate-600">
+            <div v-for="d in distribution" :key="d.key" class="flex items-center gap-1.5 text-xs text-tide-ink/70">
               <span class="w-2.5 h-2.5 rounded-full inline-block" :class="d.color" />
               {{ d.label }} ({{ d.count }})
             </div>
@@ -270,8 +270,8 @@ const statusConfig = computed<Record<FeatureRequestStatus, { label: string; cls:
 
         <!-- Effort breakdown -->
         <div>
-          <h2 class="text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
-            <Clock class="w-4 h-4 text-slate-400" /> {{ t('featureRequestDashboard.section.effort') }}
+          <h2 class="text-sm font-semibold text-tide-ink/80 mb-3 flex items-center gap-2">
+            <Clock class="w-4 h-4 text-tide-ink/40" /> {{ t('featureRequestDashboard.section.effort') }}
           </h2>
           <div v-if="effortBreakdown.length" class="flex gap-3">
             <div
@@ -284,7 +284,7 @@ const statusConfig = computed<Record<FeatureRequestStatus, { label: string; cls:
               <p class="text-xs font-semibold opacity-90 mt-0.5">{{ e.label }}</p>
             </div>
           </div>
-          <p v-else class="text-xs text-slate-400">{{ t('featureRequestDashboard.empty.noEstimates') }}</p>
+          <p v-else class="text-xs text-tide-ink/40">{{ t('featureRequestDashboard.empty.noEstimates') }}</p>
         </div>
       </div>
     </div>
@@ -293,12 +293,12 @@ const statusConfig = computed<Record<FeatureRequestStatus, { label: string; cls:
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
       <!-- Recent activity -->
-      <div class="bg-white rounded-xl border border-slate-200 p-5">
-        <h2 class="text-sm font-semibold text-slate-700 mb-4 flex items-center gap-2">
-          <MessageSquare class="w-4 h-4 text-slate-400" /> {{ t('featureRequestDashboard.section.recentActivity') }}
+      <div class="bg-[rgba(255,253,247,0.92)] rounded-xl border border-[rgba(60,50,35,0.12)] p-5">
+        <h2 class="text-sm font-semibold text-tide-ink/80 mb-4 flex items-center gap-2">
+          <MessageSquare class="w-4 h-4 text-tide-ink/40" /> {{ t('featureRequestDashboard.section.recentActivity') }}
         </h2>
         <div v-if="isLoading" class="space-y-3">
-          <div v-for="i in 4" :key="i" class="animate-pulse h-10 bg-slate-100 rounded-lg" />
+          <div v-for="i in 4" :key="i" class="animate-pulse h-10 bg-[rgba(42,36,30,0.05)] rounded-lg" />
         </div>
         <ul v-else class="space-y-3">
           <li v-for="r in recent" :key="r.id" class="flex gap-3 items-start">
@@ -310,21 +310,21 @@ const statusConfig = computed<Record<FeatureRequestStatus, { label: string; cls:
               <div class="flex items-center gap-1.5 flex-wrap">
                 <span
                   v-if="r.ticketNumber"
-                  class="font-mono text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200 px-1.5 py-0.5 rounded-full shrink-0"
+                  class="font-mono text-[10px] font-bold bg-[rgba(90,138,171,0.10)] text-tide-blue-deep border border-blue-200 px-1.5 py-0.5 rounded-full shrink-0"
                 >{{ r.ticketNumber }}</span>
-                <p class="text-xs font-medium text-slate-700 truncate">{{ r.title }}</p>
+                <p class="text-xs font-medium text-tide-ink/80 truncate">{{ r.title }}</p>
               </div>
-              <p class="text-[11px] text-slate-400">{{ formatDate(r.createdAt) }} · {{ r.createdBy }}</p>
+              <p class="text-[11px] text-tide-ink/40">{{ formatDate(r.createdAt) }} · {{ r.createdBy }}</p>
             </div>
           </li>
-          <li v-if="!recent.length" class="text-xs text-slate-400">{{ t('featureRequestDashboard.empty.noRequests') }}</li>
+          <li v-if="!recent.length" class="text-xs text-tide-ink/40">{{ t('featureRequestDashboard.empty.noRequests') }}</li>
         </ul>
       </div>
 
       <!-- Top priority approved/in-progress -->
-      <div class="bg-white rounded-xl border border-slate-200 p-5">
-        <h2 class="text-sm font-semibold text-slate-700 mb-4 flex items-center gap-2">
-          <ArrowRight class="w-4 h-4 text-slate-400" /> {{ t('featureRequestDashboard.section.topPriority') }}
+      <div class="bg-[rgba(255,253,247,0.92)] rounded-xl border border-[rgba(60,50,35,0.12)] p-5">
+        <h2 class="text-sm font-semibold text-tide-ink/80 mb-4 flex items-center gap-2">
+          <ArrowRight class="w-4 h-4 text-tide-ink/40" /> {{ t('featureRequestDashboard.section.topPriority') }}
         </h2>
         <ul class="space-y-3">
           <li v-for="r in topPriority" :key="r.id" class="space-y-1">
@@ -332,13 +332,13 @@ const statusConfig = computed<Record<FeatureRequestStatus, { label: string; cls:
               <div class="flex items-center gap-1.5 min-w-0 flex-1 mr-2">
                 <span
                   v-if="r.ticketNumber"
-                  class="font-mono text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200 px-1.5 py-0.5 rounded-full shrink-0"
+                  class="font-mono text-[10px] font-bold bg-[rgba(90,138,171,0.10)] text-tide-blue-deep border border-blue-200 px-1.5 py-0.5 rounded-full shrink-0"
                 >{{ r.ticketNumber }}</span>
-                <p class="text-xs font-medium text-slate-700 truncate">{{ r.title }}</p>
+                <p class="text-xs font-medium text-tide-ink/80 truncate">{{ r.title }}</p>
               </div>
-              <span class="text-xs font-bold text-slate-600 shrink-0">{{ r.priority ?? 50 }}</span>
+              <span class="text-xs font-bold text-tide-ink/70 shrink-0">{{ r.priority ?? 50 }}</span>
             </div>
-            <div class="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+            <div class="h-1.5 bg-[rgba(42,36,30,0.05)] rounded-full overflow-hidden">
               <div
                 class="h-full bg-indigo-500 rounded-full transition-all"
                 :style="{ width: (r.priority ?? 50) + '%' }"
@@ -349,13 +349,13 @@ const statusConfig = computed<Record<FeatureRequestStatus, { label: string; cls:
               :class="statusConfig[r.status]?.cls"
             >{{ statusConfig[r.status]?.label }}</span>
           </li>
-          <li v-if="!topPriority.length" class="text-xs text-slate-400">{{ t('featureRequestDashboard.empty.noApprovedItems') }}</li>
+          <li v-if="!topPriority.length" class="text-xs text-tide-ink/40">{{ t('featureRequestDashboard.empty.noApprovedItems') }}</li>
         </ul>
       </div>
 
       <!-- Awaiting clarification -->
-      <div class="bg-white rounded-xl border border-slate-200 p-5">
-        <h2 class="text-sm font-semibold text-slate-700 mb-4 flex items-center gap-2">
+      <div class="bg-[rgba(255,253,247,0.92)] rounded-xl border border-[rgba(60,50,35,0.12)] p-5">
+        <h2 class="text-sm font-semibold text-tide-ink/80 mb-4 flex items-center gap-2">
           <AlertCircle class="w-4 h-4 text-amber-400" /> {{ t('featureRequestDashboard.section.awaitingResponse') }}
         </h2>
         <ul class="space-y-3">
@@ -363,14 +363,14 @@ const statusConfig = computed<Record<FeatureRequestStatus, { label: string; cls:
             <div class="flex items-center gap-1.5 flex-wrap">
               <span
                 v-if="r.ticketNumber"
-                class="font-mono text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200 px-1.5 py-0.5 rounded-full shrink-0"
+                class="font-mono text-[10px] font-bold bg-[rgba(90,138,171,0.10)] text-tide-blue-deep border border-blue-200 px-1.5 py-0.5 rounded-full shrink-0"
               >{{ r.ticketNumber }}</span>
-              <p class="text-xs font-medium text-slate-700 truncate">{{ r.title }}</p>
+              <p class="text-xs font-medium text-tide-ink/80 truncate">{{ r.title }}</p>
             </div>
-            <p class="text-[11px] text-slate-400 line-clamp-2">{{ lastMessage(r) }}</p>
+            <p class="text-[11px] text-tide-ink/40 line-clamp-2">{{ lastMessage(r) }}</p>
             <p class="text-[10px] text-amber-500 font-medium">{{ r.createdBy }}</p>
           </li>
-          <li v-if="!awaitingClarification.length" class="text-xs text-slate-400">
+          <li v-if="!awaitingClarification.length" class="text-xs text-tide-ink/40">
             {{ t('featureRequestDashboard.empty.noClarification') }}
           </li>
         </ul>

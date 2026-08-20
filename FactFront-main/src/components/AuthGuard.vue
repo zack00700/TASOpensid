@@ -88,7 +88,7 @@ const canShowContent = computed(() => isAuthenticated.value && hasPermission.val
   <div v-else class="flex items-center justify-center min-h-[400px]">
     <div class="text-center">
       <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
-      <p class="text-sm text-gray-600">{{ $t('authGuard.verifying') }}</p>
+      <p class="text-sm text-tide-ink/70">{{ $t('authGuard.verifying') }}</p>
     </div>
   </div>
 </template>

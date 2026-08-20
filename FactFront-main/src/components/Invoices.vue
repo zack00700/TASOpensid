@@ -420,7 +420,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-slate-50">
+  <div class="min-h-screen bg-[rgba(252,247,238,0.55)]">
     <!-- Page Header -->
     <PageHeader
       :title="t('invoices.title')"
@@ -479,9 +479,9 @@ onMounted(async () => {
     </PageHeader>
 
     <!-- Status bar -->
-    <div v-if="state.updatedAt || state.loading" class="flex items-center justify-between px-6 py-2 bg-white border-b border-slate-100">
-      <span v-if="state.updatedAt" class="text-xs text-slate-400">{{ t('invoices.updatedAt', { time: state.updatedAt.toLocaleTimeString() }) }}</span>
-      <div v-if="state.loading" class="flex items-center text-xs text-blue-600 ml-auto">
+    <div v-if="state.updatedAt || state.loading" class="flex items-center justify-between px-6 py-2 bg-[rgba(255,253,247,0.92)] border-b border-[rgba(42,36,30,0.07)]">
+      <span v-if="state.updatedAt" class="text-xs text-tide-ink/40">{{ t('invoices.updatedAt', { time: state.updatedAt.toLocaleTimeString() }) }}</span>
+      <div v-if="state.loading" class="flex items-center text-xs text-tide-blue-deep ml-auto">
         <div class="animate-spin rounded-full h-3 w-3 border-b-2 border-blue-600 mr-1.5"></div>
         {{ t('common.loading') }}
       </div>
@@ -498,30 +498,30 @@ onMounted(async () => {
       </div>
 
       <!-- Filters -->
-      <div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
+      <div class="bg-[rgba(255,253,247,0.92)] rounded-xl border border-[rgba(60,50,35,0.12)] overflow-hidden">
         <button
-          class="w-full flex items-center justify-between p-4 hover:bg-slate-50 transition-colors"
+          class="w-full flex items-center justify-between p-4 hover:bg-[rgba(252,247,238,0.55)] transition-colors"
           @click="toggleFilters"
           :aria-expanded="filtersOpen"
           aria-controls="invoice-filters"
         >
           <div class="flex items-center gap-3">
-            <div class="p-2 bg-slate-100 rounded-lg">
-              <Filter :class="['w-4 h-4', hasActiveFilters ? 'text-blue-600' : 'text-slate-600']" />
+            <div class="p-2 bg-[rgba(42,36,30,0.05)] rounded-lg">
+              <Filter :class="['w-4 h-4', hasActiveFilters ? 'text-tide-blue-deep' : 'text-tide-ink/70']" />
             </div>
             <div>
-              <h3 class="font-medium text-slate-900">{{ t('invoices.filter.title') }}</h3>
-              <p class="text-sm text-slate-600">
+              <h3 class="font-medium text-tide-ink">{{ t('invoices.filter.title') }}</h3>
+              <p class="text-sm text-tide-ink/70">
                 {{ hasActiveFilters ? t('invoices.filter.activeCount', { count: activeFilterChips.length }) : t('invoices.filter.none') }}
               </p>
             </div>
           </div>
-          <ChevronDown v-if="!filtersOpen" class="w-5 h-5 text-slate-400" />
-          <ChevronUp v-else class="w-5 h-5 text-slate-400" />
+          <ChevronDown v-if="!filtersOpen" class="w-5 h-5 text-tide-ink/40" />
+          <ChevronUp v-else class="w-5 h-5 text-tide-ink/40" />
         </button>
 
         <Transition name="slide">
-          <div v-show="filtersOpen" id="invoice-filters" class="border-t border-slate-200">
+          <div v-show="filtersOpen" id="invoice-filters" class="border-t border-[rgba(60,50,35,0.12)]">
             <!-- Filter Chips -->
             <FilterChips
               :chips="activeFilterChips"
@@ -533,7 +533,7 @@ onMounted(async () => {
             <div class="p-4">
               <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div>
-                  <label class="flex items-center gap-2 text-sm font-medium text-slate-700 mb-3">
+                  <label class="flex items-center gap-2 text-sm font-medium text-tide-ink/80 mb-3">
                     <CheckCircle class="w-4 h-4" />
                     {{ t('invoices.filter.status') }}
                   </label>
@@ -545,8 +545,8 @@ onMounted(async () => {
                       :aria-pressed="state.filters.status.includes(s)"
                       class="px-4 py-2 rounded-lg border text-sm font-medium transition-colors"
                       :class="state.filters.status.includes(s)
-                        ? 'bg-blue-600 text-white border-blue-600 hover:bg-blue-700'
-                        : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'"
+                        ? 'bg-tide-blue-btn-deep text-white border-blue-600 hover:bg-tide-blue-deep'
+                        : 'bg-[rgba(255,253,247,0.92)] text-tide-ink/80 border-[rgba(60,50,35,0.16)] hover:bg-[rgba(252,247,238,0.55)]'"
                     >
                       {{ s }}
                     </button>
@@ -554,65 +554,65 @@ onMounted(async () => {
                 </div>
 
                 <div>
-                  <label class="flex items-center gap-2 text-sm font-medium text-slate-700 mb-3">
+                  <label class="flex items-center gap-2 text-sm font-medium text-tide-ink/80 mb-3">
                     <Users class="w-4 h-4" />
                     {{ t('invoices.filter.customer') }}
                   </label>
                   <div class="relative">
-                    <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
+                    <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-tide-ink/40" />
                     <input
                       type="text"
                       v-model="state.filters.customerName"
-                      class="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                      class="w-full pl-10 pr-4 py-2 border border-[rgba(60,50,35,0.16)] rounded-lg focus:ring-2 focus:ring-tide-blue focus:border-tide-blue outline-none transition-colors"
                       :placeholder="t('invoices.placeholder.searchCustomers')"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label class="flex items-center gap-2 text-sm font-medium text-slate-700 mb-3">
+                  <label class="flex items-center gap-2 text-sm font-medium text-tide-ink/80 mb-3">
                     <Building class="w-4 h-4" />
                     {{ t('invoices.filter.facility') }}
                   </label>
                   <div class="relative">
-                    <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
+                    <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-tide-ink/40" />
                     <input
                       type="text"
                       v-model="state.filters.facility"
-                      class="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                      class="w-full pl-10 pr-4 py-2 border border-[rgba(60,50,35,0.16)] rounded-lg focus:ring-2 focus:ring-tide-blue focus:border-tide-blue outline-none transition-colors"
                       :placeholder="t('invoices.placeholder.searchFacilities')"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label class="flex items-center gap-2 text-sm font-medium text-slate-700 mb-3">
+                  <label class="flex items-center gap-2 text-sm font-medium text-tide-ink/80 mb-3">
                     <Hash class="w-4 h-4" />
                     {{ t('invoices.filter.draftNumber') }}
                   </label>
                   <input
                     type="text"
                     v-model="state.filters.draftNumber"
-                    class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                    class="w-full px-4 py-2 border border-[rgba(60,50,35,0.16)] rounded-lg focus:ring-2 focus:ring-tide-blue focus:border-tide-blue outline-none transition-colors"
                     :placeholder="t('invoices.placeholder.draftNumber')"
                   />
                 </div>
 
                 <div>
-                  <label class="flex items-center gap-2 text-sm font-medium text-slate-700 mb-3">
+                  <label class="flex items-center gap-2 text-sm font-medium text-tide-ink/80 mb-3">
                     <Hash class="w-4 h-4" />
                     {{ t('invoices.filter.finalNumber') }}
                   </label>
                   <input
                     type="text"
                     v-model="state.filters.finalNumber"
-                    class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                    class="w-full px-4 py-2 border border-[rgba(60,50,35,0.16)] rounded-lg focus:ring-2 focus:ring-tide-blue focus:border-tide-blue outline-none transition-colors"
                     :placeholder="t('invoices.placeholder.finalNumber')"
                   />
                 </div>
 
                 <div>
-                  <label class="flex items-center gap-2 text-sm font-medium text-slate-700 mb-3">
+                  <label class="flex items-center gap-2 text-sm font-medium text-tide-ink/80 mb-3">
                     <Calendar class="w-4 h-4" />
                     {{ t('invoices.filter.dateRange') }}
                   </label>
@@ -620,12 +620,12 @@ onMounted(async () => {
                     <input
                       type="date"
                       v-model="state.filters.createdDateFrom"
-                      class="px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors text-sm"
+                      class="px-3 py-2 border border-[rgba(60,50,35,0.16)] rounded-lg focus:ring-2 focus:ring-tide-blue focus:border-tide-blue outline-none transition-colors text-sm"
                     />
                     <input
                       type="date"
                       v-model="state.filters.createdDateTo"
-                      class="px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors text-sm"
+                      class="px-3 py-2 border border-[rgba(60,50,35,0.16)] rounded-lg focus:ring-2 focus:ring-tide-blue focus:border-tide-blue outline-none transition-colors text-sm"
                     />
                   </div>
                 </div>
@@ -633,7 +633,7 @@ onMounted(async () => {
 
               <div class="mt-6 flex justify-end">
                 <button
-                  class="flex items-center gap-2 px-4 py-2 text-sm text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors"
+                  class="flex items-center gap-2 px-4 py-2 text-sm text-tide-ink/70 hover:text-tide-ink hover:bg-[rgba(42,36,30,0.05)] rounded-lg transition-colors"
                   @click="clearFilters"
                   :aria-label="t('invoices.button.resetFilters')"
                 >
@@ -682,10 +682,10 @@ onMounted(async () => {
           <div class="max-w-xs">
             <a v-if="(row as any).customerId"
                :href="`/customers/${(row as any).customerId}`"
-               class="text-sm font-medium text-blue-600 hover:text-blue-700 hover:underline truncate block">
+               class="text-sm font-medium text-tide-blue-deep hover:text-tide-blue-deep hover:underline truncate block">
               {{ (row as any).customerName }}
             </a>
-            <span v-else class="text-sm text-slate-900 truncate block">{{ (row as any).customerName }}</span>
+            <span v-else class="text-sm text-tide-ink truncate block">{{ (row as any).customerName }}</span>
           </div>
         </template>
 
@@ -693,21 +693,21 @@ onMounted(async () => {
           <div class="max-w-xs">
             <a v-if="(row as any).facilityId"
                :href="`/facilities/${(row as any).facilityId}`"
-               class="text-sm font-medium text-blue-600 hover:text-blue-700 hover:underline truncate block">
+               class="text-sm font-medium text-tide-blue-deep hover:text-tide-blue-deep hover:underline truncate block">
               {{ (row as any).facility }}
             </a>
-            <span v-else class="text-sm text-slate-900 truncate block">{{ (row as any).facility || '—' }}</span>
+            <span v-else class="text-sm text-tide-ink truncate block">{{ (row as any).facility || '—' }}</span>
           </div>
         </template>
 
         <template #cell-draftNumber="{ row }">
-          <span class="text-sm font-medium text-slate-900" :title="(row as any).draftNumber || '—'">
+          <span class="text-sm font-medium text-tide-ink" :title="(row as any).draftNumber || '—'">
             {{ (row as any).draftNumber || '—' }}
           </span>
         </template>
 
         <template #cell-finalNumber="{ row }">
-          <span class="text-sm font-medium text-slate-900" :title="(row as any).finalNumber || '—'">
+          <span class="text-sm font-medium text-tide-ink" :title="(row as any).finalNumber || '—'">
             {{ (row as any).finalNumber || '—' }}
           </span>
         </template>
@@ -717,13 +717,13 @@ onMounted(async () => {
         </template>
 
         <template #cell-outstanding="{ row }">
-          <span :class="getInvoiceOutstanding(row as Invoice) > 0 ? 'text-amber-700 font-medium' : 'text-slate-400'">
+          <span :class="getInvoiceOutstanding(row as Invoice) > 0 ? 'text-amber-700 font-medium' : 'text-tide-ink/40'">
             {{ formatCurrency(getInvoiceOutstanding(row as Invoice), getRowCurrency(row)) }}
           </span>
         </template>
 
         <template #cell-dueDate="{ row }">
-          <span :class="derivePaymentStatus(row as Invoice) === 'OVERDUE' ? 'text-red-600 font-medium' : 'text-slate-700'">
+          <span :class="derivePaymentStatus(row as Invoice) === 'OVERDUE' ? 'text-red-600 font-medium' : 'text-tide-ink/80'">
             {{ (row as Invoice).dueDate ? formatDate((row as Invoice).dueDate!) : '—' }}
           </span>
         </template>
@@ -732,7 +732,7 @@ onMounted(async () => {
           <KebabMenu>
             <template #trigger="{ toggle, refEl, isOpen }">
               <button
-                class="text-slate-400 hover:text-slate-600 p-2 rounded-lg hover:bg-slate-100 transition-colors"
+                class="text-tide-ink/40 hover:text-tide-ink/70 p-2 rounded-lg hover:bg-[rgba(42,36,30,0.05)] transition-colors"
                 @click.stop="toggle()"
                 :ref="refEl"
                 :aria-label="t('invoices.aria.invoiceActions')"
@@ -744,7 +744,7 @@ onMounted(async () => {
             <template #content="{ close }">
               <div class="py-1">
                 <button
-                  class="flex items-center w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 gap-3"
+                  class="flex items-center w-full text-left px-4 py-2 text-sm text-tide-ink/80 hover:bg-[rgba(42,36,30,0.05)] gap-3"
                   role="menuitem"
                   :aria-label="t('invoices.aria.previewInvoice')"
                   @click="openPreview((row as any)._id || (row as any).id); close()"
@@ -754,7 +754,7 @@ onMounted(async () => {
                 </button>
                 <button
                   v-if="(row as any).status === 'DRAFT'"
-                  class="flex items-center w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 gap-3"
+                  class="flex items-center w-full text-left px-4 py-2 text-sm text-tide-ink/80 hover:bg-[rgba(42,36,30,0.05)] gap-3"
                   role="menuitem"
                   :aria-label="t('invoices.aria.finalizeInvoice')"
                   @click="openFinalize(row); close()"
@@ -776,7 +776,7 @@ onMounted(async () => {
                   <span>{{ t('invoices.button.delete') }}</span>
                 </button>
                 <button
-                  class="flex items-center w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 gap-3"
+                  class="flex items-center w-full text-left px-4 py-2 text-sm text-tide-ink/80 hover:bg-[rgba(42,36,30,0.05)] gap-3"
                   role="menuitem"
                   :aria-label="t('invoices.aria.viewChargeAudit')"
                   @click="openChargeAudit(row); close()"
@@ -789,24 +789,24 @@ onMounted(async () => {
         </template>
 
         <template #mobile-card="{ row }">
-          <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
+          <div class="bg-[rgba(255,253,247,0.92)] rounded-xl border border-[rgba(60,50,35,0.12)] p-4 shadow-sm">
             <div class="flex items-start justify-between gap-2 mb-2">
               <div>
-                <p class="font-semibold text-slate-900 text-sm">{{ (row as any).finalNumber || (row as any).draftNumber || '—' }}</p>
-                <p class="text-xs text-slate-500 mt-0.5">{{ (row as any).customerName || '—' }}</p>
+                <p class="font-semibold text-tide-ink text-sm">{{ (row as any).finalNumber || (row as any).draftNumber || '—' }}</p>
+                <p class="text-xs text-tide-ink/55 mt-0.5">{{ (row as any).customerName || '—' }}</p>
               </div>
               <StatusBadge :status="(row as any).status" />
             </div>
-            <div class="flex items-center justify-between text-xs text-slate-500">
+            <div class="flex items-center justify-between text-xs text-tide-ink/55">
               <span>{{ (row as any).createdDate ? new Date((row as any).createdDate).toLocaleDateString() : '—' }}</span>
-              <span class="font-semibold text-slate-900 text-sm">{{ formatRowAmount(row) }}</span>
+              <span class="font-semibold text-tide-ink text-sm">{{ formatRowAmount(row) }}</span>
             </div>
           </div>
         </template>
 
         <template #footer>
           <!-- Footer: usage summary + pagination + page size -->
-          <div class="bg-slate-50 px-6 py-3 text-sm text-slate-600 border-b border-slate-200">
+          <div class="bg-[rgba(252,247,238,0.55)] px-6 py-3 text-sm text-tide-ink/70 border-b border-[rgba(60,50,35,0.12)]">
             <div class="flex items-center justify-between">
               <div>
                 {{ t('invoices.footer.summary', { count: displayedCount, total: formatTotal(displayedTotalAmount) }) }}
@@ -816,21 +816,21 @@ onMounted(async () => {
               </div>
             </div>
           </div>
-          <div class="bg-white px-6 py-4">
+          <div class="bg-[rgba(255,253,247,0.92)] px-6 py-4">
             <div class="flex items-center justify-between">
               <div class="flex items-center space-x-3">
                 <button
-                  class="inline-flex items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-lg text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  class="inline-flex items-center px-4 py-2 border border-[rgba(60,50,35,0.16)] text-sm font-medium rounded-lg text-tide-ink/80 bg-[rgba(255,253,247,0.92)] hover:bg-[rgba(252,247,238,0.55)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   @click="changePage(-1)"
                   :disabled="state.page === 1"
                 >
                   {{ t('invoices.button.previous') }}
                 </button>
-                <span class="text-sm text-slate-700 px-4 py-2">
+                <span class="text-sm text-tide-ink/80 px-4 py-2">
                   {{ t('invoices.footer.page', { page: state.page }) }}
                 </span>
                 <button
-                  class="inline-flex items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-lg text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  class="inline-flex items-center px-4 py-2 border border-[rgba(60,50,35,0.16)] text-sm font-medium rounded-lg text-tide-ink/80 bg-[rgba(255,253,247,0.92)] hover:bg-[rgba(252,247,238,0.55)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   @click="changePage(1)"
                   :disabled="state.page * state.pageSize >= state.totalCount"
                 >
@@ -838,10 +838,10 @@ onMounted(async () => {
                 </button>
               </div>
               <div class="flex items-center gap-2">
-                <label class="text-sm text-slate-600">{{ t('invoices.footer.show') }}</label>
+                <label class="text-sm text-tide-ink/70">{{ t('invoices.footer.show') }}</label>
                 <select
                   v-model.number="state.pageSize"
-                  class="border border-slate-300 rounded-lg px-2 py-1 text-sm bg-white"
+                  class="border border-[rgba(60,50,35,0.16)] rounded-lg px-2 py-1 text-sm bg-[rgba(255,253,247,0.92)]"
                 >
                   <option :value="10">10</option>
                   <option :value="20">20</option>

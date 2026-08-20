@@ -83,8 +83,8 @@ const stats = computed(() => {
 const statusBadgeClasses = (status: CustomsDeclarationStatus) => {
   const base = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border';
   switch (status) {
-    case 'DRAFT':     return `${base} bg-gray-100 text-gray-700 border-gray-200`;
-    case 'SUBMITTED': return `${base} bg-blue-100 text-blue-700 border-blue-200`;
+    case 'DRAFT':     return `${base} bg-[rgba(42,36,30,0.05)] text-tide-ink/80 border-[rgba(60,50,35,0.12)]`;
+    case 'SUBMITTED': return `${base} bg-blue-100 text-tide-blue-deep border-blue-200`;
     case 'HELD':      return `${base} bg-yellow-100 text-yellow-800 border-yellow-200`;
     case 'CLEARED':   return `${base} bg-green-100 text-green-800 border-green-200`;
     case 'REJECTED':  return `${base} bg-red-100 text-red-800 border-red-200`;
@@ -215,16 +215,16 @@ const formatMoney = (amount?: number | null, currency?: string | null) =>
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-[rgba(252,247,238,0.55)]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
       <!-- Header -->
       <div class="mb-6 flex items-center justify-between">
         <div>
-          <h1 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl">
+          <h1 class="text-2xl font-bold leading-7 text-tide-ink sm:text-3xl">
             {{ t('customsDeclarations.title') }}
           </h1>
-          <p class="mt-1 text-sm text-gray-500">
+          <p class="mt-1 text-sm text-tide-ink/55">
             <i18n-t keypath="customsDeclarations.subtitle" tag="span">
               <template #cleared><strong>{{ t('customsDeclarations.status.cleared') }}</strong></template>
             </i18n-t>
@@ -234,14 +234,14 @@ const formatMoney = (amount?: number | null, currency?: string | null) =>
           <button
             @click="fetchAll"
             :disabled="isLoading"
-            class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
+            class="inline-flex items-center px-4 py-2 border border-[rgba(60,50,35,0.16)] rounded-lg text-sm font-medium text-tide-ink/80 bg-[rgba(255,253,247,0.92)] hover:bg-[rgba(252,247,238,0.55)] disabled:opacity-50"
           >
             <RefreshCw class="h-4 w-4 mr-2" :class="{ 'animate-spin': isLoading }" />
             {{ t('customsDeclarations.button.refresh') }}
           </button>
           <button
             @click="openCreate"
-            class="inline-flex items-center px-4 py-2 border border-transparent rounded-lg text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
+            class="inline-flex items-center px-4 py-2 border border-transparent rounded-lg text-sm font-medium text-white bg-tide-blue-btn-deep hover:bg-tide-blue-deep"
           >
             <Plus class="h-4 w-4 mr-2" />
             {{ t('customsDeclarations.button.newDeclaration') }}
@@ -261,18 +261,18 @@ const formatMoney = (amount?: number | null, currency?: string | null) =>
       <!-- KPIs -->
       <div class="grid grid-cols-2 sm:grid-cols-5 gap-4 mb-6">
         <div v-for="(count, status) in stats" :key="status"
-             class="bg-white rounded-lg border border-gray-200 shadow-sm p-4">
-          <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ status }}</p>
-          <p class="mt-2 text-2xl font-bold text-gray-900">{{ count }}</p>
+             class="bg-[rgba(255,253,247,0.92)] rounded-lg border border-[rgba(60,50,35,0.12)] shadow-sm p-4">
+          <p class="text-xs font-medium text-tide-ink/55 uppercase tracking-wide">{{ status }}</p>
+          <p class="mt-2 text-2xl font-bold text-tide-ink">{{ count }}</p>
         </div>
       </div>
 
       <!-- Filters -->
-      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6 flex gap-3">
+      <div class="bg-[rgba(255,253,247,0.92)] rounded-lg shadow-sm border border-[rgba(60,50,35,0.12)] p-4 mb-6 flex gap-3">
         <select
           v-model="filterStatus"
           @change="fetchAll"
-          class="border border-gray-300 rounded-lg py-2 px-3 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+          class="border border-[rgba(60,50,35,0.16)] rounded-lg py-2 px-3 text-sm bg-[rgba(255,253,247,0.92)] focus:outline-none focus:ring-1 focus:ring-tide-blue"
         >
           <option value="">{{ t('customsDeclarations.filter.allStatuses') }}</option>
           <option value="DRAFT">{{ t('customsDeclarations.status.draft') }}</option>
@@ -286,25 +286,25 @@ const formatMoney = (amount?: number | null, currency?: string | null) =>
           @keyup.enter="fetchAll"
           type="text"
           :placeholder="t('customsDeclarations.placeholder.filterByBolId')"
-          class="flex-1 border border-gray-300 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+          class="flex-1 border border-[rgba(60,50,35,0.16)] rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-tide-blue"
         />
       </div>
 
       <!-- Table -->
-      <div class="bg-white shadow-sm rounded-lg border border-gray-200 overflow-hidden">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
+      <div class="bg-[rgba(255,253,247,0.92)] shadow-sm rounded-lg border border-[rgba(60,50,35,0.12)] overflow-hidden">
+        <table class="min-w-full divide-y divide-[rgba(42,36,30,0.08)]">
+          <thead class="bg-[rgba(252,247,238,0.55)]">
             <tr>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ t('customsDeclarations.column.reference') }}</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ t('customsDeclarations.column.type') }}</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ t('customsDeclarations.column.bol') }}</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ t('customsDeclarations.column.items') }}</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ t('customsDeclarations.column.value') }}</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ t('customsDeclarations.column.status') }}</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ t('customsDeclarations.column.submitted') }}</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-tide-ink/55 uppercase tracking-wider">{{ t('customsDeclarations.column.reference') }}</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-tide-ink/55 uppercase tracking-wider">{{ t('customsDeclarations.column.type') }}</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-tide-ink/55 uppercase tracking-wider">{{ t('customsDeclarations.column.bol') }}</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-tide-ink/55 uppercase tracking-wider">{{ t('customsDeclarations.column.items') }}</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-tide-ink/55 uppercase tracking-wider">{{ t('customsDeclarations.column.value') }}</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-tide-ink/55 uppercase tracking-wider">{{ t('customsDeclarations.column.status') }}</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-tide-ink/55 uppercase tracking-wider">{{ t('customsDeclarations.column.submitted') }}</th>
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
+          <tbody class="bg-[rgba(255,253,247,0.92)] divide-y divide-[rgba(42,36,30,0.08)]">
             <tr v-if="isLoading" v-for="i in 4" :key="`s-${i}`">
               <td v-for="j in 7" :key="j" class="px-4 py-3">
                 <div class="h-4 bg-gray-200 rounded animate-pulse w-3/4"></div>
@@ -312,27 +312,27 @@ const formatMoney = (amount?: number | null, currency?: string | null) =>
             </tr>
 
             <tr v-else v-for="d in declarations" :key="d.id"
-                class="hover:bg-gray-50 cursor-pointer"
+                class="hover:bg-[rgba(252,247,238,0.55)] cursor-pointer"
                 @click="openDetail(d)">
               <td class="px-4 py-3 whitespace-nowrap">
-                <span class="text-sm font-mono font-medium text-gray-900">{{ d.declarationReference || '—' }}</span>
+                <span class="text-sm font-mono font-medium text-tide-ink">{{ d.declarationReference || '—' }}</span>
               </td>
               <td class="px-4 py-3 whitespace-nowrap">
                 <span :class="typeBadgeClasses(d.type)">{{ d.type }}</span>
               </td>
-              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-700 font-mono">{{ d.billOfLadingId }}</td>
-              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-700">{{ d.itemIds?.length ?? 0 }}</td>
-              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-tide-ink/80 font-mono">{{ d.billOfLadingId }}</td>
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-tide-ink/80">{{ d.itemIds?.length ?? 0 }}</td>
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-tide-ink">
                 {{ formatMoney(d.totalDeclaredValue, d.currency) }}
               </td>
               <td class="px-4 py-3 whitespace-nowrap">
                 <span :class="statusBadgeClasses(d.status)">{{ d.status }}</span>
               </td>
-              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">{{ formatDate(d.submittedAt) }}</td>
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-tide-ink/55">{{ formatDate(d.submittedAt) }}</td>
             </tr>
 
             <tr v-if="!isLoading && declarations.length === 0">
-              <td colspan="7" class="px-4 py-12 text-center text-sm text-gray-500">
+              <td colspan="7" class="px-4 py-12 text-center text-sm text-tide-ink/55">
                 <FileText class="mx-auto h-10 w-10 text-gray-300 mb-2" />
                 {{ t('customsDeclarations.empty') }}
               </td>
@@ -349,22 +349,22 @@ const formatMoney = (amount?: number | null, currency?: string | null) =>
         class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 p-4"
         @click.self="closeDetail"
       >
-        <div class="bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col">
-          <div class="p-6 border-b border-gray-200 flex items-center justify-between">
+        <div class="bg-[rgba(255,253,247,0.92)] rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col">
+          <div class="p-6 border-b border-[rgba(60,50,35,0.12)] flex items-center justify-between">
             <div class="flex items-center gap-3">
-              <FileText class="h-5 w-5 text-blue-600" />
+              <FileText class="h-5 w-5 text-tide-blue-deep" />
               <div>
                 <div class="flex items-center gap-2">
-                  <h3 class="text-lg font-semibold text-gray-900">
+                  <h3 class="text-lg font-semibold text-tide-ink">
                     {{ selected.declarationReference || t('customsDeclarations.detail.declaration') }}
                   </h3>
                   <span :class="typeBadgeClasses(selected.type)">{{ selected.type }}</span>
                   <span :class="statusBadgeClasses(selected.status)">{{ selected.status }}</span>
                 </div>
-                <p class="text-xs text-gray-500 font-mono mt-0.5">{{ selected.id }}</p>
+                <p class="text-xs text-tide-ink/55 font-mono mt-0.5">{{ selected.id }}</p>
               </div>
             </div>
-            <button @click="closeDetail" class="text-gray-400 hover:text-gray-600">
+            <button @click="closeDetail" class="text-tide-ink/40 hover:text-tide-ink/70">
               <X class="h-5 w-5" />
             </button>
           </div>
@@ -372,36 +372,36 @@ const formatMoney = (amount?: number | null, currency?: string | null) =>
           <div class="overflow-y-auto p-6 space-y-4 flex-1">
             <div class="grid grid-cols-2 gap-4 text-sm">
               <div>
-                <p class="text-xs font-medium text-gray-500 uppercase">{{ t('customsDeclarations.detail.bol') }}</p>
-                <p class="mt-1 font-mono text-gray-900">{{ selected.billOfLadingId }}</p>
+                <p class="text-xs font-medium text-tide-ink/55 uppercase">{{ t('customsDeclarations.detail.bol') }}</p>
+                <p class="mt-1 font-mono text-tide-ink">{{ selected.billOfLadingId }}</p>
               </div>
               <div>
-                <p class="text-xs font-medium text-gray-500 uppercase">{{ t('customsDeclarations.detail.declarant') }}</p>
-                <p class="mt-1 text-gray-900">{{ selected.declarantName || '—' }}</p>
+                <p class="text-xs font-medium text-tide-ink/55 uppercase">{{ t('customsDeclarations.detail.declarant') }}</p>
+                <p class="mt-1 text-tide-ink">{{ selected.declarantName || '—' }}</p>
               </div>
               <div>
-                <p class="text-xs font-medium text-gray-500 uppercase">{{ t('customsDeclarations.detail.portOfEntry') }}</p>
-                <p class="mt-1 text-gray-900">{{ selected.portOfEntryCode || '—' }}</p>
+                <p class="text-xs font-medium text-tide-ink/55 uppercase">{{ t('customsDeclarations.detail.portOfEntry') }}</p>
+                <p class="mt-1 text-tide-ink">{{ selected.portOfEntryCode || '—' }}</p>
               </div>
               <div>
-                <p class="text-xs font-medium text-gray-500 uppercase">{{ t('customsDeclarations.detail.declaredValue') }}</p>
-                <p class="mt-1 text-gray-900">{{ formatMoney(selected.totalDeclaredValue, selected.currency) }}</p>
+                <p class="text-xs font-medium text-tide-ink/55 uppercase">{{ t('customsDeclarations.detail.declaredValue') }}</p>
+                <p class="mt-1 text-tide-ink">{{ formatMoney(selected.totalDeclaredValue, selected.currency) }}</p>
               </div>
               <div>
-                <p class="text-xs font-medium text-gray-500 uppercase">{{ t('customsDeclarations.detail.assessedDuties') }}</p>
-                <p class="mt-1 text-gray-900">{{ formatMoney(selected.assessedDuties, selected.currency) }}</p>
+                <p class="text-xs font-medium text-tide-ink/55 uppercase">{{ t('customsDeclarations.detail.assessedDuties') }}</p>
+                <p class="mt-1 text-tide-ink">{{ formatMoney(selected.assessedDuties, selected.currency) }}</p>
               </div>
               <div>
-                <p class="text-xs font-medium text-gray-500 uppercase">{{ t('customsDeclarations.detail.submittedAt') }}</p>
-                <p class="mt-1 text-gray-900">{{ formatDate(selected.submittedAt) }}</p>
+                <p class="text-xs font-medium text-tide-ink/55 uppercase">{{ t('customsDeclarations.detail.submittedAt') }}</p>
+                <p class="mt-1 text-tide-ink">{{ formatDate(selected.submittedAt) }}</p>
               </div>
             </div>
 
             <div>
-              <p class="text-xs font-medium text-gray-500 uppercase mb-1">{{ t('customsDeclarations.detail.itemsCovered', { count: selected.itemIds.length }) }}</p>
+              <p class="text-xs font-medium text-tide-ink/55 uppercase mb-1">{{ t('customsDeclarations.detail.itemsCovered', { count: selected.itemIds.length }) }}</p>
               <div class="flex flex-wrap gap-1.5">
                 <span v-for="id in selected.itemIds" :key="id"
-                      class="inline-flex items-center px-2 py-0.5 rounded text-xs font-mono bg-gray-100 text-gray-700 border border-gray-200">
+                      class="inline-flex items-center px-2 py-0.5 rounded text-xs font-mono bg-[rgba(42,36,30,0.05)] text-tide-ink/80 border border-[rgba(60,50,35,0.12)]">
                   {{ id }}
                 </span>
               </div>
@@ -416,18 +416,18 @@ const formatMoney = (amount?: number | null, currency?: string | null) =>
               <p class="mt-1 text-sm text-red-900">{{ selected.rejectionReason }}</p>
             </div>
             <div v-if="selected.notes">
-              <p class="text-xs font-medium text-gray-500 uppercase mb-1">{{ t('customsDeclarations.detail.notes') }}</p>
-              <p class="text-sm text-gray-700 bg-gray-50 border border-gray-200 rounded-lg p-3">{{ selected.notes }}</p>
+              <p class="text-xs font-medium text-tide-ink/55 uppercase mb-1">{{ t('customsDeclarations.detail.notes') }}</p>
+              <p class="text-sm text-tide-ink/80 bg-[rgba(252,247,238,0.55)] border border-[rgba(60,50,35,0.12)] rounded-lg p-3">{{ selected.notes }}</p>
             </div>
           </div>
 
           <!-- Actions -->
-          <div class="px-6 py-4 bg-gray-50 rounded-b-xl border-t border-gray-200 flex flex-wrap gap-2 justify-end">
+          <div class="px-6 py-4 bg-[rgba(252,247,238,0.55)] rounded-b-xl border-t border-[rgba(60,50,35,0.12)] flex flex-wrap gap-2 justify-end">
             <button
               v-if="selected.status === 'DRAFT'"
               @click="handleSubmit(selected)"
               :disabled="isActing"
-              class="inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
+              class="inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium text-white bg-tide-blue-btn-deep hover:bg-tide-blue-deep disabled:opacity-50"
             >
               <Send class="h-4 w-4 mr-1.5" />
               {{ t('customsDeclarations.button.submit') }}
@@ -449,7 +449,7 @@ const formatMoney = (amount?: number | null, currency?: string | null) =>
                 min="0"
                 step="0.01"
                 :placeholder="t('customsDeclarations.placeholder.dutiesOptional')"
-                class="w-32 border border-gray-300 rounded-lg py-1.5 px-2 text-sm"
+                class="w-32 border border-[rgba(60,50,35,0.16)] rounded-lg py-1.5 px-2 text-sm"
               />
               <button
                 @click="handleClear(selected)"
@@ -471,7 +471,7 @@ const formatMoney = (amount?: number | null, currency?: string | null) =>
             </button>
             <button
               @click="closeDetail"
-              class="px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100"
+              class="px-3 py-2 border border-[rgba(60,50,35,0.16)] rounded-lg text-sm font-medium text-tide-ink/80 hover:bg-[rgba(42,36,30,0.05)]"
             >
               {{ t('customsDeclarations.button.close') }}
             </button>
@@ -487,12 +487,12 @@ const formatMoney = (amount?: number | null, currency?: string | null) =>
         class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-[60] p-4"
         @click.self="showReasonModal = false"
       >
-        <div class="bg-white rounded-xl shadow-xl w-full max-w-md">
-          <div class="p-5 border-b border-gray-200 flex items-center justify-between">
-            <h3 class="text-lg font-semibold text-gray-900">
+        <div class="bg-[rgba(255,253,247,0.92)] rounded-xl shadow-xl w-full max-w-md">
+          <div class="p-5 border-b border-[rgba(60,50,35,0.12)] flex items-center justify-between">
+            <h3 class="text-lg font-semibold text-tide-ink">
               {{ reasonMode === 'hold' ? t('customsDeclarations.reason.holdTitle') : t('customsDeclarations.reason.rejectTitle') }}
             </h3>
-            <button @click="showReasonModal = false" class="text-gray-400 hover:text-gray-600">
+            <button @click="showReasonModal = false" class="text-tide-ink/40 hover:text-tide-ink/70">
               <X class="h-5 w-5" />
             </button>
           </div>
@@ -501,13 +501,13 @@ const formatMoney = (amount?: number | null, currency?: string | null) =>
               v-model="reasonValue"
               rows="4"
               :placeholder="reasonMode === 'hold' ? t('customsDeclarations.placeholder.holdReason') : t('customsDeclarations.placeholder.rejectReason')"
-              class="block w-full border border-gray-300 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+              class="block w-full border border-[rgba(60,50,35,0.16)] rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-tide-blue"
             ></textarea>
           </div>
-          <div class="px-5 py-3 bg-gray-50 rounded-b-xl border-t border-gray-200 flex justify-end gap-2">
+          <div class="px-5 py-3 bg-[rgba(252,247,238,0.55)] rounded-b-xl border-t border-[rgba(60,50,35,0.12)] flex justify-end gap-2">
             <button
               @click="showReasonModal = false"
-              class="px-3 py-1.5 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100"
+              class="px-3 py-1.5 border border-[rgba(60,50,35,0.16)] rounded-lg text-sm font-medium text-tide-ink/80 hover:bg-[rgba(42,36,30,0.05)]"
             >
               {{ t('customsDeclarations.button.cancel') }}
             </button>
@@ -532,20 +532,20 @@ const formatMoney = (amount?: number | null, currency?: string | null) =>
         class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 p-4"
         @click.self="showCreate = false"
       >
-        <div class="bg-white rounded-xl shadow-xl w-full max-w-xl">
-          <div class="p-6 border-b border-gray-200 flex items-center justify-between">
-            <h3 class="text-lg font-semibold text-gray-900">{{ t('customsDeclarations.create.title') }}</h3>
-            <button @click="showCreate = false" class="text-gray-400 hover:text-gray-600">
+        <div class="bg-[rgba(255,253,247,0.92)] rounded-xl shadow-xl w-full max-w-xl">
+          <div class="p-6 border-b border-[rgba(60,50,35,0.12)] flex items-center justify-between">
+            <h3 class="text-lg font-semibold text-tide-ink">{{ t('customsDeclarations.create.title') }}</h3>
+            <button @click="showCreate = false" class="text-tide-ink/40 hover:text-tide-ink/70">
               <X class="h-5 w-5" />
             </button>
           </div>
           <form @submit.prevent="submitCreate" class="p-6 space-y-4">
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="block text-xs font-medium text-gray-700 mb-1">{{ t('customsDeclarations.field.type') }} <span class="text-red-500">*</span></label>
+                <label class="block text-xs font-medium text-tide-ink/80 mb-1">{{ t('customsDeclarations.field.type') }} <span class="text-red-500">*</span></label>
                 <select
                   v-model="newDeclaration.type"
-                  class="block w-full border border-gray-300 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  class="block w-full border border-[rgba(60,50,35,0.16)] rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-tide-blue"
                 >
                   <option value="IMPORT">{{ t('customsDeclarations.type.import') }}</option>
                   <option value="EXPORT">{{ t('customsDeclarations.type.export') }}</option>
@@ -553,69 +553,69 @@ const formatMoney = (amount?: number | null, currency?: string | null) =>
                 </select>
               </div>
               <div>
-                <label class="block text-xs font-medium text-gray-700 mb-1">{{ t('customsDeclarations.field.portOfEntry') }}</label>
+                <label class="block text-xs font-medium text-tide-ink/80 mb-1">{{ t('customsDeclarations.field.portOfEntry') }}</label>
                 <input
                   v-model="newDeclaration.portOfEntryCode"
                   type="text"
                   :placeholder="t('customsDeclarations.placeholder.portOfEntry')"
-                  class="block w-full border border-gray-300 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  class="block w-full border border-[rgba(60,50,35,0.16)] rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-tide-blue"
                 />
               </div>
             </div>
             <div>
-              <label class="block text-xs font-medium text-gray-700 mb-1">{{ t('customsDeclarations.field.bolId') }} <span class="text-red-500">*</span></label>
+              <label class="block text-xs font-medium text-tide-ink/80 mb-1">{{ t('customsDeclarations.field.bolId') }} <span class="text-red-500">*</span></label>
               <input
                 v-model="newDeclaration.billOfLadingId"
                 type="text"
                 required
-                class="block w-full border border-gray-300 rounded-lg py-2 px-3 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-blue-500"
+                class="block w-full border border-[rgba(60,50,35,0.16)] rounded-lg py-2 px-3 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-tide-blue"
               />
             </div>
             <div>
-              <label class="block text-xs font-medium text-gray-700 mb-1">{{ t('customsDeclarations.field.itemsList') }} <span class="text-red-500">*</span></label>
+              <label class="block text-xs font-medium text-tide-ink/80 mb-1">{{ t('customsDeclarations.field.itemsList') }} <span class="text-red-500">*</span></label>
               <textarea
                 v-model="itemsInput"
                 rows="3"
                 :placeholder="t('customsDeclarations.placeholder.itemsList')"
-                class="block w-full border border-gray-300 rounded-lg py-2 px-3 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-blue-500"
+                class="block w-full border border-[rgba(60,50,35,0.16)] rounded-lg py-2 px-3 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-tide-blue"
               ></textarea>
             </div>
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="block text-xs font-medium text-gray-700 mb-1">{{ t('customsDeclarations.field.declarant') }}</label>
+                <label class="block text-xs font-medium text-tide-ink/80 mb-1">{{ t('customsDeclarations.field.declarant') }}</label>
                 <input
                   v-model="newDeclaration.declarantName"
                   type="text"
-                  class="block w-full border border-gray-300 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  class="block w-full border border-[rgba(60,50,35,0.16)] rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-tide-blue"
                 />
               </div>
               <div>
-                <label class="block text-xs font-medium text-gray-700 mb-1">{{ t('customsDeclarations.field.taxId') }}</label>
+                <label class="block text-xs font-medium text-tide-ink/80 mb-1">{{ t('customsDeclarations.field.taxId') }}</label>
                 <input
                   v-model="newDeclaration.declarantTaxId"
                   type="text"
-                  class="block w-full border border-gray-300 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  class="block w-full border border-[rgba(60,50,35,0.16)] rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-tide-blue"
                 />
               </div>
             </div>
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="block text-xs font-medium text-gray-700 mb-1">{{ t('customsDeclarations.field.declaredValue') }}</label>
+                <label class="block text-xs font-medium text-tide-ink/80 mb-1">{{ t('customsDeclarations.field.declaredValue') }}</label>
                 <input
                   v-model.number="newDeclaration.totalDeclaredValue"
                   type="number"
                   min="0"
                   step="0.01"
-                  class="block w-full border border-gray-300 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  class="block w-full border border-[rgba(60,50,35,0.16)] rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-tide-blue"
                 />
               </div>
               <div>
-                <label class="block text-xs font-medium text-gray-700 mb-1">{{ t('customsDeclarations.field.currency') }}</label>
+                <label class="block text-xs font-medium text-tide-ink/80 mb-1">{{ t('customsDeclarations.field.currency') }}</label>
                 <input
                   v-model="newDeclaration.currency"
                   type="text"
                   :placeholder="t('customsDeclarations.placeholder.currency')"
-                  class="block w-full border border-gray-300 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  class="block w-full border border-[rgba(60,50,35,0.16)] rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-tide-blue"
                 />
               </div>
             </div>
@@ -624,14 +624,14 @@ const formatMoney = (amount?: number | null, currency?: string | null) =>
                 type="button"
                 @click="showCreate = false"
                 :disabled="isCreating"
-                class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50"
+                class="px-4 py-2 border border-[rgba(60,50,35,0.16)] rounded-lg text-sm font-medium text-tide-ink/80 hover:bg-[rgba(252,247,238,0.55)]"
               >
                 {{ t('customsDeclarations.button.cancel') }}
               </button>
               <button
                 type="submit"
                 :disabled="isCreating"
-                class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
+                class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium text-white bg-tide-blue-btn-deep hover:bg-tide-blue-deep disabled:opacity-50"
               >
                 <RefreshCw v-if="isCreating" class="h-4 w-4 mr-2 animate-spin" />
                 {{ t('customsDeclarations.button.createDraft') }}

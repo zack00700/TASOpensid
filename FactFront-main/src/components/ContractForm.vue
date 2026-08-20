@@ -378,7 +378,7 @@ const openThirdParties = () => {
 
 const getInputClasses = (fieldName: string) => {
   return {
-    'block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors duration-200': true,
+    'block w-full rounded-lg border-[rgba(60,50,35,0.16)] shadow-sm focus:border-tide-blue focus:ring-tide-blue transition-colors duration-200': true,
     'border-red-300 focus:border-red-500 focus:ring-red-500': errors.value[fieldName]
   };
 };
@@ -390,10 +390,10 @@ const getStepClasses = (step: number) => {
   
   return {
     'flex items-center px-4 py-3 rounded-lg cursor-pointer transition-all duration-200': true,
-    'bg-blue-50 border-2 border-blue-200 text-blue-700': isActive,
+    'bg-[rgba(90,138,171,0.10)] border-2 border-blue-200 text-tide-blue-deep': isActive,
     'bg-green-50 border-2 border-green-200 text-green-700 hover:bg-green-100': isCompleted && !isActive,
-    'bg-gray-50 border-2 border-gray-200 text-gray-400 cursor-not-allowed': !canAccess && !isCompleted && !isActive,
-    'bg-white border-2 border-gray-200 text-gray-600 hover:bg-gray-50': canAccess && !isCompleted && !isActive
+    'bg-[rgba(252,247,238,0.55)] border-2 border-[rgba(60,50,35,0.12)] text-tide-ink/40 cursor-not-allowed': !canAccess && !isCompleted && !isActive,
+    'bg-[rgba(255,253,247,0.92)] border-2 border-[rgba(60,50,35,0.12)] text-tide-ink/70 hover:bg-[rgba(252,247,238,0.55)]': canAccess && !isCompleted && !isActive
   };
 };
 
@@ -495,24 +495,24 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-[rgba(252,247,238,0.55)]">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       
       <!-- Header -->
-      <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-8">
-        <div class="px-6 py-4 border-b border-gray-200">
+      <div class="bg-[rgba(255,253,247,0.92)] rounded-lg shadow-sm border border-[rgba(60,50,35,0.12)] mb-8">
+        <div class="px-6 py-4 border-b border-[rgba(60,50,35,0.12)]">
           <div class="flex justify-between items-center">
             <div>
-              <h1 class="text-2xl font-bold text-gray-900">
+              <h1 class="text-2xl font-bold text-tide-ink">
                 {{ props.editMode ? t('contractForm.header.editTitle') : t('contractForm.header.newTitle') }}
               </h1>
-              <p class="mt-1 text-sm text-gray-600">
+              <p class="mt-1 text-sm text-tide-ink/70">
                 {{ props.editMode ? t('contractForm.header.editSubtitle') : t('contractForm.header.newSubtitle') }}
               </p>
             </div>
             <button
               @click="emit('cancel')"
-              class="p-2 text-gray-400 hover:text-gray-500 hover:bg-gray-100 rounded-lg transition-colors"
+              class="p-2 text-tide-ink/40 hover:text-tide-ink/55 hover:bg-[rgba(42,36,30,0.05)] rounded-lg transition-colors"
             >
               <X class="h-6 w-6" />
             </button>
@@ -533,10 +533,10 @@ onMounted(async () => {
                   <div 
                     :class="[
                       'w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium',
-                      currentStep === step.id ? 'bg-blue-600 text-white' :
+                      currentStep === step.id ? 'bg-tide-blue-btn-deep text-white' :
                       completedSteps.includes(step.id) ? 'bg-green-600 text-white' :
-                      canProceedToStep(step.id) ? 'bg-gray-200 text-gray-600' :
-                      'bg-gray-100 text-gray-400'
+                      canProceedToStep(step.id) ? 'bg-gray-200 text-tide-ink/70' :
+                      'bg-[rgba(42,36,30,0.05)] text-tide-ink/40'
                     ]"
                   >
                     <component 
@@ -556,20 +556,20 @@ onMounted(async () => {
       </div>
 
       <!-- Form Content -->
-      <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+      <div class="bg-[rgba(255,253,247,0.92)] rounded-lg shadow-sm border border-[rgba(60,50,35,0.12)]">
         <form @submit.prevent="handleSubmit" class="p-6">
           
           <!-- Step 1: Event Selection -->
           <div v-if="currentStep === 1" class="space-y-6">
             <div class="text-center mb-8">
               <Search class="mx-auto h-12 w-12 text-blue-500 mb-4" />
-              <h2 class="text-xl font-semibold text-gray-900">{{ t('contractForm.selectEvent') }}</h2>
-              <p class="mt-2 text-gray-600">{{ t('contractForm.selectEventDesc') }}</p>
+              <h2 class="text-xl font-semibold text-tide-ink">{{ t('contractForm.selectEvent') }}</h2>
+              <p class="mt-2 text-tide-ink/70">{{ t('contractForm.selectEventDesc') }}</p>
             </div>
 
             <div class="max-w-md mx-auto">
               <div class="relative">
-                <label class="block text-sm font-medium text-gray-700 mb-2">
+                <label class="block text-sm font-medium text-tide-ink/80 mb-2">
                   {{ t('contractForm.eventSearch') }} <span class="text-red-500">*</span>
                 </label>
                 <input
@@ -584,21 +584,21 @@ onMounted(async () => {
                 />
                 <ul
                   v-if="showSuggestions && (eventSuggestions.length > 0 || noResults)"
-                  class="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto"
+                  class="absolute z-10 mt-1 w-full bg-[rgba(255,253,247,0.92)] border border-[rgba(60,50,35,0.16)] rounded-lg shadow-lg max-h-60 overflow-auto"
                 >
                   <li
                     v-for="(event, index) in eventSuggestions"
                     :key="event.id"
                     @mousedown.prevent="selectEvent(event)"
                     :class="[
-                      'cursor-pointer px-4 py-3 hover:bg-gray-50',
-                      { 'bg-blue-50 text-blue-700': index === highlightedIndex }
+                      'cursor-pointer px-4 py-3 hover:bg-[rgba(252,247,238,0.55)]',
+                      { 'bg-[rgba(90,138,171,0.10)] text-tide-blue-deep': index === highlightedIndex }
                     ]"
                   >
                     <div class="font-medium">{{ event.eventName }}</div>
-                    <div class="text-sm text-gray-500">{{ event.eventType || t('contractForm.standardEvent') }}</div>
+                    <div class="text-sm text-tide-ink/55">{{ event.eventType || t('contractForm.standardEvent') }}</div>
                   </li>
-                  <li v-if="noResults" class="px-4 py-3 text-sm text-gray-500 text-center">
+                  <li v-if="noResults" class="px-4 py-3 text-sm text-tide-ink/55 text-center">
                     {{ t('contractForm.noEventsFound') }}
                   </li>
                 </ul>
@@ -626,13 +626,13 @@ onMounted(async () => {
           <div v-else-if="currentStep === 2" class="space-y-6">
             <div class="text-center mb-8">
               <FileText class="mx-auto h-12 w-12 text-blue-500 mb-4" />
-              <h2 class="text-xl font-semibold text-gray-900">{{ t('contractForm.basicInformation') }}</h2>
-              <p class="mt-2 text-gray-600">{{ t('contractForm.basicInformationDesc') }}</p>
+              <h2 class="text-xl font-semibold text-tide-ink">{{ t('contractForm.basicInformation') }}</h2>
+              <p class="mt-2 text-tide-ink/70">{{ t('contractForm.basicInformationDesc') }}</p>
             </div>
 
             <div class="max-w-2xl mx-auto space-y-6">
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">
+                <label class="block text-sm font-medium text-tide-ink/80 mb-2">
                   {{ t('contractForm.contractName') }} <span class="text-red-500">*</span>
                 </label>
                 <input
@@ -648,7 +648,7 @@ onMounted(async () => {
               </div>
 
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">
+                <label class="block text-sm font-medium text-tide-ink/80 mb-2">
                   {{ t('contractForm.description') }}
                 </label>
                 <textarea
@@ -660,18 +660,18 @@ onMounted(async () => {
               </div>
 
               <!-- Customer Information -->
-              <div class="border border-gray-200 rounded-lg p-5 space-y-4">
+              <div class="border border-[rgba(60,50,35,0.12)] rounded-lg p-5 space-y-4">
                 <div class="flex items-center justify-between mb-1">
                   <div class="flex items-center space-x-2">
-                    <User class="h-5 w-5 text-gray-400" />
-                    <h3 class="text-sm font-semibold text-gray-700">{{ t('contractForm.customerInformation') }}</h3>
-                    <span class="text-xs text-gray-400 ml-1">{{ t('contractForm.optionalParen') }}</span>
+                    <User class="h-5 w-5 text-tide-ink/40" />
+                    <h3 class="text-sm font-semibold text-tide-ink/80">{{ t('contractForm.customerInformation') }}</h3>
+                    <span class="text-xs text-tide-ink/40 ml-1">{{ t('contractForm.optionalParen') }}</span>
                   </div>
                   <!-- Direct hop to the Third Parties admin so users can create/edit a tier without leaving the wizard mentally. -->
                   <button
                     type="button"
                     @click="openThirdParties"
-                    class="inline-flex items-center text-xs text-blue-600 hover:text-blue-700 hover:underline"
+                    class="inline-flex items-center text-xs text-tide-blue-deep hover:text-tide-blue-deep hover:underline"
                     :title="t('contractForm.manageThirdParties')"
                   >
                     <ExternalLink class="h-3.5 w-3.5 mr-1" />
@@ -688,7 +688,7 @@ onMounted(async () => {
                     />
                   </div>
                   <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <label class="block text-sm font-medium text-tide-ink/80 mb-2">
                       {{ t('contractForm.customerId') }}
                     </label>
                     <input
@@ -698,14 +698,14 @@ onMounted(async () => {
                       :class="getInputClasses('customerId')"
                       :placeholder="t('contractForm.placeholder.customerId')"
                     />
-                    <p class="mt-1 text-xs text-gray-500">{{ t('contractForm.customerIdHint') }}</p>
+                    <p class="mt-1 text-xs text-tide-ink/55">{{ t('contractForm.customerIdHint') }}</p>
                   </div>
                 </div>
               </div>
 
               <!-- Priority -->
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">
+                <label class="block text-sm font-medium text-tide-ink/80 mb-2">
                   {{ t('contractForm.priority') }}
                 </label>
                 <input
@@ -716,7 +716,7 @@ onMounted(async () => {
                   :class="getInputClasses('priority')"
                   placeholder="0"
                 />
-                <p class="mt-1.5 text-xs text-gray-500 flex items-center space-x-1">
+                <p class="mt-1.5 text-xs text-tide-ink/55 flex items-center space-x-1">
                   <Info class="h-3.5 w-3.5 flex-shrink-0" />
                   <span>{{ t('contractForm.priorityHint') }}</span>
                 </p>
@@ -724,7 +724,7 @@ onMounted(async () => {
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
+                  <label class="block text-sm font-medium text-tide-ink/80 mb-2">
                     {{ t('contractForm.startDate') }} <span class="text-red-500">*</span>
                   </label>
                   <div class="relative">
@@ -733,7 +733,7 @@ onMounted(async () => {
                       type="date"
                       :class="getInputClasses('startDate')"
                     />
-                    <Calendar class="absolute right-3 top-3 h-5 w-5 text-gray-400 pointer-events-none" />
+                    <Calendar class="absolute right-3 top-3 h-5 w-5 text-tide-ink/40 pointer-events-none" />
                   </div>
                   <p v-if="errors.startDate" class="mt-2 text-sm text-red-600 flex items-center">
                     <AlertCircle class="h-4 w-4 mr-1" />
@@ -742,7 +742,7 @@ onMounted(async () => {
                 </div>
 
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
+                  <label class="block text-sm font-medium text-tide-ink/80 mb-2">
                     {{ t('contractForm.endDate') }} <span class="text-red-500">*</span>
                   </label>
                   <div class="relative">
@@ -752,7 +752,7 @@ onMounted(async () => {
                       :min="formData.startDate"
                       :class="getInputClasses('endDate')"
                     />
-                    <Calendar class="absolute right-3 top-3 h-5 w-5 text-gray-400 pointer-events-none" />
+                    <Calendar class="absolute right-3 top-3 h-5 w-5 text-tide-ink/40 pointer-events-none" />
                   </div>
                   <p v-if="errors.endDate" class="mt-2 text-sm text-red-600 flex items-center">
                     <AlertCircle class="h-4 w-4 mr-1" />
@@ -762,32 +762,32 @@ onMounted(async () => {
               </div>
 
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">
+                <label class="block text-sm font-medium text-tide-ink/80 mb-2">
                   {{ t('contractForm.status') }} <span class="text-red-500">*</span>
                 </label>
                 <div class="grid grid-cols-2 gap-4">
-                  <label class="relative flex items-center p-4 border rounded-lg cursor-pointer hover:bg-gray-50">
+                  <label class="relative flex items-center p-4 border rounded-lg cursor-pointer hover:bg-[rgba(252,247,238,0.55)]">
                     <input
                       v-model="formData.status"
                       type="radio"
                       value="Active"
-                      class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                      class="h-4 w-4 text-tide-blue-deep border-[rgba(60,50,35,0.16)] focus:ring-tide-blue"
                     />
                     <div class="ml-3">
-                      <div class="text-sm font-medium text-gray-900">{{ t('contractForm.statusOption.active') }}</div>
-                      <div class="text-sm text-gray-500">{{ t('contractForm.statusOption.activeDesc') }}</div>
+                      <div class="text-sm font-medium text-tide-ink">{{ t('contractForm.statusOption.active') }}</div>
+                      <div class="text-sm text-tide-ink/55">{{ t('contractForm.statusOption.activeDesc') }}</div>
                     </div>
                   </label>
-                  <label class="relative flex items-center p-4 border rounded-lg cursor-pointer hover:bg-gray-50">
+                  <label class="relative flex items-center p-4 border rounded-lg cursor-pointer hover:bg-[rgba(252,247,238,0.55)]">
                     <input
                       v-model="formData.status"
                       type="radio"
                       value="Disable"
-                      class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                      class="h-4 w-4 text-tide-blue-deep border-[rgba(60,50,35,0.16)] focus:ring-tide-blue"
                     />
                     <div class="ml-3">
-                      <div class="text-sm font-medium text-gray-900">{{ t('contractForm.statusOption.disabled') }}</div>
-                      <div class="text-sm text-gray-500">{{ t('contractForm.statusOption.disabledDesc') }}</div>
+                      <div class="text-sm font-medium text-tide-ink">{{ t('contractForm.statusOption.disabled') }}</div>
+                      <div class="text-sm text-tide-ink/55">{{ t('contractForm.statusOption.disabledDesc') }}</div>
                     </div>
                   </label>
                 </div>
@@ -803,15 +803,15 @@ onMounted(async () => {
           <div v-else-if="currentStep === 3" class="space-y-6">
             <div class="text-center mb-8">
               <Calculator class="mx-auto h-12 w-12 text-blue-500 mb-4" />
-              <h2 class="text-xl font-semibold text-gray-900">{{ t('contractForm.calculationConfiguration') }}</h2>
-              <p class="mt-2 text-gray-600">{{ t('contractForm.calculationConfigurationDesc') }}</p>
+              <h2 class="text-xl font-semibold text-tide-ink">{{ t('contractForm.calculationConfiguration') }}</h2>
+              <p class="mt-2 text-tide-ink/70">{{ t('contractForm.calculationConfigurationDesc') }}</p>
             </div>
 
             <div class="max-w-2xl mx-auto space-y-8">
               <!-- Calculation Mode Selection -->
               <div class="space-y-4">
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-3">
+                  <label class="block text-sm font-medium text-tide-ink/80 mb-3">
                     {{ t('contractForm.calculationType') }}
                   </label>
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -822,25 +822,25 @@ onMounted(async () => {
                       :class="[
                         'relative flex items-center p-4 border-2 rounded-lg cursor-pointer transition-colors',
                         formData.calculationMode.type === type
-                          ? 'border-blue-500 bg-blue-50'
-                          : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                          ? 'border-tide-blue bg-[rgba(90,138,171,0.10)]'
+                          : 'border-[rgba(60,50,35,0.12)] hover:border-[rgba(60,50,35,0.16)] hover:bg-[rgba(252,247,238,0.55)]'
                       ]"
                     >
                       <div class="flex-1">
-                        <div class="text-sm font-medium text-gray-900">{{ calcTypeLabel(type) }}</div>
-                        <div class="text-sm text-gray-500">
+                        <div class="text-sm font-medium text-tide-ink">{{ calcTypeLabel(type) }}</div>
+                        <div class="text-sm text-tide-ink/55">
                           {{ t('contractForm.optionsAvailable', { count: calculationModes[type].length }, calculationModes[type].length) }}
                         </div>
                       </div>
                       <div v-if="formData.calculationMode.type === type" class="ml-3">
-                        <Check class="h-5 w-5 text-blue-600" />
+                        <Check class="h-5 w-5 text-tide-blue-deep" />
                       </div>
                     </div>
                   </div>
                 </div>
 
                 <div v-if="formData.calculationMode.type">
-                  <label class="block text-sm font-medium text-gray-700 mb-3">
+                  <label class="block text-sm font-medium text-tide-ink/80 mb-3">
                     {{ t('contractForm.calculationMethod') }}
                   </label>
                   <div class="space-y-3">
@@ -851,16 +851,16 @@ onMounted(async () => {
                       :class="[
                         'relative flex items-start p-4 border-2 rounded-lg cursor-pointer transition-colors',
                         formData.calculationMode.subType === mode.value
-                          ? 'border-blue-500 bg-blue-50'
-                          : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                          ? 'border-tide-blue bg-[rgba(90,138,171,0.10)]'
+                          : 'border-[rgba(60,50,35,0.12)] hover:border-[rgba(60,50,35,0.16)] hover:bg-[rgba(252,247,238,0.55)]'
                       ]"
                     >
                       <div class="flex-1 min-w-0">
-                        <div class="text-sm font-medium text-gray-900">{{ mode.label }}</div>
-                        <div class="text-sm text-gray-500 mt-1">{{ mode.description }}</div>
+                        <div class="text-sm font-medium text-tide-ink">{{ mode.label }}</div>
+                        <div class="text-sm text-tide-ink/55 mt-1">{{ mode.description }}</div>
                       </div>
                       <div v-if="formData.calculationMode.subType === mode.value" class="ml-3 flex-shrink-0">
-                        <Check class="h-5 w-5 text-blue-600" />
+                        <Check class="h-5 w-5 text-tide-blue-deep" />
                       </div>
                     </div>
                   </div>
@@ -868,16 +868,16 @@ onMounted(async () => {
               </div>
 
               <!-- Filters Section -->
-              <div class="border-t border-gray-200 pt-8">
+              <div class="border-t border-[rgba(60,50,35,0.12)] pt-8">
                 <div class="flex items-center space-x-2 mb-4">
-                  <Filter class="h-5 w-5 text-gray-400" />
-                  <h3 class="text-lg font-medium text-gray-900">{{ t('contractForm.calculationFilters') }}</h3>
-                  <div class="flex items-center text-sm text-gray-500">
+                  <Filter class="h-5 w-5 text-tide-ink/40" />
+                  <h3 class="text-lg font-medium text-tide-ink">{{ t('contractForm.calculationFilters') }}</h3>
+                  <div class="flex items-center text-sm text-tide-ink/55">
                     <Info class="h-4 w-4 mr-1" />
                     {{ t('contractForm.optional') }}
                   </div>
                 </div>
-                <p class="text-sm text-gray-600 mb-4">
+                <p class="text-sm text-tide-ink/70 mb-4">
                   {{ t('contractForm.calculationFiltersDesc') }}
                 </p>
                 <FilterBuilder v-model="formData.calculationMode.filters" />
@@ -889,18 +889,18 @@ onMounted(async () => {
           <div v-else-if="currentStep === 4" class="space-y-6">
             <div class="text-center mb-8">
               <Settings class="mx-auto h-12 w-12 text-blue-500 mb-4" />
-              <h2 class="text-xl font-semibold text-gray-900">{{ t('contractForm.rateConfiguration') }}</h2>
-              <p class="mt-2 text-gray-600">{{ t('contractForm.rateConfigurationDesc') }}</p>
+              <h2 class="text-xl font-semibold text-tide-ink">{{ t('contractForm.rateConfiguration') }}</h2>
+              <p class="mt-2 text-tide-ink/70">{{ t('contractForm.rateConfigurationDesc') }}</p>
             </div>
 
             <!-- Tariff Link Section -->
-            <div class="max-w-2xl mx-auto border border-gray-200 rounded-lg p-5">
+            <div class="max-w-2xl mx-auto border border-[rgba(60,50,35,0.12)] rounded-lg p-5">
               <div class="flex items-center space-x-2 mb-4">
-                <Link class="h-5 w-5 text-gray-400" />
-                <h3 class="text-sm font-semibold text-gray-700">{{ t('contractForm.linkToTariff') }}</h3>
-                <span class="text-xs text-gray-400 ml-1">{{ t('contractForm.optionalParen') }}</span>
+                <Link class="h-5 w-5 text-tide-ink/40" />
+                <h3 class="text-sm font-semibold text-tide-ink/80">{{ t('contractForm.linkToTariff') }}</h3>
+                <span class="text-xs text-tide-ink/40 ml-1">{{ t('contractForm.optionalParen') }}</span>
               </div>
-              <p class="text-sm text-gray-600 mb-4">
+              <p class="text-sm text-tide-ink/70 mb-4">
                 {{ t('contractForm.linkToTariffDesc') }}
               </p>
 
@@ -910,14 +910,14 @@ onMounted(async () => {
               </div>
 
               <div class="space-y-3">
-                <label class="block text-sm font-medium text-gray-700">
+                <label class="block text-sm font-medium text-tide-ink/80">
                   {{ t('contractForm.selectTariff') }}
                 </label>
                 <div class="relative">
                   <select
                     v-model="formData.tariffId"
                     :disabled="tariffLoading"
-                    class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors duration-200 disabled:bg-gray-50 disabled:text-gray-400"
+                    class="block w-full rounded-lg border-[rgba(60,50,35,0.16)] shadow-sm focus:border-tide-blue focus:ring-tide-blue transition-colors duration-200 disabled:bg-[rgba(252,247,238,0.55)] disabled:text-tide-ink/40"
                   >
                     <option value="">{{ t('contractForm.noTariffOption') }}</option>
                     <option
@@ -929,16 +929,16 @@ onMounted(async () => {
                       <template v-if="tariff.serviceType"> · {{ tariff.serviceType }}</template>
                     </option>
                   </select>
-                  <span v-if="tariffLoading" class="absolute right-9 top-2.5 text-xs text-gray-400">{{ t('contractForm.loadingEllipsis') }}</span>
+                  <span v-if="tariffLoading" class="absolute right-9 top-2.5 text-xs text-tide-ink/40">{{ t('contractForm.loadingEllipsis') }}</span>
                 </div>
 
                 <!-- Tariff selected notice -->
-                <div v-if="selectedTariff" class="flex items-start space-x-2 text-sm text-blue-700 bg-blue-50 border border-blue-200 rounded-lg px-3 py-2">
+                <div v-if="selectedTariff" class="flex items-start space-x-2 text-sm text-tide-blue-deep bg-[rgba(90,138,171,0.10)] border border-blue-200 rounded-lg px-3 py-2">
                   <Info class="h-4 w-4 flex-shrink-0 mt-0.5" />
                   <div>
                     <span class="font-medium">{{ t('contractForm.tariffLinkedNotice') }}</span>
-                    <span v-if="selectedTariff.description" class="block text-blue-600 text-xs mt-0.5">{{ selectedTariff.description }}</span>
-                    <span class="block text-blue-600 text-xs mt-0.5">
+                    <span v-if="selectedTariff.description" class="block text-tide-blue-deep text-xs mt-0.5">{{ selectedTariff.description }}</span>
+                    <span class="block text-tide-blue-deep text-xs mt-0.5">
                       {{ t('contractForm.tariffLinkedIgnoreRates') }}
                     </span>
                   </div>
@@ -948,7 +948,7 @@ onMounted(async () => {
 
             <!-- Embedded rate management (always visible so existing data is preserved) -->
             <div :class="['max-w-full transition-opacity duration-200', selectedTariff ? 'opacity-50 pointer-events-none' : '']">
-              <div v-if="selectedTariff" class="max-w-2xl mx-auto mb-3 flex items-center space-x-2 text-xs text-gray-400">
+              <div v-if="selectedTariff" class="max-w-2xl mx-auto mb-3 flex items-center space-x-2 text-xs text-tide-ink/40">
                 <Info class="h-3.5 w-3.5 flex-shrink-0" />
                 <span>{{ t('contractForm.rateManagementDisabledNotice') }}</span>
               </div>
@@ -962,19 +962,19 @@ onMounted(async () => {
           </div>
 
           <!-- Navigation -->
-          <div class="flex justify-between items-center pt-8 border-t border-gray-200 mt-8">
+          <div class="flex justify-between items-center pt-8 border-t border-[rgba(60,50,35,0.12)] mt-8">
             <button
               v-if="currentStep > 1"
               type="button"
               @click="prevStep"
-              class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              class="inline-flex items-center px-4 py-2 border border-[rgba(60,50,35,0.16)] rounded-lg text-sm font-medium text-tide-ink/80 hover:bg-[rgba(252,247,238,0.55)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-tide-blue"
             >
               {{ t('contractForm.button.previous') }}
             </button>
             <div v-else></div>
 
             <div class="flex items-center space-x-2">
-              <span class="text-sm text-gray-500">
+              <span class="text-sm text-tide-ink/55">
                 {{ t('contractForm.stepOf', { current: currentStep, total: totalSteps }) }}
               </span>
             </div>
@@ -983,7 +983,7 @@ onMounted(async () => {
               <button
                 type="button"
                 @click="emit('cancel')"
-                class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                class="px-4 py-2 border border-[rgba(60,50,35,0.16)] rounded-lg text-sm font-medium text-tide-ink/80 hover:bg-[rgba(252,247,238,0.55)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-tide-blue"
               >
                 {{ t('common.cancel') }}
               </button>
@@ -994,9 +994,9 @@ onMounted(async () => {
                 @click="nextStep"
                 :disabled="!isCurrentStepValid"
                 :class="[
-                  'inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500',
+                  'inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-tide-blue',
                   isCurrentStepValid
-                    ? 'bg-blue-600 hover:bg-blue-700'
+                    ? 'bg-tide-blue-btn-deep hover:bg-tide-blue-deep'
                     : 'bg-gray-400 cursor-not-allowed'
                 ]"
               >
@@ -1009,8 +1009,8 @@ onMounted(async () => {
                 type="submit"
                 :disabled="props.loading"
                 :class="[
-                  'inline-flex items-center px-6 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500',
-                  props.loading ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+                  'inline-flex items-center px-6 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-tide-blue',
+                  props.loading ? 'bg-blue-400 cursor-not-allowed' : 'bg-tide-blue-btn-deep hover:bg-tide-blue-deep'
                 ]"
               >
                 {{ props.loading ? t('contractForm.button.saving') : (props.editMode ? t('contractForm.button.saveChanges') : t('contractForm.button.createContract')) }}

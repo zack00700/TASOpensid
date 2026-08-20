@@ -156,20 +156,20 @@ const chipLabel = (f: CalcFilter) => {
 
 <template>
   <div>
-    <div v-if="editingIndex !== null" class="p-4 mb-4 bg-gray-50 rounded-lg">
+    <div v-if="editingIndex !== null" class="p-4 mb-4 bg-[rgba(252,247,238,0.55)] rounded-lg">
       <div class="grid grid-cols-5 gap-4 items-end">
         <!-- Target -->
         <div>
-          <label class="block text-sm font-medium text-gray-700">{{ t('filterBuilder.label.target') }}</label>
-          <select v-model="draft!.target" @change="onTargetChange" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+          <label class="block text-sm font-medium text-tide-ink/80">{{ t('filterBuilder.label.target') }}</label>
+          <select v-model="draft!.target" @change="onTargetChange" class="mt-1 block w-full rounded-md border-[rgba(60,50,35,0.16)] shadow-sm focus:border-tide-blue focus:ring-tide-blue">
             <option value="ITEM">{{ t('filterBuilder.target.item') }}</option>
             <option value="BILL_OF_LADING">{{ t('filterBuilder.target.billOfLading') }}</option>
           </select>
         </div>
         <!-- Field -->
         <div>
-          <label class="block text-sm font-medium text-gray-700">{{ t('filterBuilder.label.field') }}</label>
-          <select v-model="draft!.field" @change="onFieldChange" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+          <label class="block text-sm font-medium text-tide-ink/80">{{ t('filterBuilder.label.field') }}</label>
+          <select v-model="draft!.field" @change="onFieldChange" class="mt-1 block w-full rounded-md border-[rgba(60,50,35,0.16)] shadow-sm focus:border-tide-blue focus:ring-tide-blue">
             <template v-if="(filterableFields?.[draft!.target] || []).length">
               <option v-for="field in filterableFields?.[draft!.target] || []" :key="field.field" :value="field.field">
                 {{ field.label }}
@@ -180,8 +180,8 @@ const chipLabel = (f: CalcFilter) => {
         </div>
         <!-- Operator -->
         <div>
-          <label class="block text-sm font-medium text-gray-700">{{ t('filterBuilder.label.operator') }}</label>
-          <select v-model="draft!.op" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+          <label class="block text-sm font-medium text-tide-ink/80">{{ t('filterBuilder.label.operator') }}</label>
+          <select v-model="draft!.op" class="mt-1 block w-full rounded-md border-[rgba(60,50,35,0.16)] shadow-sm focus:border-tide-blue focus:ring-tide-blue">
             <option v-for="op in operatorOptions[draft!.valueType]" :key="op.value" :value="op.value">
               {{ op.label }}
             </option>
@@ -189,18 +189,18 @@ const chipLabel = (f: CalcFilter) => {
         </div>
         <!-- Value -->
         <div class="col-span-2">
-          <label class="block text-sm font-medium text-gray-700">{{ t('filterBuilder.label.value') }}</label>
+          <label class="block text-sm font-medium text-tide-ink/80">{{ t('filterBuilder.label.value') }}</label>
           <template v-if="draft!.op === 'BETWEEN'">
             <div class="flex space-x-2">
               <input
                 v-model="draft!.value"
                 :type="draft!.valueType === 'DATE' ? 'date' : 'number'"
-                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                class="mt-1 block w-full rounded-md border-[rgba(60,50,35,0.16)] shadow-sm focus:border-tide-blue focus:ring-tide-blue"
               />
               <input
                 v-model="draft!.valueTo"
                 :type="draft!.valueType === 'DATE' ? 'date' : 'number'"
-                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                class="mt-1 block w-full rounded-md border-[rgba(60,50,35,0.16)] shadow-sm focus:border-tide-blue focus:ring-tide-blue"
               />
             </div>
           </template>
@@ -208,7 +208,7 @@ const chipLabel = (f: CalcFilter) => {
             <input
               v-model="draft!.value"
               :type="draft!.valueType === 'DATE' ? 'date' : draft!.valueType === 'INT' ? 'number' : 'text'"
-              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              class="mt-1 block w-full rounded-md border-[rgba(60,50,35,0.16)] shadow-sm focus:border-tide-blue focus:ring-tide-blue"
             />
           </template>
           <div v-if="draft!.target === 'BILL_OF_LADING'" class="mt-2 flex items-center space-x-2">
@@ -216,26 +216,26 @@ const chipLabel = (f: CalcFilter) => {
               id="include-null"
               type="checkbox"
               v-model="draft!.includeNull"
-              class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              class="rounded border-[rgba(60,50,35,0.16)] text-tide-blue-deep shadow-sm focus:border-tide-blue focus:ring-tide-blue"
             />
-            <label for="include-null" class="text-sm text-gray-700" :title="t('filterBuilder.includeNull.tooltip')">
+            <label for="include-null" class="text-sm text-tide-ink/80" :title="t('filterBuilder.includeNull.tooltip')">
               {{ t('filterBuilder.includeNull.label') }}
             </label>
           </div>
         </div>
       </div>
       <div class="mt-4 flex space-x-2">
-        <button type="button" @click="saveDraft" class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md">
+        <button type="button" @click="saveDraft" class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-white bg-tide-blue-btn-deep hover:bg-tide-blue-deep rounded-md">
           <Check class="w-4 h-4 mr-1" /> {{ t('filterBuilder.button.save') }}
         </button>
-        <button type="button" @click="cancelEdit" class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-md">
+        <button type="button" @click="cancelEdit" class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-tide-ink/80 bg-gray-200 hover:bg-gray-300 rounded-md">
           <X class="w-4 h-4 mr-1" /> {{ t('common.cancel') }}
         </button>
       </div>
     </div>
 
     <div v-else class="mb-4">
-      <button type="button" @click="startAdd" class="inline-flex items-center px-3 py-2 text-sm font-medium text-blue-600 hover:text-blue-900">
+      <button type="button" @click="startAdd" class="inline-flex items-center px-3 py-2 text-sm font-medium text-tide-blue-deep hover:text-tide-blue-deep">
         <Plus class="h-4 w-4 mr-1" />
         {{ t('filterBuilder.button.addFilter') }}
       </button>
@@ -246,10 +246,10 @@ const chipLabel = (f: CalcFilter) => {
         v-for="(f, i) in filters"
         :key="i"
         v-show="editingIndex !== i"
-        class="flex items-center space-x-2 bg-gray-100 px-3 py-1 rounded-full text-sm"
+        class="flex items-center space-x-2 bg-[rgba(42,36,30,0.05)] px-3 py-1 rounded-full text-sm"
       >
         <span>{{ chipLabel(f) }}</span>
-        <button type="button" @click="startEdit(i)" class="text-gray-500 hover:text-gray-700">
+        <button type="button" @click="startEdit(i)" class="text-tide-ink/55 hover:text-tide-ink/80">
           <Edit class="h-4 w-4" />
         </button>
         <button type="button" @click="removeFilter(i)" class="text-red-500 hover:text-red-700">

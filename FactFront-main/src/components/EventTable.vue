@@ -24,26 +24,26 @@ const formatDateTime = (date?: string) => {
 
 <template>
   <div class="overflow-x-auto">
-    <table class="min-w-full divide-y divide-gray-200">
-      <thead class="bg-gray-50">
+    <table class="min-w-full divide-y divide-[rgba(42,36,30,0.08)]">
+      <thead class="bg-[rgba(252,247,238,0.55)]">
         <tr>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          <th class="px-6 py-3 text-left text-xs font-medium text-tide-ink/55 uppercase tracking-wider">
             Event Date
           </th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          <th class="px-6 py-3 text-left text-xs font-medium text-tide-ink/55 uppercase tracking-wider">
             Event Name
           </th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          <th class="px-6 py-3 text-left text-xs font-medium text-tide-ink/55 uppercase tracking-wider">
             Event Type
           </th>
         </tr>
       </thead>
-      <tbody class="bg-white divide-y divide-gray-200">
-        <tr v-for="event in props.events" :key="event.id" class="hover:bg-gray-50">
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+      <tbody class="bg-[rgba(255,253,247,0.92)] divide-y divide-[rgba(42,36,30,0.08)]">
+        <tr v-for="event in props.events" :key="event.id" class="hover:bg-[rgba(252,247,238,0.55)]">
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-tide-ink/55">
             {{ formatDateTime(event.timestamp) }}
           </td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-tide-ink/55">
             {{ event.notes || '-' }}
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm">

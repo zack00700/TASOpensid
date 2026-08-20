@@ -229,12 +229,12 @@ onMounted(loadFields);
   <div class="max-w-7xl mx-auto p-6">
     <!-- Header -->
     <div class="mb-6">
-      <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ t('fields.header.title') }}</h1>
-      <p class="text-gray-600">{{ t('fields.header.subtitle') }}</p>
+      <h1 class="text-3xl font-bold text-tide-ink mb-2">{{ t('fields.header.title') }}</h1>
+      <p class="text-tide-ink/70">{{ t('fields.header.subtitle') }}</p>
     </div>
 
     <!-- Controls Bar -->
-    <div class="bg-white rounded-lg shadow-sm border p-4 mb-6">
+    <div class="bg-[rgba(255,253,247,0.92)] rounded-lg shadow-sm border p-4 mb-6">
       <div class="flex flex-wrap items-center gap-4 mb-4">
         <!-- Search -->
         <div class="flex-1 min-w-64">
@@ -242,14 +242,14 @@ onMounted(loadFields);
             v-model="search"
             :placeholder="t('fields.placeholder.search')"
             data-test="search-input"
-            class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            class="w-full border border-[rgba(60,50,35,0.16)] rounded-lg px-3 py-2 focus:ring-2 focus:ring-tide-blue focus:border-tide-blue"
           />
         </div>
 
         <!-- Page Filter -->
         <select
           v-model="pageFilter"
-          class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+          class="border border-[rgba(60,50,35,0.16)] rounded-lg px-3 py-2 focus:ring-2 focus:ring-tide-blue"
           data-test="page-filter"
         >
           <option value="">{{ t('fields.filter.allPages') }}</option>
@@ -257,14 +257,14 @@ onMounted(loadFields);
         </select>
 
         <!-- View Mode Toggle -->
-        <div class="flex border border-gray-300 rounded-lg overflow-hidden">
+        <div class="flex border border-[rgba(60,50,35,0.16)] rounded-lg overflow-hidden">
           <button
             @click="viewMode = 'table'"
             :class="[
               'px-4 py-2 text-sm font-medium transition-colors',
               viewMode === 'table'
                 ? 'bg-blue-500 text-white'
-                : 'bg-white text-gray-700 hover:bg-gray-50'
+                : 'bg-[rgba(255,253,247,0.92)] text-tide-ink/80 hover:bg-[rgba(252,247,238,0.55)]'
             ]"
           >
             {{ t('fields.viewMode.table') }}
@@ -275,7 +275,7 @@ onMounted(loadFields);
               'px-4 py-2 text-sm font-medium transition-colors',
               viewMode === 'preview'
                 ? 'bg-blue-500 text-white'
-                : 'bg-white text-gray-700 hover:bg-gray-50'
+                : 'bg-[rgba(255,253,247,0.92)] text-tide-ink/80 hover:bg-[rgba(252,247,238,0.55)]'
             ]"
           >
             {{ t('fields.viewMode.preview') }}
@@ -288,7 +288,7 @@ onMounted(loadFields);
         <button
           @click="showAddLanguage = !showAddLanguage"
           data-test="add-language-button"
-          class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
+          class="bg-blue-500 hover:bg-tide-blue-btn-deep text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
         >
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
@@ -321,13 +321,13 @@ onMounted(loadFields);
     </div>
 
     <!-- Add Language Form -->
-    <div v-if="showAddLanguage" class="bg-blue-50 rounded-lg p-4 mb-6 border border-blue-200">
+    <div v-if="showAddLanguage" class="bg-[rgba(90,138,171,0.10)] rounded-lg p-4 mb-6 border border-blue-200">
       <div class="flex items-center gap-4">
         <input
           v-model="newLanguage"
           :placeholder="t('fields.placeholder.languageCode')"
           data-test="new-language-input"
-          class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          class="border border-[rgba(60,50,35,0.16)] rounded-lg px-3 py-2 focus:ring-2 focus:ring-tide-blue focus:border-tide-blue"
         />
         <button
           @click="addLanguage"
@@ -338,7 +338,7 @@ onMounted(loadFields);
         </button>
         <button
           @click="showAddLanguage = false"
-          class="text-gray-500 hover:text-gray-700"
+          class="text-tide-ink/55 hover:text-tide-ink/80"
         >
           {{ t('common.cancel') }}
         </button>
@@ -348,33 +348,33 @@ onMounted(loadFields);
     <!-- Bulk Operations Panel -->
     <div v-if="bulkTranslateMode" class="bg-yellow-50 rounded-lg p-4 mb-6 border border-yellow-200">
       <div class="flex items-center justify-between mb-4">
-        <h3 class="font-medium text-gray-900">{{ t('fields.button.bulkOperations') }}</h3>
-        <div class="text-sm text-gray-600">
+        <h3 class="font-medium text-tide-ink">{{ t('fields.button.bulkOperations') }}</h3>
+        <div class="text-sm text-tide-ink/70">
           {{ t('fields.bulk.selectedCount', { count: selectedFields.size }) }}
         </div>
       </div>
       <div class="flex items-center gap-4">
         <button
           @click="selectAllFields"
-          class="text-sm text-blue-600 hover:text-blue-800"
+          class="text-sm text-tide-blue-deep hover:text-blue-800"
         >
           {{ t('fields.bulk.selectAllVisible') }}
         </button>
         <button
           @click="clearFieldSelection"
-          class="text-sm text-gray-600 hover:text-gray-800"
+          class="text-sm text-tide-ink/70 hover:text-tide-ink"
         >
           {{ t('fields.bulk.clearSelection') }}
         </button>
         <div class="flex items-center gap-2 ml-auto">
-          <span class="text-sm text-gray-600">{{ t('fields.bulk.copyFrom') }}</span>
-          <select v-model="bulkCopyFrom" class="border border-gray-300 rounded px-2 py-1 text-sm">
+          <span class="text-sm text-tide-ink/70">{{ t('fields.bulk.copyFrom') }}</span>
+          <select v-model="bulkCopyFrom" class="border border-[rgba(60,50,35,0.16)] rounded px-2 py-1 text-sm">
             <option v-for="lang in languages" :key="lang" :value="lang">
               {{ languageNames[lang] || lang }}
             </option>
           </select>
-          <span class="text-sm text-gray-600">{{ t('fields.bulk.to') }}</span>
-          <select v-model="bulkCopyTo" class="border border-gray-300 rounded px-2 py-1 text-sm">
+          <span class="text-sm text-tide-ink/70">{{ t('fields.bulk.to') }}</span>
+          <select v-model="bulkCopyTo" class="border border-[rgba(60,50,35,0.16)] rounded px-2 py-1 text-sm">
             <option v-for="lang in languages" :key="lang" :value="lang">
               {{ languageNames[lang] || lang }}
             </option>
@@ -382,7 +382,7 @@ onMounted(loadFields);
           <button
             :disabled="!canBulkCopy"
             @click="bulkCopyTranslations(bulkCopyFrom, bulkCopyTo)"
-            class="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600 disabled:opacity-40 disabled:cursor-not-allowed"
+            class="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-tide-blue-btn-deep disabled:opacity-40 disabled:cursor-not-allowed"
           >
             {{ t('fields.bulk.copy') }}
           </button>
@@ -395,13 +395,13 @@ onMounted(loadFields);
       <div
         v-for="lang in languages"
         :key="lang"
-        class="bg-white rounded-lg p-4 border shadow-sm"
+        class="bg-[rgba(255,253,247,0.92)] rounded-lg p-4 border shadow-sm"
       >
         <div class="flex items-center justify-between mb-2">
-          <h4 class="font-medium text-gray-900">
+          <h4 class="font-medium text-tide-ink">
             {{ languageNames[lang] || lang.toUpperCase() }}
           </h4>
-          <span class="text-sm text-gray-500">
+          <span class="text-sm text-tide-ink/55">
             {{ translationStats[lang]?.percentage || 0 }}%
           </span>
         </div>
@@ -411,20 +411,20 @@ onMounted(loadFields);
             :style="{ width: `${translationStats[lang]?.percentage || 0}%` }"
           ></div>
         </div>
-        <div class="text-xs text-gray-500 mt-1">
+        <div class="text-xs text-tide-ink/55 mt-1">
           {{ t('fields.stats.completeRatio', { completed: translationStats[lang]?.completed || 0, total: translationStats[lang]?.total || 0 }) }}
         </div>
       </div>
     </div>
 
     <!-- Preview Mode -->
-    <div v-if="viewMode === 'preview'" class="bg-white rounded-lg shadow-sm border">
+    <div v-if="viewMode === 'preview'" class="bg-[rgba(255,253,247,0.92)] rounded-lg shadow-sm border">
       <div class="p-4 border-b">
         <div class="flex items-center gap-4">
-          <h3 class="font-medium text-gray-900">{{ t('fields.preview.title') }}</h3>
+          <h3 class="font-medium text-tide-ink">{{ t('fields.preview.title') }}</h3>
           <select
             v-model="selectedLanguage"
-            class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+            class="border border-[rgba(60,50,35,0.16)] rounded-lg px-3 py-2 focus:ring-2 focus:ring-tide-blue"
           >
             <option v-for="lang in languages" :key="lang" :value="lang">
               {{ languageNames[lang] || lang.toUpperCase() }}
@@ -439,11 +439,11 @@ onMounted(loadFields);
             :key="field.key"
             class="border rounded-lg p-4"
           >
-            <div class="text-sm text-gray-500 mb-1">{{ field.key }}</div>
+            <div class="text-sm text-tide-ink/55 mb-1">{{ field.key }}</div>
             <div class="font-medium">
               {{ field.translations[selectedLanguage] || field.defaultValue }}
             </div>
-            <div v-if="field.pages?.length" class="text-xs text-gray-400 mt-1">
+            <div v-if="field.pages?.length" class="text-xs text-tide-ink/40 mt-1">
               {{ t('fields.preview.pages', { pages: field.pages.join(', ') }) }}
             </div>
           </div>
@@ -452,26 +452,26 @@ onMounted(loadFields);
     </div>
 
     <!-- Table View -->
-    <div v-else class="bg-white rounded-lg shadow-sm border overflow-hidden">
+    <div v-else class="bg-[rgba(255,253,247,0.92)] rounded-lg shadow-sm border overflow-hidden">
       <div class="overflow-x-auto">
         <table class="min-w-full">
-          <thead class="bg-gray-50">
+          <thead class="bg-[rgba(252,247,238,0.55)]">
             <tr>
               <th v-if="bulkTranslateMode" class="px-4 py-3 text-left">
                 <input
                   type="checkbox"
                   @change="($event.target as HTMLInputElement).checked ? selectAllFields() : clearFieldSelection()"
-                  class="rounded border-gray-300"
+                  class="rounded border-[rgba(60,50,35,0.16)]"
                 />
               </th>
-              <th class="px-4 py-3 text-left text-sm font-medium text-gray-900">{{ t('fields.table.key') }}</th>
-              <th class="px-4 py-3 text-left text-sm font-medium text-gray-900">{{ t('fields.table.default') }}</th>
-              <th class="px-4 py-3 text-left text-sm font-medium text-gray-900">{{ t('fields.table.pages') }}</th>
+              <th class="px-4 py-3 text-left text-sm font-medium text-tide-ink">{{ t('fields.table.key') }}</th>
+              <th class="px-4 py-3 text-left text-sm font-medium text-tide-ink">{{ t('fields.table.default') }}</th>
+              <th class="px-4 py-3 text-left text-sm font-medium text-tide-ink">{{ t('fields.table.pages') }}</th>
               <th
                 v-for="lang in languages.filter(l => l !== 'en')"
                 :key="lang"
                 :data-test="`lang-header-${lang}`"
-                class="px-4 py-3 text-left text-sm font-medium text-gray-900"
+                class="px-4 py-3 text-left text-sm font-medium text-tide-ink"
               >
                 <div class="flex items-center gap-2">
                   {{ languageNames[lang] || lang.toUpperCase() }}
@@ -489,27 +489,27 @@ onMounted(loadFields);
               </th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-gray-200">
+          <tbody class="divide-y divide-[rgba(42,36,30,0.08)]">
             <tr
               v-for="field in filteredFields"
               :key="field.key"
-              class="hover:bg-gray-50"
+              class="hover:bg-[rgba(252,247,238,0.55)]"
             >
               <td v-if="bulkTranslateMode" class="px-4 py-3">
                 <input
                   type="checkbox"
                   :checked="isFieldSelected(field.key)"
                   @change="toggleFieldSelection(field.key)"
-                  class="rounded border-gray-300"
+                  class="rounded border-[rgba(60,50,35,0.16)]"
                 />
               </td>
-              <td class="px-4 py-3 text-sm font-medium text-gray-900">
+              <td class="px-4 py-3 text-sm font-medium text-tide-ink">
                 {{ field.key }}
               </td>
-              <td class="px-4 py-3 text-sm text-gray-700">
+              <td class="px-4 py-3 text-sm text-tide-ink/80">
                 {{ field.defaultValue }}
               </td>
-              <td class="px-4 py-3 text-sm text-gray-500">
+              <td class="px-4 py-3 text-sm text-tide-ink/55">
                 <span v-if="field.pages?.length" class="inline-flex flex-wrap gap-1">
                   <span
                     v-for="page in field.pages"
@@ -533,10 +533,10 @@ onMounted(loadFields);
                     @blur="saveTranslation(field, lang)"
                     :placeholder="field.defaultValue"
                     :class="[
-                      'w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors',
+                      'w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-tide-blue focus:border-tide-blue transition-colors',
                       getFieldTranslationStatus(field, lang) === 'missing'
                         ? 'border-red-200 bg-red-50'
-                        : 'border-gray-300'
+                        : 'border-[rgba(60,50,35,0.16)]'
                     ]"
                   />
                   <!-- Save Status Indicator -->
@@ -585,12 +585,12 @@ onMounted(loadFields);
       v-if="loading"
       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
     >
-      <div class="bg-white rounded-lg p-6 flex items-center gap-3">
+      <div class="bg-[rgba(255,253,247,0.92)] rounded-lg p-6 flex items-center gap-3">
         <svg class="animate-spin h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24">
           <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
           <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
         </svg>
-        <span class="text-gray-700">{{ t('fields.processing') }}</span>
+        <span class="text-tide-ink/80">{{ t('fields.processing') }}</span>
       </div>
     </div>
   </div>

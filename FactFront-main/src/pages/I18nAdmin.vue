@@ -88,10 +88,10 @@ async function onExport() {
 
 <template>
   <div class="max-w-5xl mx-auto p-6 space-y-6">
-    <div class="border-b border-gray-200 pb-4 flex items-start justify-between">
+    <div class="border-b border-[rgba(60,50,35,0.12)] pb-4 flex items-start justify-between">
       <div>
-        <h1 class="text-2xl font-semibold text-gray-900">{{ $t('nav.translations') }}</h1>
-        <p class="text-gray-500 text-sm mt-1">
+        <h1 class="text-2xl font-semibold text-tide-ink">{{ $t('nav.translations') }}</h1>
+        <p class="text-tide-ink/55 text-sm mt-1">
           {{ $t('i18nAdmin.subtitle') }}
         </p>
       </div>
@@ -105,19 +105,19 @@ async function onExport() {
         />
         <button
           type="button"
-          class="px-3 py-2 border border-gray-300 text-sm rounded hover:bg-gray-50"
+          class="px-3 py-2 border border-[rgba(60,50,35,0.16)] text-sm rounded hover:bg-[rgba(252,247,238,0.55)]"
           @click="onImportClick"
         >{{ $t('common.import') }}</button>
         <button
           type="button"
-          class="px-3 py-2 border border-gray-300 text-sm rounded hover:bg-gray-50"
+          class="px-3 py-2 border border-[rgba(60,50,35,0.16)] text-sm rounded hover:bg-[rgba(252,247,238,0.55)]"
           @click="onExport"
         >{{ $t('common.export') }}</button>
       </div>
     </div>
 
     <!-- Tabs -->
-    <div class="border-b border-gray-200">
+    <div class="border-b border-[rgba(60,50,35,0.12)]">
       <nav class="flex gap-8 -mb-px">
         <button
           v-for="loc in targetLocales"
@@ -126,8 +126,8 @@ async function onExport() {
           :class="[
             'py-2 px-1 border-b-2 text-sm font-medium transition-colors',
             activeTarget === loc
-              ? 'border-blue-500 text-blue-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              ? 'border-tide-blue text-tide-blue-deep'
+              : 'border-transparent text-tide-ink/55 hover:text-tide-ink/80 hover:border-[rgba(60,50,35,0.16)]'
           ]"
         >{{ NATIVE_NAMES[loc] }}</button>
       </nav>
@@ -139,13 +139,13 @@ async function onExport() {
         v-model="filterText"
         type="text"
         :placeholder="$t('i18nAdmin.placeholder.filter')"
-        class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+        class="flex-1 px-3 py-2 text-sm border border-[rgba(60,50,35,0.16)] rounded focus:outline-none focus:ring-2 focus:ring-tide-blue"
       />
-      <label class="inline-flex items-center gap-2 text-sm text-gray-700">
+      <label class="inline-flex items-center gap-2 text-sm text-tide-ink/80">
         <input v-model="untranslatedOnly" type="checkbox" class="rounded" />
         {{ $t('i18nAdmin.untranslatedOnly') }}
       </label>
-      <span class="text-sm text-gray-500">{{ counter }}</span>
+      <span class="text-sm text-tide-ink/55">{{ counter }}</span>
     </div>
 
     <!-- Toast -->

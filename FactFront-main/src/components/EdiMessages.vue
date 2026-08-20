@@ -146,9 +146,9 @@ const getStatusBadgeClasses = (status: string) => {
     case 'FAILED':
       return `${base} bg-red-100 text-red-800 border-red-200`;
     case 'SKIPPED':
-      return `${base} bg-gray-100 text-gray-600 border-gray-200`;
+      return `${base} bg-[rgba(42,36,30,0.05)] text-tide-ink/70 border-[rgba(60,50,35,0.12)]`;
     default:
-      return `${base} bg-gray-100 text-gray-600 border-gray-200`;
+      return `${base} bg-[rgba(42,36,30,0.05)] text-tide-ink/70 border-[rgba(60,50,35,0.12)]`;
   }
 };
 
@@ -207,17 +207,17 @@ const formatDate = (dateStr?: string) => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-[rgba(252,247,238,0.55)]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
       <!-- Page Header -->
       <div class="mb-8">
         <div class="md:flex md:items-center md:justify-between">
           <div class="min-w-0 flex-1">
-            <h1 class="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl">
+            <h1 class="text-2xl font-bold leading-7 text-tide-ink sm:truncate sm:text-3xl">
               {{ t('nav.ediMessages') }}
             </h1>
-            <div class="mt-2 flex items-center text-sm text-gray-500 space-x-4">
+            <div class="mt-2 flex items-center text-sm text-tide-ink/55 space-x-4">
               <span class="flex items-center">
                 <Radio class="h-4 w-4 mr-1 text-blue-500" />
                 {{ t('ediMessages.messageCount', { count: totalItems }, totalItems) }}
@@ -227,7 +227,7 @@ const formatDate = (dateStr?: string) => {
           <div class="mt-4 flex md:ml-4 md:mt-0 space-x-3">
             <button
               @click="fetchMessages"
-              class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+              class="inline-flex items-center px-4 py-2 border border-[rgba(60,50,35,0.16)] rounded-lg text-sm font-medium text-tide-ink/80 bg-[rgba(255,253,247,0.92)] hover:bg-[rgba(252,247,238,0.55)]"
               :disabled="isLoading"
             >
               <RefreshCw class="h-4 w-4 mr-2" :class="{ 'animate-spin': isLoading }" />
@@ -235,7 +235,7 @@ const formatDate = (dateStr?: string) => {
             </button>
             <button
               @click="openIngest"
-              class="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              class="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-tide-blue-btn-deep hover:bg-tide-blue-deep focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-tide-blue"
             >
               <Plus class="h-4 w-4 mr-2" />
               {{ t('ediMessages.button.ingestMessage') }}
@@ -245,15 +245,15 @@ const formatDate = (dateStr?: string) => {
       </div>
 
       <!-- Filter Bar -->
-      <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
+      <div class="bg-[rgba(255,253,247,0.92)] rounded-lg shadow-sm border border-[rgba(60,50,35,0.12)] mb-6">
         <div class="p-6">
           <div class="flex flex-col sm:flex-row gap-4">
             <!-- Status filter -->
             <div class="sm:w-48">
-              <label class="block text-xs font-medium text-gray-700 mb-1">{{ t('invoices.column.status') }}</label>
+              <label class="block text-xs font-medium text-tide-ink/80 mb-1">{{ t('invoices.column.status') }}</label>
               <select
                 v-model="filterStatus"
-                class="block w-full border border-gray-300 rounded-lg py-2.5 px-3 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                class="block w-full border border-[rgba(60,50,35,0.16)] rounded-lg py-2.5 px-3 text-sm bg-[rgba(255,253,247,0.92)] focus:outline-none focus:ring-1 focus:ring-tide-blue focus:border-tide-blue"
               >
                 <option value="">{{ t('payments.filter.allStatuses') }}</option>
                 <option value="RECEIVED">RECEIVED</option>
@@ -266,16 +266,16 @@ const formatDate = (dateStr?: string) => {
 
             <!-- Partner ID filter -->
             <div class="flex-1 relative">
-              <label class="block text-xs font-medium text-gray-700 mb-1">{{ t('ediMessages.field.partnerId') }}</label>
+              <label class="block text-xs font-medium text-tide-ink/80 mb-1">{{ t('ediMessages.field.partnerId') }}</label>
               <div class="relative">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Search class="h-4 w-4 text-gray-400" />
+                  <Search class="h-4 w-4 text-tide-ink/40" />
                 </div>
                 <input
                   v-model="filterPartnerId"
                   type="text"
                   :placeholder="t('ediMessages.placeholder.filterByPartnerId')"
-                  class="block w-full pl-9 pr-3 py-2.5 border border-gray-300 rounded-lg text-sm bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                  class="block w-full pl-9 pr-3 py-2.5 border border-[rgba(60,50,35,0.16)] rounded-lg text-sm bg-[rgba(255,253,247,0.92)] placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-tide-blue focus:border-tide-blue"
                   @keyup.enter="applyFilters"
                 />
               </div>
@@ -285,7 +285,7 @@ const formatDate = (dateStr?: string) => {
             <div class="flex items-end gap-2">
               <button
                 @click="applyFilters"
-                class="inline-flex items-center px-4 py-2.5 border border-transparent rounded-lg text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                class="inline-flex items-center px-4 py-2.5 border border-transparent rounded-lg text-sm font-medium text-white bg-tide-blue-btn-deep hover:bg-tide-blue-deep focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-tide-blue"
               >
                 <Filter class="h-4 w-4 mr-1.5" />
                 {{ t('payments.button.apply') }}
@@ -293,7 +293,7 @@ const formatDate = (dateStr?: string) => {
               <button
                 v-if="hasActiveFilters"
                 @click="clearFilters"
-                class="inline-flex items-center px-4 py-2.5 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+                class="inline-flex items-center px-4 py-2.5 border border-[rgba(60,50,35,0.16)] rounded-lg text-sm font-medium text-tide-ink/80 bg-[rgba(255,253,247,0.92)] hover:bg-[rgba(252,247,238,0.55)]"
               >
                 <X class="h-4 w-4 mr-1.5" />
                 {{ t('payments.button.clear') }}
@@ -313,22 +313,22 @@ const formatDate = (dateStr?: string) => {
       </div>
 
       <!-- Table Card -->
-      <div class="bg-white shadow-sm rounded-lg border border-gray-200 overflow-hidden">
+      <div class="bg-[rgba(255,253,247,0.92)] shadow-sm rounded-lg border border-[rgba(60,50,35,0.12)] overflow-hidden">
 
         <!-- Desktop table -->
         <div class="hidden sm:block overflow-x-auto">
-          <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
+          <table class="min-w-full divide-y divide-[rgba(42,36,30,0.08)]">
+            <thead class="bg-[rgba(252,247,238,0.55)]">
               <tr>
                 <th v-for="(header, idx) in tableHeaders"
                     :key="idx"
-                    class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    class="px-4 py-3 text-left text-xs font-medium text-tide-ink/55 uppercase tracking-wider"
                 >
                   {{ header }}
                 </th>
               </tr>
             </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
+            <tbody class="bg-[rgba(255,253,247,0.92)] divide-y divide-[rgba(42,36,30,0.08)]">
               <!-- Loading skeleton -->
               <tr v-if="isLoading" v-for="i in 5" :key="i">
                 <td v-for="j in 8" :key="j" class="px-4 py-3">
@@ -341,31 +341,31 @@ const formatDate = (dateStr?: string) => {
                 v-else
                 v-for="msg in messages"
                 :key="msg.id"
-                class="hover:bg-gray-50 transition-colors duration-150 cursor-pointer"
+                class="hover:bg-[rgba(252,247,238,0.55)] transition-colors duration-150 cursor-pointer"
                 @click="openDetail(msg)"
               >
                 <!-- Direction -->
                 <td class="px-4 py-3">
                   <div class="flex items-center space-x-1.5">
                     <ArrowDownCircle v-if="msg.direction === 'INBOUND'" class="h-4 w-4 text-green-600 flex-shrink-0" />
-                    <ArrowUpCircle v-else class="h-4 w-4 text-blue-600 flex-shrink-0" />
-                    <span class="text-sm font-medium text-gray-900">{{ msg.direction }}</span>
+                    <ArrowUpCircle v-else class="h-4 w-4 text-tide-blue-deep flex-shrink-0" />
+                    <span class="text-sm font-medium text-tide-ink">{{ msg.direction }}</span>
                   </div>
                 </td>
 
                 <!-- Message Type -->
                 <td class="px-4 py-3">
-                  <span class="text-sm text-gray-900 font-mono">{{ msg.messageType || '—' }}</span>
+                  <span class="text-sm text-tide-ink font-mono">{{ msg.messageType || '—' }}</span>
                 </td>
 
                 <!-- Partner ID -->
                 <td class="px-4 py-3">
-                  <span class="text-sm text-gray-700">{{ msg.partnerId || '—' }}</span>
+                  <span class="text-sm text-tide-ink/80">{{ msg.partnerId || '—' }}</span>
                 </td>
 
                 <!-- Format -->
                 <td class="px-4 py-3">
-                  <span class="text-sm text-gray-700 font-mono">{{ msg.format }}</span>
+                  <span class="text-sm text-tide-ink/80 font-mono">{{ msg.format }}</span>
                 </td>
 
                 <!-- Status -->
@@ -375,19 +375,19 @@ const formatDate = (dateStr?: string) => {
 
                 <!-- Message Date -->
                 <td class="px-4 py-3">
-                  <span class="text-sm text-gray-500 whitespace-nowrap">{{ formatDate(msg.messageDate) }}</span>
+                  <span class="text-sm text-tide-ink/55 whitespace-nowrap">{{ formatDate(msg.messageDate) }}</span>
                 </td>
 
                 <!-- Attempts -->
                 <td class="px-4 py-3">
-                  <span class="text-sm text-gray-700">{{ msg.attempts ?? 0 }}</span>
+                  <span class="text-sm text-tide-ink/80">{{ msg.attempts ?? 0 }}</span>
                 </td>
 
                 <!-- Actions -->
                 <td class="px-4 py-3" @click.stop>
                   <button
                     @click="openDetail(msg)"
-                    class="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                    class="p-1.5 text-tide-ink/40 hover:text-tide-blue-deep hover:bg-[rgba(90,138,171,0.10)] rounded-lg transition-colors"
                     :title="t('payments.action.viewDetails')"
                     :aria-label="t('ediMessages.aria.viewMessageDetails')"
                   >
@@ -402,30 +402,30 @@ const formatDate = (dateStr?: string) => {
         <!-- Mobile card list -->
         <div class="sm:hidden p-4">
           <div v-if="isLoading" class="space-y-3">
-            <div v-for="i in 4" :key="i" class="bg-white rounded-xl border border-slate-200 p-4 animate-pulse">
+            <div v-for="i in 4" :key="i" class="bg-[rgba(255,253,247,0.92)] rounded-xl border border-[rgba(60,50,35,0.12)] p-4 animate-pulse">
               <div class="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
               <div class="h-3 bg-gray-200 rounded w-3/4"></div>
             </div>
           </div>
-          <div v-else-if="!messages.length" class="bg-white rounded-xl border border-slate-200 p-8 text-center">
-            <p class="text-sm text-slate-500">{{ t('ediMessages.empty.notFound') }}</p>
+          <div v-else-if="!messages.length" class="bg-[rgba(255,253,247,0.92)] rounded-xl border border-[rgba(60,50,35,0.12)] p-8 text-center">
+            <p class="text-sm text-tide-ink/55">{{ t('ediMessages.empty.notFound') }}</p>
           </div>
           <div v-else class="space-y-3">
             <div
               v-for="msg in messages"
               :key="msg.id"
-              class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm cursor-pointer hover:border-blue-300 transition-colors"
+              class="bg-[rgba(255,253,247,0.92)] rounded-xl border border-[rgba(60,50,35,0.12)] p-4 shadow-sm cursor-pointer hover:border-blue-300 transition-colors"
               @click="openDetail(msg)"
             >
               <div class="flex items-start justify-between gap-2 mb-2">
                 <div class="flex items-center space-x-2">
                   <ArrowDownCircle v-if="msg.direction === 'INBOUND'" class="h-4 w-4 text-green-600 flex-shrink-0" />
-                  <ArrowUpCircle v-else class="h-4 w-4 text-blue-600 flex-shrink-0" />
-                  <p class="font-semibold text-slate-900 text-sm">{{ msg.messageType || msg.format }}</p>
+                  <ArrowUpCircle v-else class="h-4 w-4 text-tide-blue-deep flex-shrink-0" />
+                  <p class="font-semibold text-tide-ink text-sm">{{ msg.messageType || msg.format }}</p>
                 </div>
                 <span :class="getStatusBadgeClasses(msg.status)">{{ msg.status }}</span>
               </div>
-              <div class="flex items-center justify-between text-xs text-slate-500 mt-1">
+              <div class="flex items-center justify-between text-xs text-tide-ink/55 mt-1">
                 <span>{{ msg.partnerId || '—' }}</span>
                 <span>{{ formatDate(msg.messageDate) }}</span>
               </div>
@@ -435,23 +435,23 @@ const formatDate = (dateStr?: string) => {
 
         <!-- Empty state (desktop) -->
         <div v-if="!isLoading && messages.length === 0" class="hidden sm:block text-center py-12">
-          <Radio class="mx-auto h-12 w-12 text-gray-400" />
-          <h3 class="mt-2 text-sm font-medium text-gray-900">{{ t('ediMessages.empty.title') }}</h3>
-          <p class="mt-1 text-sm text-gray-500">
+          <Radio class="mx-auto h-12 w-12 text-tide-ink/40" />
+          <h3 class="mt-2 text-sm font-medium text-tide-ink">{{ t('ediMessages.empty.title') }}</h3>
+          <p class="mt-1 text-sm text-tide-ink/55">
             {{ hasActiveFilters ? t('ediMessages.empty.filtered') : t('ediMessages.empty.description') }}
           </p>
           <div class="mt-6 flex items-center justify-center space-x-3">
             <button
               v-if="hasActiveFilters"
               @click="clearFilters"
-              class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+              class="inline-flex items-center px-4 py-2 border border-[rgba(60,50,35,0.16)] rounded-lg text-sm font-medium text-tide-ink/80 bg-[rgba(255,253,247,0.92)] hover:bg-[rgba(252,247,238,0.55)]"
             >
               {{ t('payments.button.clearFilters') }}
             </button>
             <button
               v-if="!hasActiveFilters"
               @click="openIngest"
-              class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700"
+              class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-tide-blue-btn-deep hover:bg-tide-blue-deep"
             >
               <Plus class="h-4 w-4 mr-2" />
               {{ t('ediMessages.button.ingestMessage') }}
@@ -476,21 +476,21 @@ const formatDate = (dateStr?: string) => {
         class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 p-4"
         @click.self="closeDetail"
       >
-        <div class="bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col">
+        <div class="bg-[rgba(255,253,247,0.92)] rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col">
 
           <!-- Modal Header -->
-          <div class="flex items-center justify-between p-6 border-b border-gray-200">
+          <div class="flex items-center justify-between p-6 border-b border-[rgba(60,50,35,0.12)]">
             <div class="flex items-center space-x-3">
               <ArrowDownCircle v-if="selectedMessage.direction === 'INBOUND'" class="h-6 w-6 text-green-600" />
-              <ArrowUpCircle v-else class="h-6 w-6 text-blue-600" />
+              <ArrowUpCircle v-else class="h-6 w-6 text-tide-blue-deep" />
               <div>
-                <h3 class="text-lg font-semibold text-gray-900">
+                <h3 class="text-lg font-semibold text-tide-ink">
                   {{ t('ediMessages.detail.title') }}
                 </h3>
-                <p class="text-xs text-gray-500 font-mono mt-0.5">{{ selectedMessage.id }}</p>
+                <p class="text-xs text-tide-ink/55 font-mono mt-0.5">{{ selectedMessage.id }}</p>
               </div>
             </div>
-            <button @click="closeDetail" class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+            <button @click="closeDetail" class="p-2 text-tide-ink/40 hover:text-tide-ink/70 hover:bg-[rgba(42,36,30,0.05)] rounded-lg transition-colors">
               <X class="h-5 w-5" />
             </button>
           </div>
@@ -501,42 +501,42 @@ const formatDate = (dateStr?: string) => {
             <!-- Key fields grid -->
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
               <div>
-                <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ t('ediMessages.field.direction') }}</p>
-                <p class="mt-1 text-sm font-medium text-gray-900">{{ selectedMessage.direction }}</p>
+                <p class="text-xs font-medium text-tide-ink/55 uppercase tracking-wide">{{ t('ediMessages.field.direction') }}</p>
+                <p class="mt-1 text-sm font-medium text-tide-ink">{{ selectedMessage.direction }}</p>
               </div>
               <div>
-                <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ t('ediMessages.field.format') }}</p>
-                <p class="mt-1 text-sm font-mono text-gray-900">{{ selectedMessage.format }}</p>
+                <p class="text-xs font-medium text-tide-ink/55 uppercase tracking-wide">{{ t('ediMessages.field.format') }}</p>
+                <p class="mt-1 text-sm font-mono text-tide-ink">{{ selectedMessage.format }}</p>
               </div>
               <div>
-                <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ t('invoices.column.status') }}</p>
+                <p class="text-xs font-medium text-tide-ink/55 uppercase tracking-wide">{{ t('invoices.column.status') }}</p>
                 <div class="mt-1">
                   <span :class="getStatusBadgeClasses(selectedMessage.status)">{{ selectedMessage.status }}</span>
                 </div>
               </div>
               <div>
-                <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ t('ediMessages.field.messageType') }}</p>
-                <p class="mt-1 text-sm font-mono text-gray-900">{{ selectedMessage.messageType || '—' }}</p>
+                <p class="text-xs font-medium text-tide-ink/55 uppercase tracking-wide">{{ t('ediMessages.field.messageType') }}</p>
+                <p class="mt-1 text-sm font-mono text-tide-ink">{{ selectedMessage.messageType || '—' }}</p>
               </div>
               <div>
-                <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ t('ediMessages.field.partnerId') }}</p>
-                <p class="mt-1 text-sm text-gray-900">{{ selectedMessage.partnerId || '—' }}</p>
+                <p class="text-xs font-medium text-tide-ink/55 uppercase tracking-wide">{{ t('ediMessages.field.partnerId') }}</p>
+                <p class="mt-1 text-sm text-tide-ink">{{ selectedMessage.partnerId || '—' }}</p>
               </div>
               <div>
-                <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ t('ediMessages.field.attempts') }}</p>
-                <p class="mt-1 text-sm text-gray-900">{{ selectedMessage.attempts ?? 0 }}</p>
+                <p class="text-xs font-medium text-tide-ink/55 uppercase tracking-wide">{{ t('ediMessages.field.attempts') }}</p>
+                <p class="mt-1 text-sm text-tide-ink">{{ selectedMessage.attempts ?? 0 }}</p>
               </div>
               <div>
-                <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ t('ediMessages.field.messageDate') }}</p>
-                <p class="mt-1 text-sm text-gray-900">{{ formatDate(selectedMessage.messageDate) }}</p>
+                <p class="text-xs font-medium text-tide-ink/55 uppercase tracking-wide">{{ t('ediMessages.field.messageDate') }}</p>
+                <p class="mt-1 text-sm text-tide-ink">{{ formatDate(selectedMessage.messageDate) }}</p>
               </div>
               <div>
-                <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ t('ediMessages.field.processedAt') }}</p>
-                <p class="mt-1 text-sm text-gray-900">{{ formatDate(selectedMessage.processedAt) }}</p>
+                <p class="text-xs font-medium text-tide-ink/55 uppercase tracking-wide">{{ t('ediMessages.field.processedAt') }}</p>
+                <p class="mt-1 text-sm text-tide-ink">{{ formatDate(selectedMessage.processedAt) }}</p>
               </div>
               <div>
-                <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ t('ediMessages.field.relatedEntity') }}</p>
-                <p class="mt-1 text-sm font-mono text-gray-900 truncate" :title="selectedMessage.relatedEntityId || ''">
+                <p class="text-xs font-medium text-tide-ink/55 uppercase tracking-wide">{{ t('ediMessages.field.relatedEntity') }}</p>
+                <p class="mt-1 text-sm font-mono text-tide-ink truncate" :title="selectedMessage.relatedEntityId || ''">
                   {{ selectedMessage.relatedEntityId || '—' }}
                 </p>
               </div>
@@ -544,7 +544,7 @@ const formatDate = (dateStr?: string) => {
 
             <!-- Processing Note -->
             <div v-if="selectedMessage.processingNote">
-              <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">{{ t('ediMessages.field.processingNote') }}</p>
+              <p class="text-xs font-medium text-tide-ink/55 uppercase tracking-wide mb-1">{{ t('ediMessages.field.processingNote') }}</p>
               <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-sm text-yellow-900">
                 {{ selectedMessage.processingNote }}
               </div>
@@ -552,16 +552,16 @@ const formatDate = (dateStr?: string) => {
 
             <!-- Raw Payload -->
             <div v-if="selectedMessage.rawPayload">
-              <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">{{ t('ediMessages.field.rawPayload') }}</p>
+              <p class="text-xs font-medium text-tide-ink/55 uppercase tracking-wide mb-1">{{ t('ediMessages.field.rawPayload') }}</p>
               <pre class="bg-gray-900 text-green-300 rounded-lg p-4 text-xs font-mono overflow-x-auto max-h-64 whitespace-pre-wrap break-all">{{ selectedMessage.rawPayload }}</pre>
             </div>
           </div>
 
           <!-- Modal Footer -->
-          <div class="px-6 py-4 bg-gray-50 rounded-b-xl border-t border-gray-200 flex justify-end">
+          <div class="px-6 py-4 bg-[rgba(252,247,238,0.55)] rounded-b-xl border-t border-[rgba(60,50,35,0.12)] flex justify-end">
             <button
               @click="closeDetail"
-              class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              class="px-4 py-2 border border-[rgba(60,50,35,0.16)] rounded-lg text-sm font-medium text-tide-ink/80 hover:bg-[rgba(42,36,30,0.05)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-tide-blue"
             >
               {{ t('common.close') }}
             </button>
@@ -577,15 +577,15 @@ const formatDate = (dateStr?: string) => {
         class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 p-4"
         @click.self="closeIngest"
       >
-        <div class="bg-white rounded-xl shadow-xl w-full max-w-lg">
+        <div class="bg-[rgba(255,253,247,0.92)] rounded-xl shadow-xl w-full max-w-lg">
 
           <!-- Modal Header -->
-          <div class="flex items-center justify-between p-6 border-b border-gray-200">
+          <div class="flex items-center justify-between p-6 border-b border-[rgba(60,50,35,0.12)]">
             <div>
-              <h3 class="text-lg font-semibold text-gray-900">{{ t('ediMessages.ingest.title') }}</h3>
-              <p class="text-sm text-gray-500 mt-0.5">{{ t('ediMessages.ingest.subtitle') }}</p>
+              <h3 class="text-lg font-semibold text-tide-ink">{{ t('ediMessages.ingest.title') }}</h3>
+              <p class="text-sm text-tide-ink/55 mt-0.5">{{ t('ediMessages.ingest.subtitle') }}</p>
             </div>
-            <button @click="closeIngest" class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+            <button @click="closeIngest" class="p-2 text-tide-ink/40 hover:text-tide-ink/70 hover:bg-[rgba(42,36,30,0.05)] rounded-lg transition-colors">
               <X class="h-5 w-5" />
             </button>
           </div>
@@ -594,10 +594,10 @@ const formatDate = (dateStr?: string) => {
           <div class="p-6 space-y-4">
             <!-- Format -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('ediMessages.field.format') }} <span class="text-red-500">*</span></label>
+              <label class="block text-sm font-medium text-tide-ink/80 mb-1">{{ t('ediMessages.field.format') }} <span class="text-red-500">*</span></label>
               <select
                 v-model="ingestForm.format"
-                class="block w-full border border-gray-300 rounded-lg py-2.5 px-3 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                class="block w-full border border-[rgba(60,50,35,0.16)] rounded-lg py-2.5 px-3 text-sm bg-[rgba(255,253,247,0.92)] focus:outline-none focus:ring-1 focus:ring-tide-blue focus:border-tide-blue"
               >
                 <option value="EDIFACT">EDIFACT</option>
                 <option value="X12">X12</option>
@@ -609,51 +609,51 @@ const formatDate = (dateStr?: string) => {
 
             <!-- Message Type -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('ediMessages.field.messageType') }}</label>
+              <label class="block text-sm font-medium text-tide-ink/80 mb-1">{{ t('ediMessages.field.messageType') }}</label>
               <input
                 v-model="ingestForm.messageType"
                 type="text"
                 :placeholder="t('ediMessages.placeholder.messageType')"
-                class="block w-full border border-gray-300 rounded-lg py-2.5 px-3 text-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                class="block w-full border border-[rgba(60,50,35,0.16)] rounded-lg py-2.5 px-3 text-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-tide-blue focus:border-tide-blue"
               />
             </div>
 
             <!-- Partner ID -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('ediMessages.field.partnerId') }}</label>
+              <label class="block text-sm font-medium text-tide-ink/80 mb-1">{{ t('ediMessages.field.partnerId') }}</label>
               <input
                 v-model="ingestForm.partnerId"
                 type="text"
                 :placeholder="t('ediMessages.placeholder.partnerId')"
-                class="block w-full border border-gray-300 rounded-lg py-2.5 px-3 text-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                class="block w-full border border-[rgba(60,50,35,0.16)] rounded-lg py-2.5 px-3 text-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-tide-blue focus:border-tide-blue"
               />
             </div>
 
             <!-- Raw Payload -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('ediMessages.field.rawPayload') }}</label>
+              <label class="block text-sm font-medium text-tide-ink/80 mb-1">{{ t('ediMessages.field.rawPayload') }}</label>
               <textarea
                 v-model="ingestForm.rawPayload"
                 rows="6"
                 :placeholder="t('ediMessages.placeholder.rawPayload')"
-                class="block w-full border border-gray-300 rounded-lg py-2.5 px-3 text-sm font-mono placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 resize-none"
+                class="block w-full border border-[rgba(60,50,35,0.16)] rounded-lg py-2.5 px-3 text-sm font-mono placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-tide-blue focus:border-tide-blue resize-none"
               ></textarea>
             </div>
           </div>
 
           <!-- Footer -->
-          <div class="px-6 py-4 bg-gray-50 rounded-b-xl border-t border-gray-200 flex justify-end space-x-3">
+          <div class="px-6 py-4 bg-[rgba(252,247,238,0.55)] rounded-b-xl border-t border-[rgba(60,50,35,0.12)] flex justify-end space-x-3">
             <button
               @click="closeIngest"
               :disabled="isIngesting"
-              class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+              class="px-4 py-2 border border-[rgba(60,50,35,0.16)] rounded-lg text-sm font-medium text-tide-ink/80 hover:bg-[rgba(252,247,238,0.55)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-tide-blue disabled:opacity-50"
             >
               {{ t('common.cancel') }}
             </button>
             <button
               @click="submitIngest"
               :disabled="isIngesting"
-              class="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+              class="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-tide-blue-btn-deep hover:bg-tide-blue-deep focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-tide-blue disabled:opacity-50"
             >
               <RefreshCw v-if="isIngesting" class="h-4 w-4 mr-2 animate-spin" />
               <Plus v-else class="h-4 w-4 mr-2" />

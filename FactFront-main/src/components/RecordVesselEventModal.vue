@@ -1,49 +1,49 @@
 <template>
   <div v-if="open" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-    <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+    <div class="bg-[rgba(255,253,247,0.92)] rounded-lg shadow-xl p-6 w-full max-w-2xl space-y-4 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center">
-        <h2 class="text-lg font-semibold text-gray-900">
+        <h2 class="text-lg font-semibold text-tide-ink">
           {{ t('vesselEvent.modal.title', { vesselName: visit?.vesselName ?? '' }) }}
         </h2>
-        <button type="button" class="text-gray-500" @click="emit('close')" :aria-label="t('common.close')">
+        <button type="button" class="text-tide-ink/55" @click="emit('close')" :aria-label="t('common.close')">
           <X class="h-5 w-5" />
         </button>
       </div>
 
       <div>
-        <div class="text-sm font-medium text-gray-700">{{ t('vesselEvent.history.title') }}</div>
-        <div v-if="events.length === 0" class="mt-2 text-sm text-gray-500">
+        <div class="text-sm font-medium text-tide-ink/80">{{ t('vesselEvent.history.title') }}</div>
+        <div v-if="events.length === 0" class="mt-2 text-sm text-tide-ink/55">
           {{ t('vesselEvent.history.empty') }}
         </div>
-        <ul v-else class="mt-2 divide-y divide-gray-200 border border-gray-200 rounded-md max-h-40 overflow-y-auto">
+        <ul v-else class="mt-2 divide-y divide-[rgba(42,36,30,0.08)] border border-[rgba(60,50,35,0.12)] rounded-md max-h-40 overflow-y-auto">
           <li v-for="ev in recentEvents" :key="ev.id" class="px-3 py-2 text-sm">
             <div class="flex justify-between">
-              <span class="font-medium text-gray-700">{{ eventConfigName(ev.eventId) }}</span>
-              <span class="text-gray-500 text-xs">{{ formatDate(ev.eventDate) }}</span>
+              <span class="font-medium text-tide-ink/80">{{ eventConfigName(ev.eventId) }}</span>
+              <span class="text-tide-ink/55 text-xs">{{ formatDate(ev.eventDate) }}</span>
             </div>
-            <div class="text-gray-600 mt-1">{{ ev.notes }}</div>
+            <div class="text-tide-ink/70 mt-1">{{ ev.notes }}</div>
           </li>
         </ul>
       </div>
 
       <form @submit.prevent="handleSubmit" class="space-y-4">
         <div>
-          <label class="block text-sm font-medium text-gray-700">
+          <label class="block text-sm font-medium text-tide-ink/80">
             {{ t('vesselEvent.form.eventType') }} <span class="text-red-500">*</span>
           </label>
           <input
             v-model="eventQuery"
             type="text"
             :placeholder="t('vesselEvent.form.eventTypePlaceholder')"
-            class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            class="mt-1 block w-full rounded-md border border-[rgba(60,50,35,0.16)] px-3 py-2 shadow-sm focus:border-tide-blue focus:ring-tide-blue"
           />
-          <ul v-if="filteredConfigs.length" class="border rounded-md mt-1 bg-white max-h-40 overflow-auto">
+          <ul v-if="filteredConfigs.length" class="border rounded-md mt-1 bg-[rgba(255,253,247,0.92)] max-h-40 overflow-auto">
             <li
               v-for="cfg in filteredConfigs"
               :key="cfg.id"
               :data-test="`event-config-option-${cfg.id}`"
-              class="px-3 py-2 hover:bg-gray-100 cursor-pointer"
-              :class="{ 'bg-blue-50': selectedConfig?.id === cfg.id }"
+              class="px-3 py-2 hover:bg-[rgba(42,36,30,0.05)] cursor-pointer"
+              :class="{ 'bg-[rgba(90,138,171,0.10)]': selectedConfig?.id === cfg.id }"
               @click="selectConfig(cfg)"
             >
               {{ cfg.eventName }}
@@ -52,7 +52,7 @@
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700">
+          <label class="block text-sm font-medium text-tide-ink/80">
             {{ t('vesselEvent.form.eventDate') }} <span class="text-red-500">*</span>
           </label>
           <DatetimeInput
@@ -63,9 +63,9 @@
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700">
+          <label class="block text-sm font-medium text-tide-ink/80">
             {{ t('vesselEvent.form.notes') }} <span class="text-red-500">*</span>
-            <span class="text-xs text-gray-500 ml-1">{{ notes.length }} / 500</span>
+            <span class="text-xs text-tide-ink/55 ml-1">{{ notes.length }} / 500</span>
           </label>
           <textarea
             v-model="notes"
@@ -73,20 +73,20 @@
             rows="3"
             maxlength="500"
             :placeholder="t('vesselEvent.form.notesPlaceholder')"
-            class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            class="mt-1 block w-full rounded-md border border-[rgba(60,50,35,0.16)] px-3 py-2 shadow-sm focus:border-tide-blue focus:ring-tide-blue"
           ></textarea>
         </div>
 
         <p v-if="error" class="text-sm text-red-600">{{ error }}</p>
 
         <div class="flex justify-end gap-2">
-          <button type="button" class="px-3 py-2 text-gray-700" @click="emit('close')">
+          <button type="button" class="px-3 py-2 text-tide-ink/80" @click="emit('close')">
             {{ t('vesselEvent.form.cancel') }}
           </button>
           <button
             type="submit"
             :disabled="saving || !canSubmit"
-            class="px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+            class="px-3 py-2 bg-tide-blue-btn-deep text-white rounded hover:bg-tide-blue-deep disabled:opacity-50"
           >
             {{ t('vesselEvent.form.submit') }}
           </button>

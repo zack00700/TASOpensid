@@ -673,7 +673,7 @@ const closeUploadResult = () => {
 const dragOverlayClasses = computed(() => ({
   'opacity-0 pointer-events-none': !isDragOver.value && !isUploading.value,
   'opacity-100': isDragOver.value || isUploading.value,
-  'bg-blue-50 border-blue-300': isDragOver.value && !isUploading.value,
+  'bg-[rgba(90,138,171,0.10)] border-blue-300': isDragOver.value && !isUploading.value,
   'bg-blue-100 border-blue-400': isUploading.value,
 }));
 
@@ -776,19 +776,19 @@ const blStats = computed(() => {
             ]"
           />
         </div>
-        <h3 class="text-xl font-semibold text-gray-800 mb-2">
+        <h3 class="text-xl font-semibold text-tide-ink mb-2">
           {{ dropZoneContent.title }}
         </h3>
-        <p class="text-gray-600 mb-4">
+        <p class="text-tide-ink/70 mb-4">
           {{ dropZoneContent.subtitle }}
         </p>
         <div v-if="isUploading" class="w-full bg-gray-200 rounded-full h-2 mb-4">
           <div 
-            class="bg-blue-600 h-2 rounded-full transition-all duration-300 ease-out"
+            class="bg-tide-blue-btn-deep h-2 rounded-full transition-all duration-300 ease-out"
             :style="{ width: `${uploadProgress}%` }"
           ></div>
         </div>
-        <div v-if="!isUploading" class="text-sm text-gray-500">
+        <div v-if="!isUploading" class="text-sm text-tide-ink/55">
           {{ t('billOfLading.dropZone.hint') }}
         </div>
       </div>
@@ -811,7 +811,7 @@ const blStats = computed(() => {
         <button
           @click="exportToExcel"
           :disabled="isExporting || bills.length === 0"
-          class="hidden sm:inline-flex items-center px-3 py-2 border border-slate-200 text-sm font-medium rounded-lg text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-50 transition-colors"
+          class="hidden sm:inline-flex items-center px-3 py-2 border border-[rgba(60,50,35,0.12)] text-sm font-medium rounded-lg text-tide-ink/80 bg-[rgba(255,253,247,0.92)] hover:bg-[rgba(252,247,238,0.55)] disabled:opacity-50 transition-colors"
         >
           <Loader2 v-if="isExporting" class="h-4 w-4 mr-2 animate-spin" />
           <Download v-else class="h-4 w-4 mr-2" />
@@ -819,7 +819,7 @@ const blStats = computed(() => {
         </button>
         <button
           @click="handleAdd"
-          class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 shadow-sm"
+          class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-tide-blue-btn-deep hover:bg-tide-blue-deep shadow-sm"
         >
           <Plus class="h-4 w-4 sm:mr-2" />
           <span class="hidden sm:inline">{{ t('billOfLading.button.newBl') }}</span>
@@ -850,9 +850,9 @@ const blStats = computed(() => {
     </PageHeader>
 
     <!-- List View -->
-    <div v-if="!showForm" class="bg-white shadow rounded-lg mt-4">
+    <div v-if="!showForm" class="bg-[rgba(255,253,247,0.92)] shadow rounded-lg mt-4">
       <!-- Header — mobile secondary actions + search -->
-      <div class="px-4 py-3 border-b border-gray-200 space-y-3">
+      <div class="px-4 py-3 border-b border-[rgba(60,50,35,0.12)] space-y-3">
 
         <!-- Row 2: Search + Filters -->
         <SearchBar
@@ -866,7 +866,7 @@ const blStats = computed(() => {
             <button
               @click="handleRefresh"
               :disabled="loading"
-              class="inline-flex items-center p-2 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 flex-shrink-0"
+              class="inline-flex items-center p-2 border border-[rgba(60,50,35,0.16)] rounded-lg text-tide-ink/80 bg-[rgba(255,253,247,0.92)] hover:bg-[rgba(252,247,238,0.55)] disabled:opacity-50 flex-shrink-0"
               :aria-label="t('billOfLading.action.refresh')"
             >
               <RefreshCw class="h-4 w-4" :class="{ 'animate-spin': loading }" />
@@ -886,7 +886,7 @@ const blStats = computed(() => {
           <button
             @click="exportToExcel"
             :disabled="isExporting || bills.length === 0"
-            class="flex-1 inline-flex items-center justify-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            class="flex-1 inline-flex items-center justify-center px-3 py-2 border border-[rgba(60,50,35,0.16)] text-sm font-medium rounded-lg text-tide-ink/80 bg-[rgba(255,253,247,0.92)] hover:bg-[rgba(252,247,238,0.55)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             <Loader2 v-if="isExporting" class="h-4 w-4 mr-2 animate-spin" />
             <Download v-else class="h-4 w-4 mr-2" />
@@ -908,13 +908,13 @@ const blStats = computed(() => {
         v-if="showFilters"
         type="bills" 
         @filter="handleFilter" 
-        class="border-b border-gray-200"
+        class="border-b border-[rgba(60,50,35,0.12)]"
       />
 
       <!-- Loading State -->
       <div v-if="loading" class="px-6 py-12 text-center">
-        <RefreshCw class="h-8 w-8 animate-spin mx-auto text-gray-400 mb-4" />
-        <p class="text-gray-500">{{ t('billOfLading.label.loadingBills') }}</p>
+        <RefreshCw class="h-8 w-8 animate-spin mx-auto text-tide-ink/40 mb-4" />
+        <p class="text-tide-ink/55">{{ t('billOfLading.label.loadingBills') }}</p>
       </div>
 
       <!-- Error State -->
@@ -925,7 +925,7 @@ const blStats = computed(() => {
         </div>
         <button
           @click="handleRefresh"
-          class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          class="px-4 py-2 bg-tide-blue-btn-deep text-white rounded-lg hover:bg-tide-blue-deep"
         >
           {{ t('billOfLading.button.tryAgain') }}
         </button>
@@ -954,12 +954,12 @@ const blStats = computed(() => {
           <template #cell-connaissement="{ row }">
             <div class="space-y-0.5">
               <div class="flex items-center gap-2">
-                <component :is="transportIcon((row as BillOfLading).transportType)" class="w-4 h-4 text-slate-500" />
-                <span class="font-mono font-semibold text-sm text-slate-900">{{ (row as BillOfLading).blNumber }}</span>
+                <component :is="transportIcon((row as BillOfLading).transportType)" class="w-4 h-4 text-tide-ink/55" />
+                <span class="font-mono font-semibold text-sm text-tide-ink">{{ (row as BillOfLading).blNumber }}</span>
                 <StatusBadge :status="(row as BillOfLading).status" />
               </div>
               <div v-if="(row as BillOfLading).portOfLoading || (row as BillOfLading).portOfDischarge"
-                   class="text-xs text-slate-500">
+                   class="text-xs text-tide-ink/55">
                 {{ (row as BillOfLading).portOfLoading || '—' }}
                 <span class="mx-1">→</span>
                 {{ (row as BillOfLading).portOfDischarge || '—' }}
@@ -990,7 +990,7 @@ const blStats = computed(() => {
           <template #cell-customsRollup="{ row }">
             <StatusBadge v-if="getCustomsRollup(row as any)"
                          :status="getCustomsRollup(row as any)!" />
-            <span v-else class="text-slate-400">—</span>
+            <span v-else class="text-tide-ink/40">—</span>
           </template>
 
           <template #cell-hazmat="{ row }">
@@ -1032,7 +1032,7 @@ const blStats = computed(() => {
               </button>
               <button
                 @click="handleEdit(row as BillOfLading)"
-                class="inline-flex items-center p-1.5 rounded text-blue-600 hover:bg-blue-50"
+                class="inline-flex items-center p-1.5 rounded text-tide-blue-deep hover:bg-[rgba(90,138,171,0.10)]"
                 :title="t('billOfLading.action.edit')"
                 :aria-label="t('billOfLading.action.edit')"
               >
@@ -1073,31 +1073,31 @@ const blStats = computed(() => {
     <!-- Upload Result Modal -->
     <Teleport to="body">
       <div v-if="showUploadResult && uploadResult" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50" @click.self="showUploadResult = false">
-        <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+        <div class="bg-[rgba(255,253,247,0.92)] rounded-lg p-6 max-w-md w-full mx-4">
           <div class="text-center">
             <div class="mb-4">
               <CheckCircle v-if="uploadResult.errors.length === 0" class="mx-auto h-12 w-12 text-green-500" />
               <AlertCircle v-else class="mx-auto h-12 w-12 text-yellow-500" />
             </div>
             
-            <h3 class="text-lg font-medium text-gray-900 mb-4">
+            <h3 class="text-lg font-medium text-tide-ink mb-4">
               {{ uploadResult.errors.length === 0 ? t('billOfLading.importModal.titleCompleted') : t('billOfLading.importModal.titleResults') }}
             </h3>
 
-            <div class="bg-gray-50 rounded-lg p-4 mb-4">
+            <div class="bg-[rgba(252,247,238,0.55)] rounded-lg p-4 mb-4">
               <div class="flex justify-between items-center mb-2">
-                <span class="text-sm font-medium text-gray-700">{{ t('billOfLading.importModal.successfullyImported') }}</span>
+                <span class="text-sm font-medium text-tide-ink/80">{{ t('billOfLading.importModal.successfullyImported') }}</span>
                 <span class="text-sm font-bold text-green-600">{{ uploadResult.success }}</span>
               </div>
 
               <div v-if="uploadResult.errors.length > 0" class="flex justify-between items-center">
-                <span class="text-sm font-medium text-gray-700">{{ t('billOfLading.importModal.errors') }}</span>
+                <span class="text-sm font-medium text-tide-ink/80">{{ t('billOfLading.importModal.errors') }}</span>
                 <span class="text-sm font-bold text-red-600">{{ uploadResult.errors.length }}</span>
               </div>
             </div>
 
             <div v-if="uploadResult.errors.length > 0" class="text-left mb-4">
-              <h4 class="text-sm font-medium text-gray-700 mb-2">{{ t('billOfLading.importModal.errorDetails') }}</h4>
+              <h4 class="text-sm font-medium text-tide-ink/80 mb-2">{{ t('billOfLading.importModal.errorDetails') }}</h4>
               <div class="bg-red-50 border border-red-200 rounded-md p-3 max-h-32 overflow-y-auto">
                 <ul class="text-xs text-red-700 space-y-1">
                   <li v-for="error in uploadResult.errors.slice(0, 5)" :key="error">
@@ -1112,7 +1112,7 @@ const blStats = computed(() => {
 
             <button
               @click="closeUploadResult"
-              class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              class="w-full px-4 py-2 bg-tide-blue-btn-deep text-white rounded-lg hover:bg-tide-blue-deep transition-colors"
             >
               {{ t('common.close') }}
             </button>
@@ -1124,14 +1124,14 @@ const blStats = computed(() => {
     <!-- Items Modal -->
     <Teleport to="body">
       <div v-if="showItemsModal && selectedBL" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50" @click.self="showItemsModal = false">
-        <div class="bg-white rounded-lg p-6 max-w-2xl w-full">
+        <div class="bg-[rgba(255,253,247,0.92)] rounded-lg p-6 max-w-2xl w-full">
           <div class="flex justify-between items-center mb-4">
-            <h3 class="text-lg font-medium text-gray-900">
+            <h3 class="text-lg font-medium text-tide-ink">
               {{ t('billOfLading.itemsModal.title', { blNumber: selectedBL.blNumber }) }}
             </h3>
             <button
               @click="showItemsModal = false"
-              class="text-gray-400 hover:text-gray-500"
+              class="text-tide-ink/40 hover:text-tide-ink/55"
               :aria-label="t('common.close')"
             >
               <X class="h-6 w-6" />
@@ -1139,24 +1139,24 @@ const blStats = computed(() => {
           </div>
 
           <div class="mt-4">
-            <h4 class="text-sm font-medium text-gray-700 mb-2">{{ t('billOfLading.itemsModal.commodityDetails') }}</h4>
-            <div class="bg-gray-50 p-4 rounded-lg">
+            <h4 class="text-sm font-medium text-tide-ink/80 mb-2">{{ t('billOfLading.itemsModal.commodityDetails') }}</h4>
+            <div class="bg-[rgba(252,247,238,0.55)] p-4 rounded-lg">
               <dl class="grid grid-cols-2 gap-4">
                 <div>
-                  <dt class="text-sm font-medium text-gray-500">{{ t('billOfLading.field.description') }}</dt>
-                  <dd class="mt-1 text-sm text-gray-900">{{ selectedBL.commodity.description }}</dd>
+                  <dt class="text-sm font-medium text-tide-ink/55">{{ t('billOfLading.field.description') }}</dt>
+                  <dd class="mt-1 text-sm text-tide-ink">{{ selectedBL.commodity.description }}</dd>
                 </div>
                 <div>
-                  <dt class="text-sm font-medium text-gray-500">{{ t('billOfLading.field.weight') }}</dt>
-                  <dd class="mt-1 text-sm text-gray-900">{{ selectedBL.commodity.weightKg }} kg</dd>
+                  <dt class="text-sm font-medium text-tide-ink/55">{{ t('billOfLading.field.weight') }}</dt>
+                  <dd class="mt-1 text-sm text-tide-ink">{{ selectedBL.commodity.weightKg }} kg</dd>
                 </div>
                 <div>
-                  <dt class="text-sm font-medium text-gray-500">{{ t('billOfLading.field.volume') }}</dt>
-                  <dd class="mt-1 text-sm text-gray-900">{{ selectedBL.commodity.volumeM3 }} m³</dd>
+                  <dt class="text-sm font-medium text-tide-ink/55">{{ t('billOfLading.field.volume') }}</dt>
+                  <dd class="mt-1 text-sm text-tide-ink">{{ selectedBL.commodity.volumeM3 }} m³</dd>
                 </div>
                 <div>
-                  <dt class="text-sm font-medium text-gray-500">{{ t('billOfLading.field.packages') }}</dt>
-                  <dd class="mt-1 text-sm text-gray-900">{{ selectedBL.commodity.packagesNumber }}</dd>
+                  <dt class="text-sm font-medium text-tide-ink/55">{{ t('billOfLading.field.packages') }}</dt>
+                  <dd class="mt-1 text-sm text-tide-ink">{{ selectedBL.commodity.packagesNumber }}</dd>
                 </div>
               </dl>
             </div>
@@ -1164,38 +1164,38 @@ const blStats = computed(() => {
 
           <div class="mt-6">
             <div class="flex justify-between items-center mb-4">
-              <h4 class="text-sm font-medium text-gray-700">{{ t('billOfLading.itemsModal.linkedItems') }}</h4>
-              <button class="inline-flex items-center text-sm text-blue-600 hover:text-blue-900">
+              <h4 class="text-sm font-medium text-tide-ink/80">{{ t('billOfLading.itemsModal.linkedItems') }}</h4>
+              <button class="inline-flex items-center text-sm text-tide-blue-deep hover:text-tide-blue-deep">
                 <Link class="h-4 w-4 mr-1" />
                 {{ t('billOfLading.itemsModal.linkNewItem') }}
               </button>
             </div>
             
-            <div class="bg-white shadow overflow-hidden border border-gray-200 sm:rounded-lg">
-              <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
+            <div class="bg-[rgba(255,253,247,0.92)] shadow overflow-hidden border border-[rgba(60,50,35,0.12)] sm:rounded-lg">
+              <table class="min-w-full divide-y divide-[rgba(42,36,30,0.08)]">
+                <thead class="bg-[rgba(252,247,238,0.55)]">
                   <tr>
                     <th v-for="header in [t('billOfLading.itemsModal.colType'), t('billOfLading.itemsModal.colNumber'), t('billOfLading.itemsModal.colStatus'), t('billOfLading.itemsModal.colActions')]"
                         :key="header"
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        class="px-6 py-3 text-left text-xs font-medium text-tide-ink/55 uppercase tracking-wider"
                     >
                       {{ header }}
                     </th>
                   </tr>
                 </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
+                <tbody class="bg-[rgba(255,253,247,0.92)] divide-y divide-[rgba(42,36,30,0.08)]">
                   <tr v-for="item in selectedBL.items ?? []" :key="item.id">
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-tide-ink">
                       {{ item.type }}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-tide-ink">
                       {{ item.itemNumber }}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-tide-ink">
                       {{ item.status }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <button class="text-blue-600 hover:text-blue-900" :aria-label="t('billOfLading.action.view')">
+                      <button class="text-tide-blue-deep hover:text-tide-blue-deep" :aria-label="t('billOfLading.action.view')">
                         <Eye class="h-5 w-5" />
                       </button>
                     </td>
@@ -1215,11 +1215,11 @@ const blStats = computed(() => {
     <!-- Delete Confirmation Modal -->
     <Teleport to="body">
       <div v-if="showDeleteConfirm" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50" @click.self="showDeleteConfirm = false">
-        <div class="bg-white rounded-lg p-6 max-w-md w-full">
+        <div class="bg-[rgba(255,253,247,0.92)] rounded-lg p-6 max-w-md w-full">
           <div class="text-center">
             <FileText class="mx-auto h-12 w-12 text-red-500" />
-            <h3 class="mt-4 text-lg font-medium text-gray-900">{{ t('billOfLading.confirm.deleteTitle') }}</h3>
-            <p class="mt-2 text-sm text-gray-500">
+            <h3 class="mt-4 text-lg font-medium text-tide-ink">{{ t('billOfLading.confirm.deleteTitle') }}</h3>
+            <p class="mt-2 text-sm text-tide-ink/55">
               {{ t('billOfLading.confirm.deleteBody', { blNumber: blToDelete?.blNumber }) }}
             </p>
           </div>

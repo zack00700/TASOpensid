@@ -51,14 +51,14 @@ watch(activeId, (id) => {
 <template>
   <div class="h-full flex flex-col">
     <!-- Loading state -->
-    <div v-if="isLoading" class="flex items-center justify-center h-full text-gray-500 text-sm">
+    <div v-if="isLoading" class="flex items-center justify-center h-full text-tide-ink/55 text-sm">
       {{ $t('invoiceTemplateDesigner.loading') }}
     </div>
 
     <!-- Error state -->
     <div v-else-if="loadError" class="p-4 text-red-600 text-sm">
       {{ loadError }}
-      <button class="ml-3 underline text-blue-600" @click="loadError = null; activeId = null">{{ $t('common.back') }}</button>
+      <button class="ml-3 underline text-tide-blue-deep" @click="loadError = null; activeId = null">{{ $t('common.back') }}</button>
     </div>
 
     <!-- Template list -->

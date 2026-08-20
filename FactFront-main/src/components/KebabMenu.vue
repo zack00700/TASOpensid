@@ -94,7 +94,7 @@ onBeforeUnmount(removeListeners);
     <Teleport to="body" v-if="isOpen">
       <div
         ref="menuEl"
-        class="fixed z-50 bg-white border rounded-lg shadow-lg overflow-auto min-w-[12rem] max-h-[min(280px,calc(100vh-16px))] focus:outline-none"
+        class="fixed z-50 bg-[rgba(255,253,247,0.92)] border rounded-lg shadow-lg overflow-auto min-w-[12rem] max-h-[min(280px,calc(100vh-16px))] focus:outline-none"
         :style="style"
         role="menu"
       >

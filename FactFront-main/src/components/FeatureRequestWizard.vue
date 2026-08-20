@@ -56,7 +56,7 @@ const getStatusBadgeClasses = (status: string) => {
   const base = 'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold border';
   switch (status) {
     case 'DRAFT':
-      return `${base} bg-gray-100 text-gray-700 border-gray-200`;
+      return `${base} bg-[rgba(42,36,30,0.05)] text-tide-ink/80 border-[rgba(60,50,35,0.12)]`;
     case 'CLARIFYING':
       return `${base} bg-yellow-100 text-yellow-800 border-yellow-200`;
     case 'READY_FOR_REVIEW':
@@ -70,7 +70,7 @@ const getStatusBadgeClasses = (status: string) => {
     case 'DONE':
       return `${base} bg-emerald-100 text-emerald-800 border-emerald-200`;
     default:
-      return `${base} bg-gray-100 text-gray-600 border-gray-200`;
+      return `${base} bg-[rgba(42,36,30,0.05)] text-tide-ink/70 border-[rgba(60,50,35,0.12)]`;
   }
 };
 
@@ -199,25 +199,25 @@ watch(
         >
           <div
             v-if="isOpen"
-            class="bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl w-full sm:max-w-lg flex flex-col overflow-hidden"
+            class="bg-[rgba(255,253,247,0.92)] rounded-t-2xl sm:rounded-2xl shadow-2xl w-full sm:max-w-lg flex flex-col overflow-hidden"
             style="max-height: 90dvh;"
           >
             <!-- ── Step 1: New Request Form ─────────────────────────────── -->
             <template v-if="!activeRequest">
               <!-- Header -->
-              <div class="flex items-center justify-between px-6 py-5 border-b border-gray-100">
+              <div class="flex items-center justify-between px-6 py-5 border-b border-[rgba(42,36,30,0.07)]">
                 <div class="flex items-center gap-3">
                   <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center flex-shrink-0">
                     <Lightbulb class="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <h2 class="text-base font-semibold text-gray-900">{{ t('featureRequestWizard.header.title') }}</h2>
-                    <p class="text-xs text-gray-500">{{ t('featureRequestWizard.header.subtitle') }}</p>
+                    <h2 class="text-base font-semibold text-tide-ink">{{ t('featureRequestWizard.header.title') }}</h2>
+                    <p class="text-xs text-tide-ink/55">{{ t('featureRequestWizard.header.subtitle') }}</p>
                   </div>
                 </div>
                 <button
                   @click="closeModal"
-                  class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                  class="p-2 text-tide-ink/40 hover:text-tide-ink/70 hover:bg-[rgba(42,36,30,0.05)] rounded-lg transition-colors"
                   :aria-label="t('common.close')"
                 >
                   <X class="w-5 h-5" />
@@ -233,14 +233,14 @@ watch(
 
                 <!-- Title -->
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                  <label class="block text-sm font-medium text-tide-ink/80 mb-1.5">
                     {{ t('featureRequestWizard.field.title') }} <span class="text-red-500">*</span>
                   </label>
                   <input
                     v-model="newTitle"
                     type="text"
                     :placeholder="t('featureRequestWizard.placeholder.title')"
-                    class="block w-full border border-gray-300 rounded-xl py-2.5 px-3.5 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                    class="block w-full border border-[rgba(60,50,35,0.16)] rounded-xl py-2.5 px-3.5 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-tide-blue focus:border-tide-blue transition-colors"
                     @keyup.enter="newDescription && submitNewRequest()"
                     :disabled="isCreating"
                   />
@@ -248,23 +248,23 @@ watch(
 
                 <!-- Description -->
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1.5">{{ t('featureRequestWizard.field.description') }}</label>
+                  <label class="block text-sm font-medium text-tide-ink/80 mb-1.5">{{ t('featureRequestWizard.field.description') }}</label>
                   <textarea
                     v-model="newDescription"
                     rows="4"
                     :placeholder="t('featureRequestWizard.placeholder.description')"
-                    class="block w-full border border-gray-300 rounded-xl py-2.5 px-3.5 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none transition-colors"
+                    class="block w-full border border-[rgba(60,50,35,0.16)] rounded-xl py-2.5 px-3.5 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-tide-blue focus:border-tide-blue resize-none transition-colors"
                     :disabled="isCreating"
                   ></textarea>
                 </div>
 
                 <!-- Category -->
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1.5">{{ t('featureRequestWizard.field.category') }}</label>
+                  <label class="block text-sm font-medium text-tide-ink/80 mb-1.5">{{ t('featureRequestWizard.field.category') }}</label>
                   <select
                     v-model="newCategory"
                     :disabled="isCreating"
-                    class="block w-full border border-gray-300 rounded-xl py-2.5 px-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white"
+                    class="block w-full border border-[rgba(60,50,35,0.16)] rounded-xl py-2.5 px-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-tide-blue focus:border-tide-blue transition-colors bg-[rgba(255,253,247,0.92)]"
                   >
                     <option value="">{{ t('featureRequestWizard.option.selectCategory') }}</option>
                     <option v-for="opt in categoryOptions" :key="opt.value" :value="opt.value">
@@ -275,12 +275,12 @@ watch(
               </div>
 
               <!-- Footer -->
-              <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex items-center justify-between gap-3">
-                <p class="text-xs text-gray-400">{{ t('featureRequestWizard.footer.aiHint') }}</p>
+              <div class="px-6 py-4 bg-[rgba(252,247,238,0.55)] border-t border-[rgba(42,36,30,0.07)] flex items-center justify-between gap-3">
+                <p class="text-xs text-tide-ink/40">{{ t('featureRequestWizard.footer.aiHint') }}</p>
                 <button
                   @click="submitNewRequest"
                   :disabled="!newTitle.trim() || isCreating"
-                  class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex-shrink-0"
+                  class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-tide-blue focus:ring-offset-2 flex-shrink-0"
                 >
                   <Loader2 v-if="isCreating" class="w-4 h-4 animate-spin" />
                   <Send v-else class="w-4 h-4" />
@@ -292,7 +292,7 @@ watch(
             <!-- ── Step 2: Chat with AI ─────────────────────────────────── -->
             <template v-else>
               <!-- Header -->
-              <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-white">
+              <div class="flex items-center justify-between px-6 py-4 border-b border-[rgba(42,36,30,0.07)] bg-[rgba(255,253,247,0.92)]">
                 <div class="flex items-center gap-3 min-w-0">
                   <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center flex-shrink-0">
                     <Bot class="w-4 h-4 text-white" />
@@ -300,11 +300,11 @@ watch(
                   <div class="min-w-0">
                     <!-- Ticket number badge -->
                     <div v-if="activeRequest.ticketNumber" class="mb-1">
-                      <span class="font-mono text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded-full">
+                      <span class="font-mono text-xs font-bold bg-[rgba(90,138,171,0.10)] text-tide-blue-deep border border-blue-200 px-2 py-0.5 rounded-full">
                         {{ t('featureRequestWizard.label.ticket', { number: activeRequest.ticketNumber }) }}
                       </span>
                     </div>
-                    <p class="text-sm font-semibold text-gray-900 truncate">{{ activeRequest.title }}</p>
+                    <p class="text-sm font-semibold text-tide-ink truncate">{{ activeRequest.title }}</p>
                     <span :class="getStatusBadgeClasses(activeRequest.status)">
                       {{ activeRequest.status.replace('_', ' ') }}
                     </span>
@@ -312,7 +312,7 @@ watch(
                 </div>
                 <button
                   @click="closeModal"
-                  class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors flex-shrink-0 ml-2"
+                  class="p-2 text-tide-ink/40 hover:text-tide-ink/70 hover:bg-[rgba(42,36,30,0.05)] rounded-lg transition-colors flex-shrink-0 ml-2"
                   :aria-label="t('common.close')"
                 >
                   <X class="w-5 h-5" />
@@ -328,7 +328,7 @@ watch(
                 <!-- Empty state -->
                 <div
                   v-if="!activeRequest.conversation?.length"
-                  class="flex flex-col items-center justify-center h-32 text-gray-400"
+                  class="flex flex-col items-center justify-center h-32 text-tide-ink/40"
                 >
                   <Bot class="w-8 h-8 mb-2 text-indigo-300" />
                   <p class="text-sm">{{ t('featureRequestWizard.chat.analysing') }}</p>
@@ -348,8 +348,8 @@ watch(
                         <Bot class="w-3.5 h-3.5 text-white" />
                       </div>
                       <div class="bg-gradient-to-br from-slate-50 to-blue-50 border border-blue-100 rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm">
-                        <p class="text-sm text-gray-800 leading-relaxed whitespace-pre-wrap">{{ msg.content }}</p>
-                        <p v-if="msg.timestamp" class="text-xs text-gray-400 mt-1.5">
+                        <p class="text-sm text-tide-ink leading-relaxed whitespace-pre-wrap">{{ msg.content }}</p>
+                        <p v-if="msg.timestamp" class="text-xs text-tide-ink/40 mt-1.5">
                           {{ new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}
                         </p>
                       </div>
@@ -397,14 +397,14 @@ watch(
               <!-- Chat input -->
               <div
                 v-else
-                class="px-4 py-4 border-t border-gray-100 bg-white"
+                class="px-4 py-4 border-t border-[rgba(42,36,30,0.07)] bg-[rgba(255,253,247,0.92)]"
               >
-                <div class="flex items-end gap-2 bg-gray-50 border border-gray-200 rounded-2xl px-3.5 py-2.5 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 transition-all">
+                <div class="flex items-end gap-2 bg-[rgba(252,247,238,0.55)] border border-[rgba(60,50,35,0.12)] rounded-2xl px-3.5 py-2.5 focus-within:ring-2 focus-within:ring-tide-blue focus-within:border-tide-blue transition-all">
                   <textarea
                     v-model="chatInput"
                     rows="1"
                     :placeholder="t('featureRequestWizard.placeholder.chatReply')"
-                    class="flex-1 bg-transparent text-sm text-gray-800 placeholder-gray-400 focus:outline-none resize-none max-h-28 leading-relaxed"
+                    class="flex-1 bg-transparent text-sm text-tide-ink placeholder-gray-400 focus:outline-none resize-none max-h-28 leading-relaxed"
                     @keydown="handleChatKeydown"
                     :disabled="isSending"
                     style="min-height: 24px;"
@@ -418,7 +418,7 @@ watch(
                     <Send class="w-3.5 h-3.5" />
                   </button>
                 </div>
-                <p class="text-xs text-gray-400 mt-1.5 px-1">{{ t('featureRequestWizard.chat.keyboardHint') }}</p>
+                <p class="text-xs text-tide-ink/40 mt-1.5 px-1">{{ t('featureRequestWizard.chat.keyboardHint') }}</p>
               </div>
             </template>
           </div>

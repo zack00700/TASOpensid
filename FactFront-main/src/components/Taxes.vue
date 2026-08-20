@@ -128,13 +128,13 @@ onMounted(async () => {
   <div class="p-6 space-y-4">
     <div class="flex justify-between items-center">
       <div>
-        <h1 class="text-xl font-semibold text-gray-900">{{ t('taxes.title') }}</h1>
-        <p class="text-sm text-gray-500">{{ t('taxes.subtitle') }}</p>
+        <h1 class="text-xl font-semibold text-tide-ink">{{ t('taxes.title') }}</h1>
+        <p class="text-sm text-tide-ink/55">{{ t('taxes.subtitle') }}</p>
       </div>
       <button
         v-if="isAdmin"
         data-test="taxes-add"
-        class="inline-flex items-center gap-2 px-3 py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700"
+        class="inline-flex items-center gap-2 px-3 py-2 bg-tide-blue-btn-deep text-white text-sm rounded-md hover:bg-tide-blue-deep"
         @click="onAdd"
       >
         <Plus class="h-4 w-4" />
@@ -142,21 +142,21 @@ onMounted(async () => {
       </button>
     </div>
 
-    <div class="bg-white shadow rounded-lg">
-      <div class="p-4 flex flex-wrap gap-3 items-center border-b border-gray-200">
+    <div class="bg-[rgba(255,253,247,0.92)] shadow rounded-lg">
+      <div class="p-4 flex flex-wrap gap-3 items-center border-b border-[rgba(60,50,35,0.12)]">
         <input
           v-model="search"
           type="text"
           data-test="taxes-search"
           :placeholder="t('taxes.placeholder.search')"
-          class="block w-64 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
+          class="block w-64 rounded-md border-[rgba(60,50,35,0.16)] shadow-sm focus:border-tide-blue focus:ring-tide-blue text-sm"
         />
-        <label class="inline-flex items-center gap-2 text-sm text-gray-700">
+        <label class="inline-flex items-center gap-2 text-sm text-tide-ink/80">
           <input
             v-model="includeInactive"
             type="checkbox"
             data-test="taxes-include-inactive"
-            class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+            class="rounded border-[rgba(60,50,35,0.16)] text-tide-blue-deep focus:ring-tide-blue"
           />
           {{ t('taxes.filter.includeInactive') }}
         </label>
@@ -167,41 +167,41 @@ onMounted(async () => {
       </p>
 
       <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
+        <table class="min-w-full divide-y divide-[rgba(42,36,30,0.08)]">
+          <thead class="bg-[rgba(252,247,238,0.55)]">
             <tr>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ t('taxes.col.code') }}</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ t('taxes.col.name') }}</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ t('taxes.col.type') }}</th>
-              <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">{{ t('taxes.col.rate') }}</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ t('taxes.col.validFrom') }}</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ t('taxes.col.validTo') }}</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ t('taxes.col.active') }}</th>
-              <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">{{ t('taxes.col.actions') }}</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-tide-ink/55 uppercase">{{ t('taxes.col.code') }}</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-tide-ink/55 uppercase">{{ t('taxes.col.name') }}</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-tide-ink/55 uppercase">{{ t('taxes.col.type') }}</th>
+              <th class="px-4 py-3 text-right text-xs font-medium text-tide-ink/55 uppercase">{{ t('taxes.col.rate') }}</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-tide-ink/55 uppercase">{{ t('taxes.col.validFrom') }}</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-tide-ink/55 uppercase">{{ t('taxes.col.validTo') }}</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-tide-ink/55 uppercase">{{ t('taxes.col.active') }}</th>
+              <th class="px-4 py-3 text-right text-xs font-medium text-tide-ink/55 uppercase">{{ t('taxes.col.actions') }}</th>
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
+          <tbody class="bg-[rgba(255,253,247,0.92)] divide-y divide-[rgba(42,36,30,0.08)]">
             <tr v-if="!loading && filtered.length === 0">
-              <td colspan="8" class="px-4 py-8 text-center text-sm text-gray-500 italic" data-test="taxes-empty">
+              <td colspan="8" class="px-4 py-8 text-center text-sm text-tide-ink/55 italic" data-test="taxes-empty">
                 {{ t('taxes.empty') }}
               </td>
             </tr>
-            <tr v-for="tax in filtered" :key="tax.id" :data-test="`tax-row-${tax.id}`" class="hover:bg-gray-50">
-              <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ tax.code }}</td>
-              <td class="px-4 py-3 text-sm text-gray-700">{{ tax.name }}</td>
-              <td class="px-4 py-3 text-sm text-gray-500">
+            <tr v-for="tax in filtered" :key="tax.id" :data-test="`tax-row-${tax.id}`" class="hover:bg-[rgba(252,247,238,0.55)]">
+              <td class="px-4 py-3 text-sm font-medium text-tide-ink">{{ tax.code }}</td>
+              <td class="px-4 py-3 text-sm text-tide-ink/80">{{ tax.name }}</td>
+              <td class="px-4 py-3 text-sm text-tide-ink/55">
                 {{ tax.type === 'PERCENTAGE' ? t('taxes.type.percentage') : t('taxes.type.fixed') }}
               </td>
-              <td class="px-4 py-3 text-sm text-gray-900 text-right whitespace-nowrap">{{ formatRate(tax) }}</td>
-              <td class="px-4 py-3 text-sm text-gray-500">{{ formatDate(tax.validFrom) }}</td>
-              <td class="px-4 py-3 text-sm text-gray-500">{{ formatDate(tax.validTo) }}</td>
+              <td class="px-4 py-3 text-sm text-tide-ink text-right whitespace-nowrap">{{ formatRate(tax) }}</td>
+              <td class="px-4 py-3 text-sm text-tide-ink/55">{{ formatDate(tax.validFrom) }}</td>
+              <td class="px-4 py-3 text-sm text-tide-ink/55">{{ formatDate(tax.validTo) }}</td>
               <td class="px-4 py-3 text-sm">
                 <span
                   :class="[
                     'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium',
                     tax.isActive
                       ? 'bg-green-100 text-green-800'
-                      : 'bg-gray-100 text-gray-600',
+                      : 'bg-[rgba(42,36,30,0.05)] text-tide-ink/70',
                   ]"
                 >{{ tax.isActive ? t('taxes.status.active') : t('taxes.status.inactive') }}</span>
               </td>
@@ -210,7 +210,7 @@ onMounted(async () => {
                   <button
                     v-if="isAdmin"
                     :data-test="`tax-edit-${tax.id}`"
-                    class="text-blue-600 hover:text-blue-900"
+                    class="text-tide-blue-deep hover:text-tide-blue-deep"
                     :aria-label="t('common.edit')"
                     @click="onEdit(tax)"
                   >
@@ -239,12 +239,12 @@ onMounted(async () => {
         v-if="showModal && editing"
         class="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
       >
-        <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-lg space-y-4">
+        <div class="bg-[rgba(255,253,247,0.92)] rounded-lg shadow-xl p-6 w-full max-w-lg space-y-4">
           <div class="flex justify-between items-center">
-            <h2 class="text-lg font-semibold text-gray-900">
+            <h2 class="text-lg font-semibold text-tide-ink">
               {{ isCreate ? t('taxes.modal.titleCreate') : t('taxes.modal.titleEdit') }}
             </h2>
-            <button type="button" class="text-gray-500" :aria-label="t('common.close')" @click="closeModal">
+            <button type="button" class="text-tide-ink/55" :aria-label="t('common.close')" @click="closeModal">
               <X class="h-5 w-5" />
             </button>
           </div>
@@ -255,32 +255,32 @@ onMounted(async () => {
 
           <form class="space-y-3" @submit.prevent="onSave">
             <div>
-              <label class="block text-sm font-medium text-gray-700">{{ t('taxes.field.code') }} <span class="text-red-500">*</span></label>
+              <label class="block text-sm font-medium text-tide-ink/80">{{ t('taxes.field.code') }} <span class="text-red-500">*</span></label>
               <input
                 v-model="editing.code"
                 data-test="tax-form-code"
                 type="text"
                 required
-                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                class="mt-1 block w-full rounded-md border-[rgba(60,50,35,0.16)] shadow-sm focus:border-tide-blue focus:ring-tide-blue"
               />
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700">{{ t('taxes.field.name') }} <span class="text-red-500">*</span></label>
+              <label class="block text-sm font-medium text-tide-ink/80">{{ t('taxes.field.name') }} <span class="text-red-500">*</span></label>
               <input
                 v-model="editing.name"
                 data-test="tax-form-name"
                 type="text"
                 required
-                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                class="mt-1 block w-full rounded-md border-[rgba(60,50,35,0.16)] shadow-sm focus:border-tide-blue focus:ring-tide-blue"
               />
             </div>
             <div class="grid grid-cols-2 gap-3">
               <div>
-                <label class="block text-sm font-medium text-gray-700">{{ t('taxes.field.type') }} <span class="text-red-500">*</span></label>
+                <label class="block text-sm font-medium text-tide-ink/80">{{ t('taxes.field.type') }} <span class="text-red-500">*</span></label>
                 <select
                   v-model="editing.type"
                   data-test="tax-form-type"
-                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  class="mt-1 block w-full rounded-md border-[rgba(60,50,35,0.16)] shadow-sm focus:border-tide-blue focus:ring-tide-blue"
                 >
                   <option v-for="opt in TAX_TYPES" :key="opt" :value="opt">
                     {{ opt === 'PERCENTAGE' ? t('taxes.type.percentage') : t('taxes.type.fixed') }}
@@ -288,7 +288,7 @@ onMounted(async () => {
                 </select>
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-700">
+                <label class="block text-sm font-medium text-tide-ink/80">
                   {{ editing.type === 'PERCENTAGE' ? t('taxes.field.ratePercent') : t('taxes.field.rateFixed') }}
                   <span class="text-red-500">*</span>
                 </label>
@@ -299,53 +299,53 @@ onMounted(async () => {
                   step="0.01"
                   min="0"
                   required
-                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  class="mt-1 block w-full rounded-md border-[rgba(60,50,35,0.16)] shadow-sm focus:border-tide-blue focus:ring-tide-blue"
                 />
               </div>
             </div>
             <div class="grid grid-cols-2 gap-3">
               <div>
-                <label class="block text-sm font-medium text-gray-700">{{ t('taxes.field.validFrom') }}</label>
+                <label class="block text-sm font-medium text-tide-ink/80">{{ t('taxes.field.validFrom') }}</label>
                 <input
                   :value="toDateInput(editing.validFrom)"
                   data-test="tax-form-valid-from"
                   type="date"
-                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  class="mt-1 block w-full rounded-md border-[rgba(60,50,35,0.16)] shadow-sm focus:border-tide-blue focus:ring-tide-blue"
                   @input="(e: Event) => editing && (editing.validFrom = fromDateInput((e.target as HTMLInputElement).value))"
                 />
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-700">{{ t('taxes.field.validTo') }}</label>
+                <label class="block text-sm font-medium text-tide-ink/80">{{ t('taxes.field.validTo') }}</label>
                 <input
                   :value="toDateInput(editing.validTo)"
                   data-test="tax-form-valid-to"
                   type="date"
-                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  class="mt-1 block w-full rounded-md border-[rgba(60,50,35,0.16)] shadow-sm focus:border-tide-blue focus:ring-tide-blue"
                   @input="(e: Event) => editing && (editing.validTo = fromDateInput((e.target as HTMLInputElement).value))"
                 />
               </div>
             </div>
             <div>
-              <label class="inline-flex items-center gap-2 text-sm text-gray-700">
+              <label class="inline-flex items-center gap-2 text-sm text-tide-ink/80">
                 <input
                   v-model="editing.isActive"
                   data-test="tax-form-active"
                   type="checkbox"
-                  class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  class="rounded border-[rgba(60,50,35,0.16)] text-tide-blue-deep focus:ring-tide-blue"
                 />
                 {{ t('taxes.field.active') }}
               </label>
             </div>
 
             <div class="flex justify-end gap-2 pt-2">
-              <button type="button" class="px-3 py-2 text-sm text-gray-700" @click="closeModal">
+              <button type="button" class="px-3 py-2 text-sm text-tide-ink/80" @click="closeModal">
                 {{ t('common.cancel') }}
               </button>
               <button
                 type="submit"
                 data-test="tax-form-save"
                 :disabled="saving || !editing.code.trim() || !editing.name.trim()"
-                class="px-3 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 disabled:opacity-50"
+                class="px-3 py-2 bg-tide-blue-btn-deep text-white text-sm rounded hover:bg-tide-blue-deep disabled:opacity-50"
               >
                 {{ t('common.save') }}
               </button>
@@ -361,13 +361,13 @@ onMounted(async () => {
         v-if="showDeleteConfirm && toDelete"
         class="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
       >
-        <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md space-y-4">
-          <h2 class="text-lg font-semibold text-gray-900">{{ t('taxes.delete.title') }}</h2>
-          <p class="text-sm text-gray-700">
+        <div class="bg-[rgba(255,253,247,0.92)] rounded-lg shadow-xl p-6 w-full max-w-md space-y-4">
+          <h2 class="text-lg font-semibold text-tide-ink">{{ t('taxes.delete.title') }}</h2>
+          <p class="text-sm text-tide-ink/80">
             {{ t('taxes.delete.confirm', { code: toDelete.code, name: toDelete.name }) }}
           </p>
           <div class="flex justify-end gap-2">
-            <button class="px-3 py-2 text-sm text-gray-700" @click="showDeleteConfirm = false">
+            <button class="px-3 py-2 text-sm text-tide-ink/80" @click="showDeleteConfirm = false">
               {{ t('common.cancel') }}
             </button>
             <button

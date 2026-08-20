@@ -96,7 +96,7 @@ const getPhaseClasses = (phase: string) => {
     case "Active":
       return `${baseClasses} bg-green-100 text-green-800`;
     case "Completed":
-      return `${baseClasses} bg-gray-100 text-gray-800`;
+      return `${baseClasses} bg-[rgba(42,36,30,0.05)] text-tide-ink`;
     case "Canceled":
       return `${baseClasses} bg-red-100 text-red-800`;
     default:
@@ -261,7 +261,7 @@ const openPreview = (visit: VesselVisit) => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-[rgba(252,247,238,0.55)]">
     <!-- List View -->
     <div v-if="!showForm">
       <PageHeader :title="t('nav.vesselVisits')">
@@ -274,16 +274,16 @@ const openPreview = (visit: VesselVisit) => {
         </template>
       </PageHeader>
 
-      <div class="px-6 py-6 space-y-4 bg-white shadow rounded-lg mx-6">
+      <div class="px-6 py-6 space-y-4 bg-[rgba(255,253,247,0.92)] shadow rounded-lg mx-6">
 
       <!-- Actions Toolbar -->
-      <div class="p-4 border-b border-gray-200">
+      <div class="p-4 border-b border-[rgba(60,50,35,0.12)]">
         <div class="flex flex-wrap gap-2">
           <button
             data-test="toolbar-export"
             :disabled="isExporting"
             @click="handleExport"
-            class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="inline-flex items-center px-3 py-2 border border-[rgba(60,50,35,0.16)] text-sm font-medium rounded-lg text-tide-ink/80 bg-[rgba(255,253,247,0.92)] hover:bg-[rgba(252,247,238,0.55)] disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <FileDown class="mr-2" :size="18" />
             {{ t('common.export') }}
@@ -293,7 +293,7 @@ const openPreview = (visit: VesselVisit) => {
             :disabled="!canAdvanceSelected"
             :aria-disabled="!canAdvanceSelected"
             @click="handleAdvanceVisit"
-            class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="inline-flex items-center px-3 py-2 border border-[rgba(60,50,35,0.16)] text-sm font-medium rounded-lg text-tide-ink/80 bg-[rgba(255,253,247,0.92)] hover:bg-[rgba(252,247,238,0.55)] disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <ArrowRight class="mr-2" :size="18" />
             {{ t('vesselVisits.button.advanceVisit') }}
@@ -303,7 +303,7 @@ const openPreview = (visit: VesselVisit) => {
             :disabled="!selectedVisit"
             :aria-disabled="!selectedVisit"
             @click="handleEditDetails"
-            class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="inline-flex items-center px-3 py-2 border border-[rgba(60,50,35,0.16)] text-sm font-medium rounded-lg text-tide-ink/80 bg-[rgba(255,253,247,0.92)] hover:bg-[rgba(252,247,238,0.55)] disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Edit class="mr-2" :size="18" />
             {{ t('vesselVisits.button.editDetails') }}
@@ -313,7 +313,7 @@ const openPreview = (visit: VesselVisit) => {
             :disabled="!selectedVisit"
             :aria-disabled="!selectedVisit"
             @click="handleRecordEvent"
-            class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="inline-flex items-center px-3 py-2 border border-[rgba(60,50,35,0.16)] text-sm font-medium rounded-lg text-tide-ink/80 bg-[rgba(255,253,247,0.92)] hover:bg-[rgba(252,247,238,0.55)] disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <ClipboardList class="mr-2" :size="18" />
             {{ t('vesselVisits.button.recordEvent') }}
@@ -323,7 +323,7 @@ const openPreview = (visit: VesselVisit) => {
             :disabled="!selectedVisit"
             :aria-disabled="!selectedVisit"
             @click="handleUpdateHolds"
-            class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="inline-flex items-center px-3 py-2 border border-[rgba(60,50,35,0.16)] text-sm font-medium rounded-lg text-tide-ink/80 bg-[rgba(255,253,247,0.92)] hover:bg-[rgba(252,247,238,0.55)] disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Lock class="mr-2" :size="18" />
             {{ t('vesselVisits.button.updateHolds') }}
@@ -331,7 +331,7 @@ const openPreview = (visit: VesselVisit) => {
           <button
             data-test="toolbar-statistics"
             @click="handleStatistics"
-            class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50"
+            class="inline-flex items-center px-3 py-2 border border-[rgba(60,50,35,0.16)] text-sm font-medium rounded-lg text-tide-ink/80 bg-[rgba(255,253,247,0.92)] hover:bg-[rgba(252,247,238,0.55)]"
           >
             <BarChart2 class="mr-2" :size="18" />
             {{ t('vesselVisits.button.statistics') }}
@@ -340,7 +340,7 @@ const openPreview = (visit: VesselVisit) => {
             data-test="toolbar-extract-events"
             :disabled="!selectedVisit"
             :aria-disabled="!selectedVisit"
-            class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="inline-flex items-center px-3 py-2 border border-[rgba(60,50,35,0.16)] text-sm font-medium rounded-lg text-tide-ink/80 bg-[rgba(255,253,247,0.92)] hover:bg-[rgba(252,247,238,0.55)] disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Calendar class="mr-2" :size="18" />
             {{ t('vesselVisits.button.extractEvents') }}
@@ -353,37 +353,37 @@ const openPreview = (visit: VesselVisit) => {
 
       <!-- Table -->
       <div class="hidden sm:block overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
+        <table class="min-w-full divide-y divide-[rgba(42,36,30,0.08)]">
+          <thead class="bg-[rgba(252,247,238,0.55)]">
             <tr>
               <th
                 v-for="header in tableHeaders"
                 :key="header"
-                class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                class="px-4 py-3 text-left text-xs font-medium text-tide-ink/55 uppercase tracking-wider"
               >
                 {{ header }}
               </th>
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
+          <tbody class="bg-[rgba(255,253,247,0.92)] divide-y divide-[rgba(42,36,30,0.08)]">
             <tr
               v-for="visit in visits"
               :key="visit.id"
               :class="[
                 'cursor-pointer',
                 isSelected(visit)
-                  ? 'bg-blue-50 ring-2 ring-blue-500 ring-inset'
-                  : 'hover:bg-gray-50',
+                  ? 'bg-[rgba(90,138,171,0.10)] ring-2 ring-tide-blue ring-inset'
+                  : 'hover:bg-[rgba(252,247,238,0.55)]',
               ]"
               @click="toggleSelection(visit)"
             >
               <td class="px-4 py-3 whitespace-nowrap">
-                <div class="text-sm font-medium text-gray-900">
+                <div class="text-sm font-medium text-tide-ink">
                   {{ visit.vesselName }}
                 </div>
-                <div class="text-sm text-gray-500" :title="visit.vesselId">{{ formatDisplayId(visit.vesselId) }}</div>
+                <div class="text-sm text-tide-ink/55" :title="visit.vesselId">{{ formatDisplayId(visit.vesselId) }}</div>
               </td>
-              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-tide-ink">
                 {{ visit.visitReference }}
               </td>
               <td class="px-4 py-3 whitespace-nowrap">
@@ -392,37 +392,37 @@ const openPreview = (visit: VesselVisit) => {
                 </span>
               </td>
               <td class="px-4 py-3 whitespace-nowrap">
-                <div class="text-sm text-gray-900">{{ visit.service }}</div>
-                <div class="text-sm text-gray-500">{{ visit.serviceName }}</div>
+                <div class="text-sm text-tide-ink">{{ visit.service }}</div>
+                <div class="text-sm text-tide-ink/55">{{ visit.serviceName }}</div>
               </td>
               <td class="px-4 py-3 whitespace-nowrap">
-                <div class="text-sm text-gray-900">{{ t('vesselVisits.label.pol') }}: {{ visit.pol }}</div>
-                <div class="text-sm text-gray-500">{{ t('vesselVisits.label.pod') }}: {{ visit.pod }}</div>
+                <div class="text-sm text-tide-ink">{{ t('vesselVisits.label.pol') }}: {{ visit.pol }}</div>
+                <div class="text-sm text-tide-ink/55">{{ t('vesselVisits.label.pod') }}: {{ visit.pod }}</div>
               </td>
               <td class="px-4 py-3 whitespace-nowrap">
-                <div class="text-sm text-gray-900">
+                <div class="text-sm text-tide-ink">
                   {{ t('vesselVisits.label.eta') }}: {{ formatDateTime(visit.eta) }}
                 </div>
-                <div class="text-sm text-gray-500">
+                <div class="text-sm text-tide-ink/55">
                   {{ t('vesselVisits.label.ata') }}: {{ formatDateTime(visit.ata) }}
                 </div>
               </td>
               <td class="px-4 py-3 whitespace-nowrap">
-                <div class="text-sm text-gray-900">
+                <div class="text-sm text-tide-ink">
                   {{ t('vesselVisits.label.etd') }}: {{ formatDateTime(visit.etd) }}
                 </div>
-                <div class="text-sm text-gray-500">
+                <div class="text-sm text-tide-ink/55">
                   {{ t('vesselVisits.label.atd') }}: {{ formatDateTime(visit.atd) }}
                 </div>
               </td>
-              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-tide-ink">
                 {{ visit.finalDestination }}
               </td>
               <td class="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
                 <button
                   data-test="row-preview"
                   @click.stop="openPreview(visit)"
-                  class="text-blue-600 hover:text-blue-900 mr-3"
+                  class="text-tide-blue-deep hover:text-tide-blue-deep mr-3"
                   :aria-label="t('vesselVisits.aria.preview')"
                 >
                   <Eye class="h-5 w-5" />
@@ -435,34 +435,34 @@ const openPreview = (visit: VesselVisit) => {
 
       <!-- Mobile card view -->
       <div class="sm:hidden">
-        <div v-if="!visits || visits.length === 0" class="bg-white rounded-xl border border-slate-200 p-8 text-center">
-          <p class="text-sm text-slate-500">{{ t('vesselVisits.empty.noVisits') }}</p>
+        <div v-if="!visits || visits.length === 0" class="bg-[rgba(255,253,247,0.92)] rounded-xl border border-[rgba(60,50,35,0.12)] p-8 text-center">
+          <p class="text-sm text-tide-ink/55">{{ t('vesselVisits.empty.noVisits') }}</p>
         </div>
         <div v-else class="space-y-3">
           <div
             v-for="visit in visits"
             :key="visit.id"
             :class="[
-              'bg-white rounded-xl border p-4 shadow-sm cursor-pointer',
+              'bg-[rgba(255,253,247,0.92)] rounded-xl border p-4 shadow-sm cursor-pointer',
               isSelected(visit)
-                ? 'border-blue-500 ring-2 ring-blue-500'
-                : 'border-slate-200',
+                ? 'border-tide-blue ring-2 ring-tide-blue'
+                : 'border-[rgba(60,50,35,0.12)]',
             ]"
             @click="toggleSelection(visit)"
           >
             <div class="flex items-start justify-between gap-2 mb-1">
-              <p class="font-semibold text-slate-900 text-sm">{{ visit.vesselName || '—' }}</p>
+              <p class="font-semibold text-tide-ink text-sm">{{ visit.vesselName || '—' }}</p>
               <span v-if="visit.phase" :class="[
                 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border shrink-0',
                 visit.phase === 'Active' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
-                visit.phase === 'Created' ? 'bg-blue-50 text-blue-700 border-blue-200' :
-                visit.phase === 'Completed' ? 'bg-slate-100 text-slate-600 border-slate-200' :
+                visit.phase === 'Created' ? 'bg-[rgba(90,138,171,0.10)] text-tide-blue-deep border-blue-200' :
+                visit.phase === 'Completed' ? 'bg-[rgba(42,36,30,0.05)] text-tide-ink/70 border-[rgba(60,50,35,0.12)]' :
                 'bg-red-50 text-red-700 border-red-200'
               ]">{{ visit.phase }}</span>
             </div>
-            <p class="text-xs text-slate-500">{{ visit.visitReference || '' }}</p>
-            <p class="text-xs text-slate-500">{{ t('vesselVisits.label.pol') }}: {{ visit.pol || '' }} · {{ t('vesselVisits.label.pod') }}: {{ visit.pod || '' }}</p>
-            <div class="flex items-center justify-between text-xs text-slate-500 mt-1">
+            <p class="text-xs text-tide-ink/55">{{ visit.visitReference || '' }}</p>
+            <p class="text-xs text-tide-ink/55">{{ t('vesselVisits.label.pol') }}: {{ visit.pol || '' }} · {{ t('vesselVisits.label.pod') }}: {{ visit.pod || '' }}</p>
+            <div class="flex items-center justify-between text-xs text-tide-ink/55 mt-1">
               <span>{{ t('vesselVisits.label.eta') }}: {{ visit.eta ? formatDateTime(visit.eta) : '—' }}</span>
               <span>{{ t('vesselVisits.label.etd') }}: {{ visit.etd ? formatDateTime(visit.etd) : '—' }}</span>
             </div>
@@ -487,14 +487,14 @@ const openPreview = (visit: VesselVisit) => {
         v-if="showModal && previewVisit"
         class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50"
       >
-        <div class="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-hidden">
+        <div class="bg-[rgba(255,253,247,0.92)] rounded-lg max-w-4xl w-full max-h-[90vh] overflow-hidden">
           <div
-            class="px-4 py-3 border-b border-gray-200 flex justify-between items-center"
+            class="px-4 py-3 border-b border-[rgba(60,50,35,0.12)] flex justify-between items-center"
           >
-            <h3 class="text-lg font-medium text-gray-900">
+            <h3 class="text-lg font-medium text-tide-ink">
               {{ previewVisit.vesselName }} - {{ previewVisit.visitReference }}
             </h3>
-            <button @click="showModal = false" class="text-gray-400 hover:text-gray-500" :aria-label="t('common.close')">
+            <button @click="showModal = false" class="text-tide-ink/40 hover:text-tide-ink/55" :aria-label="t('common.close')">
               <X class="h-6 w-6" />
             </button>
           </div>
@@ -503,10 +503,10 @@ const openPreview = (visit: VesselVisit) => {
             <div class="grid grid-cols-2 gap-4">
               <template v-for="(value, key) in previewVisit" :key="key">
                 <div v-if="key !== 'id'" class="col-span-1">
-                  <label class="block text-sm font-medium text-gray-700">
+                  <label class="block text-sm font-medium text-tide-ink/80">
                     {{ key.replace(/([A-Z])/g, " $1").trim() }}
                   </label>
-                  <p class="mt-1 text-sm text-gray-900">
+                  <p class="mt-1 text-sm text-tide-ink">
                     {{
                       typeof value === "string" && value.includes("T")
                         ? formatDateTime(value)
@@ -518,10 +518,10 @@ const openPreview = (visit: VesselVisit) => {
             </div>
           </div>
 
-          <div class="px-4 py-3 border-t border-gray-200 flex justify-end space-x-3">
+          <div class="px-4 py-3 border-t border-[rgba(60,50,35,0.12)] flex justify-end space-x-3">
             <button
               @click="showModal = false"
-              class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50"
+              class="px-4 py-2 border border-[rgba(60,50,35,0.16)] rounded-lg text-sm font-medium text-tide-ink/80 hover:bg-[rgba(252,247,238,0.55)]"
             >
               {{ t('common.close') }}
             </button>

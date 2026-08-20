@@ -90,43 +90,43 @@ onMounted(fetchTemplates);
     <div class="flex justify-between items-center mb-4">
       <h2 class="text-xl font-bold tracking-heading">{{ $t('templateList.title') }}</h2>
       <button
-        class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+        class="bg-tide-blue-btn-deep text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-tide-blue-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tide-blue"
         @click="createNew"
       >
         {{ $t('templateList.button.newTemplate') }}
       </button>
     </div>
 
-    <div v-if="loading" class="py-12 text-center text-sm text-slate-500">
+    <div v-if="loading" class="py-12 text-center text-sm text-tide-ink/55">
       {{ $t('templateList.loading') }}
     </div>
 
-    <div v-else-if="!templates.length" class="py-12 text-center text-sm text-slate-500">
+    <div v-else-if="!templates.length" class="py-12 text-center text-sm text-tide-ink/55">
       {{ $t('templateList.empty') }}
     </div>
 
     <!-- Table layout for the list -->
-    <div v-else class="overflow-x-auto rounded-xl border border-slate-200 bg-white">
+    <div v-else class="overflow-x-auto rounded-xl border border-[rgba(60,50,35,0.12)] bg-[rgba(255,253,247,0.92)]">
       <table class="min-w-full">
-        <thead class="bg-slate-50">
+        <thead class="bg-[rgba(252,247,238,0.55)]">
           <tr>
-            <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">{{ $t('templateList.column.name') }}</th>
-            <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider w-24">{{ $t('templateList.column.type') }}</th>
-            <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider w-28">{{ $t('templateList.column.status') }}</th>
-            <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider w-44">{{ $t('templateList.column.activeForType') }}</th>
-            <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider w-32">{{ $t('templateList.column.updated') }}</th>
-            <th class="px-4 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider w-56">{{ $t('templateList.column.actions') }}</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-tide-ink/55 uppercase tracking-wider">{{ $t('templateList.column.name') }}</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-tide-ink/55 uppercase tracking-wider w-24">{{ $t('templateList.column.type') }}</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-tide-ink/55 uppercase tracking-wider w-28">{{ $t('templateList.column.status') }}</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-tide-ink/55 uppercase tracking-wider w-44">{{ $t('templateList.column.activeForType') }}</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-tide-ink/55 uppercase tracking-wider w-32">{{ $t('templateList.column.updated') }}</th>
+            <th class="px-4 py-3 text-right text-xs font-medium text-tide-ink/55 uppercase tracking-wider w-56">{{ $t('templateList.column.actions') }}</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-slate-100">
+        <tbody class="divide-y divide-[rgba(42,36,30,0.06)]">
           <tr
             v-for="(t, idx) in templates"
             :key="t.id"
-            :class="['hover:bg-blue-50 transition-colors', idx % 2 === 1 && 'bg-slate-50/40']"
+            :class="['hover:bg-[rgba(90,138,171,0.10)] transition-colors', idx % 2 === 1 && 'bg-slate-50/40']"
           >
-            <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-slate-900">
+            <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-tide-ink">
               {{ t.name }}
-              <span v-if="t.version" class="text-xs text-slate-400 ml-1">v{{ t.version }}</span>
+              <span v-if="t.version" class="text-xs text-tide-ink/40 ml-1">v{{ t.version }}</span>
             </td>
             <td class="px-4 py-3 whitespace-nowrap">
               <span :class="['inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border', typeBadgeClass(t.type)]">
@@ -135,7 +135,7 @@ onMounted(fetchTemplates);
             </td>
             <td class="px-4 py-3 whitespace-nowrap">
               <span :class="['inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border',
-                t.status === 'active' ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-slate-100 text-slate-600 border-slate-200']">
+                t.status === 'active' ? 'bg-[rgba(90,138,171,0.10)] text-tide-blue-deep border-blue-200' : 'bg-[rgba(42,36,30,0.05)] text-tide-ink/70 border-[rgba(60,50,35,0.12)]']">
                 {{ t.status || 'active' }}
               </span>
             </td>
@@ -145,7 +145,7 @@ onMounted(fetchTemplates);
               </span>
               <button
                 v-else-if="t.status === 'active'"
-                class="text-blue-600 hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
+                class="text-tide-blue-deep hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
                 :disabled="activatingId === t.id"
                 @click="activateForType(t)"
               >
@@ -153,13 +153,13 @@ onMounted(fetchTemplates);
               </button>
               <span v-else class="text-slate-300">—</span>
             </td>
-            <td class="px-4 py-3 whitespace-nowrap text-xs text-slate-500">
+            <td class="px-4 py-3 whitespace-nowrap text-xs text-tide-ink/55">
               {{ t.lastModified || '—' }}
             </td>
             <td class="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
               <div class="flex justify-end gap-3">
-                <button class="text-blue-600 hover:underline" @click="edit(t)">{{ $t('common.edit') }}</button>
-                <button class="text-slate-600 hover:underline" @click="duplicate(t)">{{ $t('templateList.button.duplicate') }}</button>
+                <button class="text-tide-blue-deep hover:underline" @click="edit(t)">{{ $t('common.edit') }}</button>
+                <button class="text-tide-ink/70 hover:underline" @click="duplicate(t)">{{ $t('templateList.button.duplicate') }}</button>
                 <button class="text-amber-700 hover:underline" @click="toggleArchive(t)">
                   {{ t.status === 'archived' ? $t('templateList.button.restore') : $t('templateList.button.archive') }}
                 </button>

@@ -79,7 +79,7 @@ function openInNewTab() {
       role="dialog"
       aria-modal="true"
     >
-      <div class="bg-white w-full h-full md:max-w-[1024px] md:h-[90vh] md:rounded-lg shadow-lg flex flex-col">
+      <div class="bg-[rgba(255,253,247,0.92)] w-full h-full md:max-w-[1024px] md:h-[90vh] md:rounded-lg shadow-lg flex flex-col">
         <header class="flex items-center justify-between p-4 border-b">
           <div class="flex items-center gap-2">
             <h2 class="text-lg font-semibold">{{ $t('invoicePreview.invoice') }} {{ displayId || invoiceId }}</h2>
@@ -130,10 +130,10 @@ function openInNewTab() {
             </button>
           </div>
         </header>
-        <section class="flex-1 bg-gray-50 relative">
+        <section class="flex-1 bg-[rgba(252,247,238,0.55)] relative">
           <div
             v-if="loading"
-            class="absolute inset-0 flex items-center justify-center bg-gray-100 animate-pulse"
+            class="absolute inset-0 flex items-center justify-center bg-[rgba(42,36,30,0.05)] animate-pulse"
           >
             <div class="w-16 h-16 bg-gray-200 rounded" />
           </div>

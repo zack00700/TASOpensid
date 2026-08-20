@@ -96,11 +96,11 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="bg-white shadow rounded-lg">
+  <div class="bg-[rgba(255,253,247,0.92)] shadow rounded-lg">
     <!-- Header -->
-    <div class="px-4 py-3 border-b border-gray-200">
+    <div class="px-4 py-3 border-b border-[rgba(60,50,35,0.12)]">
       <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-        <h2 class="text-lg font-semibold text-gray-900">
+        <h2 class="text-lg font-semibold text-tide-ink">
           {{ t('isoCodes.title', { count: filtered.length }) }}
         </h2>
         <div class="flex flex-wrap items-center gap-2">
@@ -109,12 +109,12 @@ onMounted(async () => {
             data-test="iso-search"
             type="search"
             :placeholder="t('isoCodes.placeholder.search')"
-            class="w-full sm:w-48 px-3 py-2 border border-gray-300 rounded-md text-sm"
+            class="w-full sm:w-48 px-3 py-2 border border-[rgba(60,50,35,0.16)] rounded-md text-sm"
           />
           <select
             v-model="filterTypeGroup"
             data-test="iso-filter-typegroup"
-            class="px-3 py-2 border border-gray-300 rounded-md text-sm"
+            class="px-3 py-2 border border-[rgba(60,50,35,0.16)] rounded-md text-sm"
           >
             <option value="">{{ t('isoCodes.filter.allTypeGroups') }}</option>
             <option value="G">G — General</option>
@@ -130,7 +130,7 @@ onMounted(async () => {
           <select
             v-model="filterArchetypeId"
             data-test="iso-filter-archetype"
-            class="px-3 py-2 border border-gray-300 rounded-md text-sm"
+            class="px-3 py-2 border border-[rgba(60,50,35,0.16)] rounded-md text-sm"
           >
             <option value="">{{ t('isoCodes.filter.allArchetypes') }}</option>
             <option v-for="a in archetypes" :key="a.id" :value="a.id">{{ a.code }}</option>
@@ -149,7 +149,7 @@ onMounted(async () => {
             @click="onAddCustom"
             data-test="iso-add-custom"
             :title="t('isoCodes.button.addCustom')"
-            class="inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+            class="inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-tide-blue-btn-deep hover:bg-tide-blue-deep"
           >
             <Plus class="h-4 w-4 sm:mr-2" />
             <span class="hidden sm:inline">{{ t('isoCodes.button.addCustom') }}</span>
@@ -160,58 +160,58 @@ onMounted(async () => {
 
     <!-- Table -->
     <div class="overflow-x-auto">
-      <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
+      <table class="min-w-full divide-y divide-[rgba(42,36,30,0.08)]">
+        <thead class="bg-[rgba(252,247,238,0.55)]">
           <tr>
-            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ t('isoCodes.column.code') }}</th>
-            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ t('isoCodes.column.description') }}</th>
-            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ t('isoCodes.column.dimensions') }}</th>
-            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ t('isoCodes.column.typeGroup') }}</th>
-            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ t('isoCodes.column.archetype') }}</th>
-            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ t('isoCodes.column.flags') }}</th>
-            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ t('isoCodes.column.weights') }}</th>
-            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ t('isoCodes.column.status') }}</th>
-            <th class="sticky right-0 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider shadow-[-4px_0_4px_-4px_rgba(0,0,0,0.06)]">{{ t('isoCodes.column.actions') }}</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-tide-ink/55 uppercase tracking-wider">{{ t('isoCodes.column.code') }}</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-tide-ink/55 uppercase tracking-wider">{{ t('isoCodes.column.description') }}</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-tide-ink/55 uppercase tracking-wider">{{ t('isoCodes.column.dimensions') }}</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-tide-ink/55 uppercase tracking-wider">{{ t('isoCodes.column.typeGroup') }}</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-tide-ink/55 uppercase tracking-wider">{{ t('isoCodes.column.archetype') }}</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-tide-ink/55 uppercase tracking-wider">{{ t('isoCodes.column.flags') }}</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-tide-ink/55 uppercase tracking-wider">{{ t('isoCodes.column.weights') }}</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-tide-ink/55 uppercase tracking-wider">{{ t('isoCodes.column.status') }}</th>
+            <th class="sticky right-0 bg-[rgba(252,247,238,0.55)] px-4 py-3 text-left text-xs font-medium text-tide-ink/55 uppercase tracking-wider shadow-[-4px_0_4px_-4px_rgba(0,0,0,0.06)]">{{ t('isoCodes.column.actions') }}</th>
           </tr>
         </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-          <tr v-for="c in filtered" :key="c.code" :data-test="`iso-row-${c.code}`" class="group hover:bg-gray-50">
+        <tbody class="bg-[rgba(255,253,247,0.92)] divide-y divide-[rgba(42,36,30,0.08)]">
+          <tr v-for="c in filtered" :key="c.code" :data-test="`iso-row-${c.code}`" class="group hover:bg-[rgba(252,247,238,0.55)]">
             <td class="px-4 py-3 whitespace-nowrap font-mono text-sm">{{ c.code }}</td>
-            <td class="px-4 py-3 text-sm text-gray-900">{{ c.description }}</td>
-            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-700">{{ c.lengthFt }}' × {{ c.heightFt }}'</td>
+            <td class="px-4 py-3 text-sm text-tide-ink">{{ c.description }}</td>
+            <td class="px-4 py-3 whitespace-nowrap text-sm text-tide-ink/80">{{ c.lengthFt }}' × {{ c.heightFt }}'</td>
             <td class="px-4 py-3 whitespace-nowrap text-sm">{{ c.typeGroup }}</td>
             <td class="px-4 py-3 whitespace-nowrap text-sm">
-              <span v-if="c.archetypeId" class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">{{ archetypeName(c.archetypeId) }}</span>
-              <span v-else class="text-gray-400">—</span>
+              <span v-if="c.archetypeId" class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[rgba(90,138,171,0.10)] text-tide-blue-deep border border-blue-200">{{ archetypeName(c.archetypeId) }}</span>
+              <span v-else class="text-tide-ink/40">—</span>
             </td>
             <td class="px-4 py-3 whitespace-nowrap text-sm">
               <div class="flex items-center gap-1.5">
                 <Snowflake v-if="c.isReefer" class="h-4 w-4 text-cyan-600" :title="t('isoCodes.flag.reefer')" />
                 <AlertTriangle v-if="c.isHazmatCapable" class="h-4 w-4 text-amber-600" :title="t('isoCodes.flag.hazmat')" />
                 <Beaker v-if="c.isTank" class="h-4 w-4 text-purple-600" :title="t('isoCodes.flag.tank')" />
-                <Box v-if="c.isOpenTop" class="h-4 w-4 text-gray-600" :title="t('isoCodes.flag.openTop')" />
+                <Box v-if="c.isOpenTop" class="h-4 w-4 text-tide-ink/70" :title="t('isoCodes.flag.openTop')" />
               </div>
             </td>
-            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-700">
+            <td class="px-4 py-3 whitespace-nowrap text-sm text-tide-ink/80">
               <span v-if="c.tareKg != null && c.maxGrossKg != null">{{ c.tareKg }} / {{ c.maxGrossKg }} kg</span>
-              <span v-else class="text-gray-400">—</span>
+              <span v-else class="text-tide-ink/40">—</span>
             </td>
             <td class="px-4 py-3 whitespace-nowrap text-sm">
               <span :class="['inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border',
-                c.isStandard ? 'bg-gray-100 text-gray-700 border-gray-200' : 'bg-indigo-50 text-indigo-700 border-indigo-200']">
+                c.isStandard ? 'bg-[rgba(42,36,30,0.05)] text-tide-ink/80 border-[rgba(60,50,35,0.12)]' : 'bg-indigo-50 text-indigo-700 border-indigo-200']">
                 {{ c.isStandard ? t('isoCodes.status.standard') : t('isoCodes.status.custom') }}
               </span>
               <span v-if="!c.isActive" class="ml-1 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red-700 border border-red-200">
                 {{ t('isoCodes.status.inactive') }}
               </span>
             </td>
-            <td class="sticky right-0 bg-white group-hover:bg-gray-50 transition-colors duration-150 px-4 py-3 whitespace-nowrap text-right text-sm font-medium shadow-[-4px_0_4px_-4px_rgba(0,0,0,0.06)]">
+            <td class="sticky right-0 bg-[rgba(255,253,247,0.92)] group-hover:bg-[rgba(252,247,238,0.55)] transition-colors duration-150 px-4 py-3 whitespace-nowrap text-right text-sm font-medium shadow-[-4px_0_4px_-4px_rgba(0,0,0,0.06)]">
               <div class="flex items-center justify-end space-x-2">
                 <button
                   v-if="isAdmin"
                   @click="onEdit(c)"
                   :data-test="`iso-edit-${c.code}`"
-                  class="text-blue-600 hover:text-blue-900 p-1 rounded hover:bg-blue-50"
+                  class="text-tide-blue-deep hover:text-tide-blue-deep p-1 rounded hover:bg-[rgba(90,138,171,0.10)]"
                   :title="t('isoCodes.button.edit')"
                 >
                   <Pencil class="h-4 w-4" />
@@ -242,58 +242,58 @@ onMounted(async () => {
       data-test="iso-modal"
       class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50"
     >
-      <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div class="px-4 py-3 border-b border-gray-200 flex justify-between items-center">
-          <h3 class="text-lg font-medium text-gray-900">
+      <div class="bg-[rgba(255,253,247,0.92)] rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="px-4 py-3 border-b border-[rgba(60,50,35,0.12)] flex justify-between items-center">
+          <h3 class="text-lg font-medium text-tide-ink">
             {{ modalIsCreate ? t('isoCodes.modal.createTitle') : t('isoCodes.modal.editTitle') }}
             <span data-test="iso-modal-code" class="font-mono ml-2">{{ editing.code }}</span>
           </h3>
         </div>
         <div class="px-4 py-3 space-y-3">
           <div>
-            <label class="block text-sm font-medium text-gray-700">{{ t('isoCodes.field.code') }}</label>
+            <label class="block text-sm font-medium text-tide-ink/80">{{ t('isoCodes.field.code') }}</label>
             <input
               v-model="editing.code"
               :readonly="!modalIsCreate"
               :class="['mt-1 block w-full rounded-md shadow-sm text-sm border px-3 py-2',
-                       !modalIsCreate ? 'bg-gray-100 border-gray-200' : 'border-gray-300']"
+                       !modalIsCreate ? 'bg-[rgba(42,36,30,0.05)] border-[rgba(60,50,35,0.12)]' : 'border-[rgba(60,50,35,0.16)]']"
               maxlength="4"
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700">{{ t('isoCodes.field.description') }}</label>
-            <textarea v-model="editing.description" rows="2" class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm text-sm px-3 py-2"></textarea>
+            <label class="block text-sm font-medium text-tide-ink/80">{{ t('isoCodes.field.description') }}</label>
+            <textarea v-model="editing.description" rows="2" class="mt-1 block w-full rounded-md border border-[rgba(60,50,35,0.16)] shadow-sm text-sm px-3 py-2"></textarea>
           </div>
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-sm font-medium text-gray-700">{{ t('isoCodes.field.lengthFt') }}</label>
+              <label class="block text-sm font-medium text-tide-ink/80">{{ t('isoCodes.field.lengthFt') }}</label>
               <input
                 v-model.number="editing.lengthFt"
                 type="number"
                 :readonly="editing.isStandard"
                 :class="['mt-1 block w-full rounded-md shadow-sm text-sm border px-3 py-2',
-                         editing.isStandard ? 'bg-gray-100 border-gray-200' : 'border-gray-300']"
+                         editing.isStandard ? 'bg-[rgba(42,36,30,0.05)] border-[rgba(60,50,35,0.12)]' : 'border-[rgba(60,50,35,0.16)]']"
               />
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700">{{ t('isoCodes.field.heightFt') }}</label>
+              <label class="block text-sm font-medium text-tide-ink/80">{{ t('isoCodes.field.heightFt') }}</label>
               <input
                 v-model.number="editing.heightFt"
                 type="number"
                 step="0.1"
                 :readonly="editing.isStandard"
                 :class="['mt-1 block w-full rounded-md shadow-sm text-sm border px-3 py-2',
-                         editing.isStandard ? 'bg-gray-100 border-gray-200' : 'border-gray-300']"
+                         editing.isStandard ? 'bg-[rgba(42,36,30,0.05)] border-[rgba(60,50,35,0.12)]' : 'border-[rgba(60,50,35,0.16)]']"
               />
             </div>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700">{{ t('isoCodes.field.typeGroup') }}</label>
+            <label class="block text-sm font-medium text-tide-ink/80">{{ t('isoCodes.field.typeGroup') }}</label>
             <select
               v-model="editing.typeGroup"
               :disabled="editing.isStandard"
               :class="['mt-1 block w-full rounded-md shadow-sm text-sm border px-3 py-2',
-                       editing.isStandard ? 'bg-gray-100 border-gray-200' : 'border-gray-300']"
+                       editing.isStandard ? 'bg-[rgba(42,36,30,0.05)] border-[rgba(60,50,35,0.12)]' : 'border-[rgba(60,50,35,0.16)]']"
             >
               <option value="G">G</option><option value="R">R</option><option value="H">H</option>
               <option value="U">U</option><option value="T">T</option><option value="P">P</option>
@@ -301,8 +301,8 @@ onMounted(async () => {
             </select>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700">{{ t('isoCodes.field.archetype') }}</label>
-            <select v-model="editing.archetypeId" class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm text-sm px-3 py-2">
+            <label class="block text-sm font-medium text-tide-ink/80">{{ t('isoCodes.field.archetype') }}</label>
+            <select v-model="editing.archetypeId" class="mt-1 block w-full rounded-md border border-[rgba(60,50,35,0.16)] shadow-sm text-sm px-3 py-2">
               <option :value="null">{{ t('isoCodes.field.archetypeNone') }}</option>
               <option v-for="a in archetypes" :key="a.id" :value="a.id">{{ a.code }} — {{ a.name }}</option>
             </select>
@@ -326,22 +326,22 @@ onMounted(async () => {
           </label>
           <div class="grid grid-cols-3 gap-3">
             <div>
-              <label class="block text-sm font-medium text-gray-700">{{ t('isoCodes.field.tareKg') }}</label>
-              <input v-model.number="editing.tareKg" type="number" class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm text-sm px-3 py-2" />
+              <label class="block text-sm font-medium text-tide-ink/80">{{ t('isoCodes.field.tareKg') }}</label>
+              <input v-model.number="editing.tareKg" type="number" class="mt-1 block w-full rounded-md border border-[rgba(60,50,35,0.16)] shadow-sm text-sm px-3 py-2" />
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700">{{ t('isoCodes.field.maxPayloadKg') }}</label>
-              <input v-model.number="editing.maxPayloadKg" type="number" class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm text-sm px-3 py-2" />
+              <label class="block text-sm font-medium text-tide-ink/80">{{ t('isoCodes.field.maxPayloadKg') }}</label>
+              <input v-model.number="editing.maxPayloadKg" type="number" class="mt-1 block w-full rounded-md border border-[rgba(60,50,35,0.16)] shadow-sm text-sm px-3 py-2" />
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700">{{ t('isoCodes.field.maxGrossKg') }}</label>
-              <input v-model.number="editing.maxGrossKg" type="number" class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm text-sm px-3 py-2" />
+              <label class="block text-sm font-medium text-tide-ink/80">{{ t('isoCodes.field.maxGrossKg') }}</label>
+              <input v-model.number="editing.maxGrossKg" type="number" class="mt-1 block w-full rounded-md border border-[rgba(60,50,35,0.16)] shadow-sm text-sm px-3 py-2" />
             </div>
           </div>
         </div>
-        <div class="px-4 py-3 border-t border-gray-200 flex justify-end gap-2">
-          <button @click="showModal = false" data-test="iso-modal-cancel" class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">{{ t('common.cancel') }}</button>
-          <button @click="onSave" data-test="iso-modal-save" class="px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">{{ t('common.save') }}</button>
+        <div class="px-4 py-3 border-t border-[rgba(60,50,35,0.12)] flex justify-end gap-2">
+          <button @click="showModal = false" data-test="iso-modal-cancel" class="px-4 py-2 border border-[rgba(60,50,35,0.16)] rounded-md text-sm font-medium text-tide-ink/80 hover:bg-[rgba(252,247,238,0.55)]">{{ t('common.cancel') }}</button>
+          <button @click="onSave" data-test="iso-modal-save" class="px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-tide-blue-btn-deep hover:bg-tide-blue-deep">{{ t('common.save') }}</button>
         </div>
       </div>
     </div>

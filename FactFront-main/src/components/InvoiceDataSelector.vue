@@ -1,9 +1,9 @@
 <!-- InvoiceDataSelector.vue - Composant pour sélectionner des données d'invoice -->
 <template>
-    <div class="bg-white border rounded-lg shadow-sm">
+    <div class="bg-[rgba(255,253,247,0.92)] border rounded-lg shadow-sm">
       <div class="p-3 border-b">
-        <h3 class="text-sm font-medium text-gray-900">{{ $t('invoiceDataSelector.title') }}</h3>
-        <p class="text-xs text-gray-500 mt-1">
+        <h3 class="text-sm font-medium text-tide-ink">{{ $t('invoiceDataSelector.title') }}</h3>
+        <p class="text-xs text-tide-ink/55 mt-1">
           {{ $t('invoiceDataSelector.subtitle') }}
         </p>
       </div>
@@ -11,13 +11,13 @@
       <div class="p-3 space-y-3">
         <!-- Mode de prévisualisation -->
         <div>
-          <label class="block text-xs font-medium text-gray-700 mb-1">
+          <label class="block text-xs font-medium text-tide-ink/80 mb-1">
             {{ $t('invoiceDataSelector.label.previewMode') }}
           </label>
           <select 
             v-model="previewMode" 
             @change="updatePreviewData"
-            class="w-full px-2 py-1 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+            class="w-full px-2 py-1 text-xs border border-[rgba(60,50,35,0.16)] rounded focus:ring-1 focus:ring-tide-blue focus:border-tide-blue"
           >
             <option value="sample">{{ $t('invoiceDataSelector.option.sampleData') }}</option>
             <option value="recent">{{ $t('invoiceDataSelector.option.recentInvoice') }}</option>
@@ -27,7 +27,7 @@
   
         <!-- Sélection d'invoice spécifique -->
         <div v-if="previewMode === 'specific'">
-          <label class="block text-xs font-medium text-gray-700 mb-1">
+          <label class="block text-xs font-medium text-tide-ink/80 mb-1">
             {{ $t('invoiceDataSelector.label.invoiceNumber') }}
           </label>
           <div class="flex gap-1">
@@ -35,12 +35,12 @@
               v-model="specificInvoiceId"
               type="text"
               :placeholder="$t('invoiceDataSelector.placeholder.invoiceId')"
-              class="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+              class="flex-1 px-2 py-1 text-xs border border-[rgba(60,50,35,0.16)] rounded focus:ring-1 focus:ring-tide-blue focus:border-tide-blue"
             />
             <button
               @click="loadSpecificInvoice"
               :disabled="!specificInvoiceId || loading"
-              class="px-2 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              class="px-2 py-1 text-xs bg-tide-blue-btn-deep text-white rounded hover:bg-tide-blue-deep disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {{ $t('invoiceDataSelector.button.load') }}
             </button>
@@ -49,7 +49,7 @@
   
         <!-- Affichage des données sélectionnées -->
         <div v-if="currentData">
-          <div class="text-xs text-gray-600 space-y-1">
+          <div class="text-xs text-tide-ink/70 space-y-1">
             <div class="flex justify-between">
               <span>{{ $t('invoiceDataSelector.label.invoice') }}</span>
               <span class="font-medium">{{ currentData.invoice?.number || 'N/A' }}</span>
@@ -74,14 +74,14 @@
           <button
             @click="refreshData"
             :disabled="loading"
-            class="flex-1 px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200 disabled:opacity-50"
+            class="flex-1 px-2 py-1 text-xs bg-[rgba(42,36,30,0.05)] text-tide-ink/80 rounded hover:bg-gray-200 disabled:opacity-50"
           >
             {{ loading ? $t('common.loading') : $t('invoiceDataSelector.button.refresh') }}
           </button>
           <button
             @click="applyDataToTemplate"
             :disabled="!currentData || !studio"
-            class="flex-1 px-2 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+            class="flex-1 px-2 py-1 text-xs bg-tide-blue-btn-deep text-white rounded hover:bg-tide-blue-deep disabled:opacity-50"
           >
             {{ $t('invoiceDataSelector.button.applyData') }}
           </button>

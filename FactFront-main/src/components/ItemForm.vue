@@ -237,7 +237,7 @@ const handleSubmit = async () => {
 
 const getInputClasses = (fieldName: keyof ItemFormData) => {
   return {
-    "w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 bg-white text-gray-900 placeholder-gray-500": true,
+    "w-full px-4 py-3 rounded-xl border border-[rgba(60,50,35,0.12)] focus:border-tide-blue focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 bg-[rgba(255,253,247,0.92)] text-tide-ink placeholder-gray-500": true,
     "border-red-300 focus:border-red-500 focus:ring-red-500/20": !!errors.value[fieldName],
   };
 };
@@ -248,8 +248,8 @@ const getTabClasses = (tab: string) => {
   const isActive = activeTab.value === tab;
   return {
     "px-6 py-3 text-sm font-medium rounded-xl transition-all duration-200": true,
-    "bg-blue-50 text-blue-700 border border-blue-200": isActive,
-    "text-gray-600 hover:text-gray-900 hover:bg-gray-50": !isActive,
+    "bg-[rgba(90,138,171,0.10)] text-tide-blue-deep border border-blue-200": isActive,
+    "text-tide-ink/70 hover:text-tide-ink hover:bg-[rgba(252,247,238,0.55)]": !isActive,
   };
 };
 
@@ -265,24 +265,24 @@ const itemData = computed(() => ({
 </script>
 
 <template>
-  <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
+  <div class="bg-[rgba(255,253,247,0.92)] rounded-2xl shadow-sm border border-[rgba(42,36,30,0.07)]">
     <!-- Header -->
-    <div class="px-8 py-6 border-b border-gray-100">
+    <div class="px-8 py-6 border-b border-[rgba(42,36,30,0.07)]">
       <div class="flex justify-between items-center">
         <div>
-          <h2 class="text-2xl font-semibold text-gray-900 mb-1">
+          <h2 class="text-2xl font-semibold text-tide-ink mb-1">
             {{ editMode ? t('itemForm.header.editTitle') : t('itemForm.header.newTitle') }}
           </h2>
-          <p class="text-gray-500 text-sm">
+          <p class="text-tide-ink/55 text-sm">
             {{ editMode ? t('itemForm.header.editSubtitle') : t('itemForm.header.newSubtitle') }}
           </p>
           <!-- Debug info in development -->
-          <p v-if="editMode && formData._id" class="text-xs text-gray-400 mt-1">
+          <p v-if="editMode && formData._id" class="text-xs text-tide-ink/40 mt-1">
             {{ t('itemForm.label.id', { id: formData._id }) }}
           </p>
         </div>
         <button @click="emit('cancel')"
-          class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-xl transition-all duration-200">
+          class="p-2 text-tide-ink/40 hover:text-tide-ink/70 hover:bg-[rgba(42,36,30,0.05)] rounded-xl transition-all duration-200">
           <X class="h-5 w-5" />
         </button>
       </div>
@@ -303,7 +303,7 @@ const itemData = computed(() => ({
       </nav>
     </div>
 
-    <!--div v-if="editMode" class="text-xs text-gray-400 p-2 bg-gray-50 rounded mb-4">
+    <!--div v-if="editMode" class="text-xs text-tide-ink/40 p-2 bg-[rgba(252,247,238,0.55)] rounded mb-4">
       DEBUG: type="{{ formData.type }}" | status="{{ formData.status }}" | itemType="{{ formData.itemType }}"
     </div-->
 
@@ -311,9 +311,9 @@ const itemData = computed(() => ({
     <form v-if="activeTab === 'details'" @submit.prevent="handleSubmit" class="p-8 space-y-8">
       <!-- Basic Information -->
       <div class="space-y-6">
-        <div class="border-l-4 border-blue-500 pl-4">
-          <h3 class="text-lg font-semibold text-gray-900">{{ t('itemForm.section.basicInfo') }}</h3>
-          <p class="text-sm text-gray-500 mt-1">{{ t('itemForm.section.basicInfoSub') }}</p>
+        <div class="border-l-4 border-tide-blue pl-4">
+          <h3 class="text-lg font-semibold text-tide-ink">{{ t('itemForm.section.basicInfo') }}</h3>
+          <p class="text-sm text-tide-ink/55 mt-1">{{ t('itemForm.section.basicInfoSub') }}</p>
         </div>
 
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
@@ -384,8 +384,8 @@ const itemData = computed(() => ({
       <!-- Inspection Information -->
       <div class="space-y-6">
         <div class="border-l-4 border-green-500 pl-4">
-          <h3 class="text-lg font-semibold text-gray-900">{{ t('itemForm.section.inspection') }}</h3>
-          <p class="text-sm text-gray-500 mt-1">{{ t('itemForm.section.inspectionSub') }}</p>
+          <h3 class="text-lg font-semibold text-tide-ink">{{ t('itemForm.section.inspection') }}</h3>
+          <p class="text-sm text-tide-ink/55 mt-1">{{ t('itemForm.section.inspectionSub') }}</p>
         </div>
 
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
@@ -406,25 +406,25 @@ const itemData = computed(() => ({
       <!-- Additional Information -->
       <div class="space-y-6">
         <div class="border-l-4 border-purple-500 pl-4">
-          <h3 class="text-lg font-semibold text-gray-900">{{ t('itemForm.section.additional') }}</h3>
-          <p class="text-sm text-gray-500 mt-1">{{ t('itemForm.section.additionalSub') }}</p>
+          <h3 class="text-lg font-semibold text-tide-ink">{{ t('itemForm.section.additional') }}</h3>
+          <p class="text-sm text-tide-ink/55 mt-1">{{ t('itemForm.section.additionalSub') }}</p>
         </div>
 
         <div class="space-y-2">
-          <label class="block text-sm font-medium text-gray-700">{{ t('itemForm.field.notes') }}</label>
+          <label class="block text-sm font-medium text-tide-ink/80">{{ t('itemForm.field.notes') }}</label>
           <textarea v-model="formData.notes" rows="4" :class="getInputClasses('notes')"
             :placeholder="t('itemForm.placeholder.notes')"></textarea>
         </div>
       </div>
 
       <!-- Form Actions -->
-      <div class="flex justify-end space-x-4 pt-6 border-t border-gray-100">
+      <div class="flex justify-end space-x-4 pt-6 border-t border-[rgba(42,36,30,0.07)]">
         <button type="button" @click="emit('cancel')"
-          class="px-6 py-3 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all duration-200">
+          class="px-6 py-3 border border-[rgba(60,50,35,0.12)] rounded-xl text-sm font-medium text-tide-ink/80 hover:bg-[rgba(252,247,238,0.55)] hover:border-[rgba(60,50,35,0.16)] transition-all duration-200">
           {{ t('common.cancel') }}
         </button>
         <button type="submit"
-          class="px-6 py-3 bg-blue-600 border border-blue-600 rounded-xl text-sm font-medium text-white hover:bg-blue-700 hover:border-blue-700 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 shadow-sm">
+          class="px-6 py-3 bg-tide-blue-btn-deep border border-blue-600 rounded-xl text-sm font-medium text-white hover:bg-tide-blue-deep hover:border-blue-700 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 shadow-sm">
           {{ editMode ? t('itemForm.button.saveChanges') : t('itemForm.button.createItem') }}
         </button>
       </div>
@@ -433,22 +433,22 @@ const itemData = computed(() => ({
     <!-- Port Details Tab -->
     <div v-else-if="activeTab === 'portDetails'" class="p-8 space-y-8">
       <div class="border-l-4 border-teal-500 pl-4">
-        <h3 class="text-lg font-semibold text-gray-900">{{ t('itemForm.tab.portDetails') }}</h3>
-        <p class="text-sm text-gray-500 mt-1">{{ t('itemForm.section.portDetailsSub') }}</p>
+        <h3 class="text-lg font-semibold text-tide-ink">{{ t('itemForm.tab.portDetails') }}</h3>
+        <p class="text-sm text-tide-ink/55 mt-1">{{ t('itemForm.section.portDetailsSub') }}</p>
       </div>
 
       <!-- Commercial Information -->
       <div class="space-y-6">
         <div class="border-l-4 border-amber-500 pl-4">
-          <h4 class="text-base font-semibold text-gray-900">{{ t('itemForm.section.commercial') }}</h4>
-          <p class="text-xs text-gray-400 mt-0.5">{{ t('itemForm.section.commercialSub') }}</p>
+          <h4 class="text-base font-semibold text-tide-ink">{{ t('itemForm.section.commercial') }}</h4>
+          <p class="text-xs text-tide-ink/40 mt-0.5">{{ t('itemForm.section.commercialSub') }}</p>
         </div>
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <div class="space-y-2">
-            <label class="block text-sm font-medium text-gray-700">{{ t('itemForm.field.category') }}</label>
+            <label class="block text-sm font-medium text-tide-ink/80">{{ t('itemForm.field.category') }}</label>
             <select
               v-model="portDetails.category"
-              class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all bg-white text-gray-900"
+              class="w-full px-4 py-3 rounded-xl border border-[rgba(60,50,35,0.12)] focus:border-tide-blue focus:ring-2 focus:ring-blue-500/20 transition-all bg-[rgba(255,253,247,0.92)] text-tide-ink"
             >
               <option value="">{{ t('itemForm.option.notDefined') }}</option>
               <option value="Import">{{ t('itemForm.category.import') }}</option>
@@ -457,10 +457,10 @@ const itemData = computed(() => ({
             </select>
           </div>
           <div class="space-y-2">
-            <label class="block text-sm font-medium text-gray-700">{{ t('itemForm.field.freightKind') }}</label>
+            <label class="block text-sm font-medium text-tide-ink/80">{{ t('itemForm.field.freightKind') }}</label>
             <select
               v-model="portDetails.freightKind"
-              class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all bg-white text-gray-900"
+              class="w-full px-4 py-3 rounded-xl border border-[rgba(60,50,35,0.12)] focus:border-tide-blue focus:ring-2 focus:ring-blue-500/20 transition-all bg-[rgba(255,253,247,0.92)] text-tide-ink"
             >
               <option value="">{{ t('itemForm.option.notDefined') }}</option>
               <option value="FCL">{{ t('itemForm.freightKind.fcl') }}</option>
@@ -471,12 +471,12 @@ const itemData = computed(() => ({
             </select>
           </div>
           <div class="space-y-2">
-            <label class="block text-sm font-medium text-gray-700">{{ t('itemForm.field.bookingNumber') }}</label>
+            <label class="block text-sm font-medium text-tide-ink/80">{{ t('itemForm.field.bookingNumber') }}</label>
             <input
               v-model="portDetails.bookingNumber"
               type="text"
               :placeholder="t('itemForm.placeholder.bookingNumber')"
-              class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all bg-white text-gray-900 placeholder-gray-400"
+              class="w-full px-4 py-3 rounded-xl border border-[rgba(60,50,35,0.12)] focus:border-tide-blue focus:ring-2 focus:ring-blue-500/20 transition-all bg-[rgba(255,253,247,0.92)] text-tide-ink placeholder-gray-400"
             />
           </div>
           <div class="space-y-2">
@@ -501,24 +501,24 @@ const itemData = computed(() => ({
 
       <!-- Container Identification -->
       <div class="space-y-6">
-        <div class="border-l-4 border-blue-500 pl-4">
-          <h4 class="text-base font-semibold text-gray-900">{{ t('itemForm.section.containerId') }}</h4>
+        <div class="border-l-4 border-tide-blue pl-4">
+          <h4 class="text-base font-semibold text-tide-ink">{{ t('itemForm.section.containerId') }}</h4>
         </div>
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <div class="space-y-2">
-            <label class="block text-sm font-medium text-gray-700">{{ t('itemForm.field.containerNumber') }}</label>
+            <label class="block text-sm font-medium text-tide-ink/80">{{ t('itemForm.field.containerNumber') }}</label>
             <input
               v-model="portDetails.containerNumber"
               type="text"
               :placeholder="t('itemForm.placeholder.containerNumber')"
-              class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 bg-white text-gray-900 placeholder-gray-500"
+              class="w-full px-4 py-3 rounded-xl border border-[rgba(60,50,35,0.12)] focus:border-tide-blue focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 bg-[rgba(255,253,247,0.92)] text-tide-ink placeholder-gray-500"
             />
           </div>
           <div class="space-y-2">
-            <label class="block text-sm font-medium text-gray-700">{{ t('itemForm.field.containerType') }}</label>
+            <label class="block text-sm font-medium text-tide-ink/80">{{ t('itemForm.field.containerType') }}</label>
             <select
               v-model="portDetails.containerType"
-              class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 bg-white text-gray-900"
+              class="w-full px-4 py-3 rounded-xl border border-[rgba(60,50,35,0.12)] focus:border-tide-blue focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 bg-[rgba(255,253,247,0.92)] text-tide-ink"
             >
               <option value="">{{ t('itemForm.option.selectContainerType') }}</option>
               <option v-for="c in activeIsoCodes" :key="c.code" :value="c.code">
@@ -527,10 +527,10 @@ const itemData = computed(() => ({
             </select>
           </div>
           <div class="space-y-2">
-            <label class="block text-sm font-medium text-gray-700">{{ t('itemForm.field.emptyStatus') }}</label>
+            <label class="block text-sm font-medium text-tide-ink/80">{{ t('itemForm.field.emptyStatus') }}</label>
             <select
               v-model="portDetails.emptyStatus"
-              class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 bg-white text-gray-900"
+              class="w-full px-4 py-3 rounded-xl border border-[rgba(60,50,35,0.12)] focus:border-tide-blue focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 bg-[rgba(255,253,247,0.92)] text-tide-ink"
             >
               <option value="">{{ t('itemForm.emptyStatus.unknown') }}</option>
               <option value="FULL">{{ t('itemForm.emptyStatus.full') }}</option>
@@ -539,10 +539,10 @@ const itemData = computed(() => ({
             </select>
           </div>
           <div class="space-y-2">
-            <label class="block text-sm font-medium text-gray-700">{{ t('itemForm.field.condition') }}</label>
+            <label class="block text-sm font-medium text-tide-ink/80">{{ t('itemForm.field.condition') }}</label>
             <select
               v-model="portDetails.condition"
-              class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 bg-white text-gray-900"
+              class="w-full px-4 py-3 rounded-xl border border-[rgba(60,50,35,0.12)] focus:border-tide-blue focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 bg-[rgba(255,253,247,0.92)] text-tide-ink"
             >
               <option value="">{{ t('itemForm.option.selectCondition') }}</option>
               <option value="GOOD">{{ t('itemForm.condition.good') }}</option>
@@ -551,10 +551,10 @@ const itemData = computed(() => ({
             </select>
           </div>
           <div class="space-y-2">
-            <label class="block text-sm font-medium text-gray-700">{{ t('itemForm.field.customsStatus') }}</label>
+            <label class="block text-sm font-medium text-tide-ink/80">{{ t('itemForm.field.customsStatus') }}</label>
             <select
               v-model="portDetails.customsStatus"
-              class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 bg-white text-gray-900"
+              class="w-full px-4 py-3 rounded-xl border border-[rgba(60,50,35,0.12)] focus:border-tide-blue focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 bg-[rgba(255,253,247,0.92)] text-tide-ink"
             >
               <option value="">{{ t('itemForm.option.selectCustomsStatus') }}</option>
               <option value="PENDING">PENDING</option>
@@ -566,12 +566,12 @@ const itemData = computed(() => ({
             </select>
           </div>
           <div class="space-y-2">
-            <label class="block text-sm font-medium text-gray-700">{{ t('itemForm.field.sealNumbers') }}</label>
+            <label class="block text-sm font-medium text-tide-ink/80">{{ t('itemForm.field.sealNumbers') }}</label>
             <input
               v-model="portDetails.sealNumbersRaw"
               type="text"
               :placeholder="t('itemForm.placeholder.sealNumbers')"
-              class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 bg-white text-gray-900 placeholder-gray-500"
+              class="w-full px-4 py-3 rounded-xl border border-[rgba(60,50,35,0.12)] focus:border-tide-blue focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 bg-[rgba(255,253,247,0.92)] text-tide-ink placeholder-gray-500"
             />
           </div>
         </div>
@@ -580,7 +580,7 @@ const itemData = computed(() => ({
       <!-- Flags -->
       <div class="space-y-6">
         <div class="border-l-4 border-orange-500 pl-4">
-          <h4 class="text-base font-semibold text-gray-900">{{ t('itemForm.section.specialFlags') }}</h4>
+          <h4 class="text-base font-semibold text-tide-ink">{{ t('itemForm.section.specialFlags') }}</h4>
         </div>
         <div class="space-y-4">
           <!-- Hazmat -->
@@ -589,27 +589,27 @@ const itemData = computed(() => ({
               id="hazmatFlag"
               v-model="portDetails.hazmatFlag"
               type="checkbox"
-              class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+              class="h-4 w-4 text-tide-blue-deep border-[rgba(60,50,35,0.16)] rounded focus:ring-tide-blue"
             />
-            <label for="hazmatFlag" class="text-sm font-medium text-gray-700">{{ t('itemForm.flag.hazmat') }}</label>
+            <label for="hazmatFlag" class="text-sm font-medium text-tide-ink/80">{{ t('itemForm.flag.hazmat') }}</label>
           </div>
           <div v-if="portDetails.hazmatFlag" class="ml-7 grid grid-cols-1 gap-4 lg:grid-cols-2">
             <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700">{{ t('itemForm.field.hazmatClass') }}</label>
+              <label class="block text-sm font-medium text-tide-ink/80">{{ t('itemForm.field.hazmatClass') }}</label>
               <input
                 v-model="portDetails.hazmatClass"
                 type="text"
                 :placeholder="t('itemForm.placeholder.hazmatClass')"
-                class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 bg-white text-gray-900 placeholder-gray-500"
+                class="w-full px-4 py-3 rounded-xl border border-[rgba(60,50,35,0.12)] focus:border-tide-blue focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 bg-[rgba(255,253,247,0.92)] text-tide-ink placeholder-gray-500"
               />
             </div>
             <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700">{{ t('itemForm.field.unNumber') }}</label>
+              <label class="block text-sm font-medium text-tide-ink/80">{{ t('itemForm.field.unNumber') }}</label>
               <input
                 v-model="portDetails.unNumber"
                 type="text"
                 :placeholder="t('itemForm.placeholder.unNumber')"
-                class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 bg-white text-gray-900 placeholder-gray-500"
+                class="w-full px-4 py-3 rounded-xl border border-[rgba(60,50,35,0.12)] focus:border-tide-blue focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 bg-[rgba(255,253,247,0.92)] text-tide-ink placeholder-gray-500"
               />
             </div>
           </div>
@@ -620,19 +620,19 @@ const itemData = computed(() => ({
               id="reeferFlag"
               v-model="portDetails.reeferFlag"
               type="checkbox"
-              class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+              class="h-4 w-4 text-tide-blue-deep border-[rgba(60,50,35,0.16)] rounded focus:ring-tide-blue"
             />
-            <label for="reeferFlag" class="text-sm font-medium text-gray-700">{{ t('itemForm.flag.reefer') }}</label>
+            <label for="reeferFlag" class="text-sm font-medium text-tide-ink/80">{{ t('itemForm.flag.reefer') }}</label>
           </div>
           <div v-if="portDetails.reeferFlag" class="ml-7">
             <div class="space-y-2 max-w-xs">
-              <label class="block text-sm font-medium text-gray-700">{{ t('itemForm.field.reeferTemperature') }}</label>
+              <label class="block text-sm font-medium text-tide-ink/80">{{ t('itemForm.field.reeferTemperature') }}</label>
               <input
                 v-model.number="portDetails.reeferTemperature"
                 type="number"
                 step="0.5"
                 :placeholder="t('itemForm.placeholder.reeferTemperature')"
-                class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 bg-white text-gray-900 placeholder-gray-500"
+                class="w-full px-4 py-3 rounded-xl border border-[rgba(60,50,35,0.12)] focus:border-tide-blue focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 bg-[rgba(255,253,247,0.92)] text-tide-ink placeholder-gray-500"
               />
             </div>
           </div>
@@ -643,9 +643,9 @@ const itemData = computed(() => ({
               id="oogFlag"
               v-model="portDetails.oogFlag"
               type="checkbox"
-              class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+              class="h-4 w-4 text-tide-blue-deep border-[rgba(60,50,35,0.16)] rounded focus:ring-tide-blue"
             />
-            <label for="oogFlag" class="text-sm font-medium text-gray-700">{{ t('itemForm.flag.oog') }}</label>
+            <label for="oogFlag" class="text-sm font-medium text-tide-ink/80">{{ t('itemForm.flag.oog') }}</label>
           </div>
 
           <!-- Weight Verified -->
@@ -654,20 +654,20 @@ const itemData = computed(() => ({
               id="weightVerified"
               v-model="portDetails.weightVerified"
               type="checkbox"
-              class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+              class="h-4 w-4 text-tide-blue-deep border-[rgba(60,50,35,0.16)] rounded focus:ring-tide-blue"
             />
-            <label for="weightVerified" class="text-sm font-medium text-gray-700">{{ t('itemForm.flag.weightVerified') }}</label>
+            <label for="weightVerified" class="text-sm font-medium text-tide-ink/80">{{ t('itemForm.flag.weightVerified') }}</label>
           </div>
           <div v-if="portDetails.weightVerified" class="ml-7">
             <div class="space-y-2 max-w-xs">
-              <label class="block text-sm font-medium text-gray-700">{{ t('itemForm.field.verifiedWeight') }}</label>
+              <label class="block text-sm font-medium text-tide-ink/80">{{ t('itemForm.field.verifiedWeight') }}</label>
               <input
                 v-model.number="portDetails.verifiedWeight"
                 type="number"
                 min="0"
                 step="1"
                 :placeholder="t('itemForm.placeholder.verifiedWeight')"
-                class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 bg-white text-gray-900 placeholder-gray-500"
+                class="w-full px-4 py-3 rounded-xl border border-[rgba(60,50,35,0.12)] focus:border-tide-blue focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 bg-[rgba(255,253,247,0.92)] text-tide-ink placeholder-gray-500"
               />
             </div>
           </div>
@@ -677,54 +677,54 @@ const itemData = computed(() => ({
       <!-- Voyage & Gate -->
       <div class="space-y-6">
         <div class="border-l-4 border-indigo-500 pl-4">
-          <h4 class="text-base font-semibold text-gray-900">{{ t('itemForm.section.voyageGate') }}</h4>
+          <h4 class="text-base font-semibold text-tide-ink">{{ t('itemForm.section.voyageGate') }}</h4>
         </div>
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <div class="space-y-2">
-            <label class="block text-sm font-medium text-gray-700">{{ t('itemForm.field.inboundVoyage') }}</label>
+            <label class="block text-sm font-medium text-tide-ink/80">{{ t('itemForm.field.inboundVoyage') }}</label>
             <input
               v-model="portDetails.inboundVoyage"
               type="text"
               :placeholder="t('itemForm.placeholder.inboundVoyage')"
-              class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 bg-white text-gray-900 placeholder-gray-500"
+              class="w-full px-4 py-3 rounded-xl border border-[rgba(60,50,35,0.12)] focus:border-tide-blue focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 bg-[rgba(255,253,247,0.92)] text-tide-ink placeholder-gray-500"
             />
           </div>
           <div class="space-y-2">
-            <label class="block text-sm font-medium text-gray-700">{{ t('itemForm.field.outboundVoyage') }}</label>
+            <label class="block text-sm font-medium text-tide-ink/80">{{ t('itemForm.field.outboundVoyage') }}</label>
             <input
               v-model="portDetails.outboundVoyage"
               type="text"
               :placeholder="t('itemForm.placeholder.outboundVoyage')"
-              class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 bg-white text-gray-900 placeholder-gray-500"
+              class="w-full px-4 py-3 rounded-xl border border-[rgba(60,50,35,0.12)] focus:border-tide-blue focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 bg-[rgba(255,253,247,0.92)] text-tide-ink placeholder-gray-500"
             />
           </div>
           <div class="space-y-2">
-            <label class="block text-sm font-medium text-gray-700">{{ t('itemForm.field.gateInDate') }}</label>
+            <label class="block text-sm font-medium text-tide-ink/80">{{ t('itemForm.field.gateInDate') }}</label>
             <input
               v-model="portDetails.gateInDate"
               type="datetime-local"
-              class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 bg-white text-gray-900"
+              class="w-full px-4 py-3 rounded-xl border border-[rgba(60,50,35,0.12)] focus:border-tide-blue focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 bg-[rgba(255,253,247,0.92)] text-tide-ink"
             />
           </div>
           <div class="space-y-2">
-            <label class="block text-sm font-medium text-gray-700">{{ t('itemForm.field.gateOutDate') }}</label>
+            <label class="block text-sm font-medium text-tide-ink/80">{{ t('itemForm.field.gateOutDate') }}</label>
             <input
               v-model="portDetails.gateOutDate"
               type="datetime-local"
-              class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 bg-white text-gray-900"
+              class="w-full px-4 py-3 rounded-xl border border-[rgba(60,50,35,0.12)] focus:border-tide-blue focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 bg-[rgba(255,253,247,0.92)] text-tide-ink"
             />
           </div>
         </div>
       </div>
 
       <!-- Form Actions -->
-      <div class="flex justify-end space-x-4 pt-6 border-t border-gray-100">
+      <div class="flex justify-end space-x-4 pt-6 border-t border-[rgba(42,36,30,0.07)]">
         <button type="button" @click="emit('cancel')"
-          class="px-6 py-3 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all duration-200">
+          class="px-6 py-3 border border-[rgba(60,50,35,0.12)] rounded-xl text-sm font-medium text-tide-ink/80 hover:bg-[rgba(252,247,238,0.55)] hover:border-[rgba(60,50,35,0.16)] transition-all duration-200">
           {{ t('common.cancel') }}
         </button>
         <button type="button" @click="handleSubmit"
-          class="px-6 py-3 bg-blue-600 border border-blue-600 rounded-xl text-sm font-medium text-white hover:bg-blue-700 hover:border-blue-700 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 shadow-sm">
+          class="px-6 py-3 bg-tide-blue-btn-deep border border-blue-600 rounded-xl text-sm font-medium text-white hover:bg-tide-blue-deep hover:border-blue-700 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 shadow-sm">
           {{ editMode ? t('itemForm.button.saveChanges') : t('itemForm.button.createItem') }}
         </button>
       </div>
@@ -733,20 +733,20 @@ const itemData = computed(() => ({
     <!-- Lifecycles View - IMPROVED VERSION -->
     <div v-else-if="activeTab === 'lifeCycles'" class="p-8">
       <div class="border-l-4 border-indigo-500 pl-4 mb-6">
-        <h3 class="text-lg font-semibold text-gray-900">{{ t('itemForm.section.itemLifecycles') }}</h3>
-        <p class="text-sm text-gray-500 mt-1">{{ t('itemForm.section.itemLifecyclesSub') }}</p>
+        <h3 class="text-lg font-semibold text-tide-ink">{{ t('itemForm.section.itemLifecycles') }}</h3>
+        <p class="text-sm text-tide-ink/55 mt-1">{{ t('itemForm.section.itemLifecyclesSub') }}</p>
       </div>
 
       <!-- Lifecycle Summary Cards -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div class="bg-[rgba(90,138,171,0.10)] border border-blue-200 rounded-lg p-4">
           <div class="flex items-center">
             <div class="flex-shrink-0">
-              <Clock class="h-8 w-8 text-blue-600" />
+              <Clock class="h-8 w-8 text-tide-blue-deep" />
             </div>
             <div class="ml-3">
-              <p class="text-sm font-medium text-blue-900">{{ t('itemForm.lifecycle.active') }}</p>
-              <p class="text-2xl font-bold text-blue-600">
+              <p class="text-sm font-medium text-tide-blue-deep">{{ t('itemForm.lifecycle.active') }}</p>
+              <p class="text-2xl font-bold text-tide-blue-deep">
                 {{itemData.lifeCycles?.filter(lc => lc.status === 'In Progress').length || 0}}
               </p>
             </div>
@@ -767,14 +767,14 @@ const itemData = computed(() => ({
           </div>
         </div>
 
-        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+        <div class="bg-[rgba(252,247,238,0.55)] border border-[rgba(60,50,35,0.12)] rounded-lg p-4">
           <div class="flex items-center">
             <div class="flex-shrink-0">
-              <CircleDot class="h-8 w-8 text-gray-600" />
+              <CircleDot class="h-8 w-8 text-tide-ink/70" />
             </div>
             <div class="ml-3">
-              <p class="text-sm font-medium text-gray-900">{{ t('itemForm.lifecycle.total') }}</p>
-              <p class="text-2xl font-bold text-gray-600">
+              <p class="text-sm font-medium text-tide-ink">{{ t('itemForm.lifecycle.total') }}</p>
+              <p class="text-2xl font-bold text-tide-ink/70">
                 {{ itemData.lifeCycles?.length || 0 }}
               </p>
             </div>
@@ -783,13 +783,13 @@ const itemData = computed(() => ({
       </div>
 
       <!-- Lifecycle List -->
-      <div class="bg-white border border-gray-200 rounded-lg">
+      <div class="bg-[rgba(255,253,247,0.92)] border border-[rgba(60,50,35,0.12)] rounded-lg">
         <!-- Header -->
-        <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+        <div class="px-6 py-4 border-b border-[rgba(60,50,35,0.12)] bg-[rgba(252,247,238,0.55)]">
           <div class="flex items-center justify-between">
-            <h4 class="text-sm font-medium text-gray-900">{{ t('itemForm.lifecycle.historyTitle') }}</h4>
+            <h4 class="text-sm font-medium text-tide-ink">{{ t('itemForm.lifecycle.historyTitle') }}</h4>
             <div class="flex items-center space-x-2">
-              <span class="text-xs text-gray-500">
+              <span class="text-xs text-tide-ink/55">
                 {{ t('itemForm.lifecycle.totalCount', { count: itemData.lifeCycles?.length || 0 }) }}
               </span>
             </div>
@@ -798,15 +798,15 @@ const itemData = computed(() => ({
 
         <!-- No lifecycles -->
         <div v-if="!itemData.lifeCycles?.length" class="px-6 py-12 text-center">
-          <Calendar class="mx-auto h-12 w-12 text-gray-400 mb-4" />
-          <p class="text-sm text-gray-500">{{ t('itemForm.lifecycle.empty') }}</p>
-          <p class="text-xs text-gray-400 mt-1">{{ t('itemForm.lifecycle.emptyHint') }}</p>
+          <Calendar class="mx-auto h-12 w-12 text-tide-ink/40 mb-4" />
+          <p class="text-sm text-tide-ink/55">{{ t('itemForm.lifecycle.empty') }}</p>
+          <p class="text-xs text-tide-ink/40 mt-1">{{ t('itemForm.lifecycle.emptyHint') }}</p>
         </div>
 
         <!-- Lifecycle items -->
-        <div class="divide-y divide-gray-200">
+        <div class="divide-y divide-[rgba(42,36,30,0.08)]">
           <div v-for="(lifecycle, index) in itemData.lifeCycles" :key="lifecycle.lifecycleId || lifecycle.id || index"
-            class="px-6 py-4 hover:bg-gray-50">
+            class="px-6 py-4 hover:bg-[rgba(252,247,238,0.55)]">
             <div class="flex items-center justify-between">
               <div class="flex items-center space-x-4">
                 <!-- Status Indicator -->
@@ -828,19 +828,19 @@ const itemData = computed(() => ({
                       'bg-blue-100 text-blue-800': lifecycle.status === 'In Progress',
                       'bg-green-100 text-green-800': lifecycle.status === 'Completed',
                       'bg-red-100 text-red-800': lifecycle.status === 'Cancelled',
-                      'bg-gray-100 text-gray-800': !lifecycle.status
+                      'bg-[rgba(42,36,30,0.05)] text-tide-ink': !lifecycle.status
                     }">
                       {{ lifecycle.status || 'Unknown' }}
                     </span>
 
-                    <span class="text-sm text-gray-500">
+                    <span class="text-sm text-tide-ink/55">
                       {{ (lifecycle.lifecycleId || lifecycle.id) ? `ID: ${(lifecycle.lifecycleId ||
                         lifecycle.id).substring(0, 8)}...` : `Lifecycle ${index + 1}` }}
                     </span>
                   </div>
 
                   <!-- Dates -->
-                  <div class="mt-1 flex items-center space-x-4 text-sm text-gray-500">
+                  <div class="mt-1 flex items-center space-x-4 text-sm text-tide-ink/55">
                     <span v-if="lifecycle.startTime">
                       {{ t('itemForm.lifecycle.started', { date: new Date(lifecycle.startTime).toLocaleDateString() }) }}
                     </span>
@@ -856,7 +856,7 @@ const itemData = computed(() => ({
               </div>
 
               <!-- Event Count -->
-              <div class="flex items-center space-x-2 text-sm text-gray-500">
+              <div class="flex items-center space-x-2 text-sm text-tide-ink/55">
                 <span class="flex items-center">
                   <CircleDot class="h-4 w-4 mr-1" />
                   {{ t('itemForm.lifecycle.eventCount', { count: lifecycle.events?.length || 0 }) }}
@@ -867,12 +867,12 @@ const itemData = computed(() => ({
             <!-- Events Preview -->
             <div v-if="lifecycle.events?.length" class="mt-3 ml-7">
               <details class="group">
-                <summary class="cursor-pointer text-sm text-blue-600 hover:text-blue-800 flex items-center">
+                <summary class="cursor-pointer text-sm text-tide-blue-deep hover:text-blue-800 flex items-center">
                   <ChevronRight class="h-4 w-4 transition-transform group-open:rotate-90" />
                   <span class="ml-1">{{ t('itemForm.lifecycle.viewEvents', { count: lifecycle.events.length }) }}</span>
                 </summary>
 
-                <div class="mt-2 space-y-2 pl-5 border-l-2 border-gray-200">
+                <div class="mt-2 space-y-2 pl-5 border-l-2 border-[rgba(60,50,35,0.12)]">
                   <div v-for="event in lifecycle.events" :key="event.id" class="flex items-start space-x-2 text-sm">
                     <div :class="{
                       'mt-0.5 h-2 w-2 rounded-full': true,
@@ -883,16 +883,16 @@ const itemData = computed(() => ({
                     }"></div>
                     <div class="flex-1">
                       <div class="flex items-center justify-between">
-                        <span class="font-medium text-gray-900">
+                        <span class="font-medium text-tide-ink">
                           {{ event.eventType || t('itemForm.lifecycle.event') }}
                         </span>
-                        <span class="text-gray-500">
+                        <span class="text-tide-ink/55">
                           {{ event.timestamp ? new Date(event.timestamp).toLocaleString() : (event.eventDate ? new
                             Date(event.eventDate).toLocaleString() : t('itemForm.lifecycle.noDate')) }}
                         </span>
                       </div>
-                      <p v-if="event.notes" class="text-gray-600 mt-1">{{ event.notes }}</p>
-                      <p v-if="event.location" class="text-gray-500">{{ t('itemForm.lifecycle.location', { location: event.location }) }}</p>
+                      <p v-if="event.notes" class="text-tide-ink/70 mt-1">{{ event.notes }}</p>
+                      <p v-if="event.location" class="text-tide-ink/55">{{ t('itemForm.lifecycle.location', { location: event.location }) }}</p>
                     </div>
                   </div>
                 </div>
@@ -903,13 +903,13 @@ const itemData = computed(() => ({
       </div>
 
       <!-- Form Actions -->
-      <div class="flex justify-end space-x-4 pt-6 border-t border-gray-100 mt-8">
+      <div class="flex justify-end space-x-4 pt-6 border-t border-[rgba(42,36,30,0.07)] mt-8">
         <button type="button" @click="emit('cancel')"
-          class="px-6 py-3 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all duration-200">
+          class="px-6 py-3 border border-[rgba(60,50,35,0.12)] rounded-xl text-sm font-medium text-tide-ink/80 hover:bg-[rgba(252,247,238,0.55)] hover:border-[rgba(60,50,35,0.16)] transition-all duration-200">
           {{ t('common.cancel') }}
         </button>
         <button type="button" @click="activeTab = 'details'"
-          class="px-6 py-3 bg-blue-600 border border-blue-600 rounded-xl text-sm font-medium text-white hover:bg-blue-700 hover:border-blue-700 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 shadow-sm">
+          class="px-6 py-3 bg-tide-blue-btn-deep border border-blue-600 rounded-xl text-sm font-medium text-white hover:bg-tide-blue-deep hover:border-blue-700 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 shadow-sm">
           {{ t('itemForm.button.backToDetails') }}
         </button>
       </div>

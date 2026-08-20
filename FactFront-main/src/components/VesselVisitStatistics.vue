@@ -1,18 +1,18 @@
 <template>
-  <div class="min-h-screen bg-gray-50 p-6">
+  <div class="min-h-screen bg-[rgba(252,247,238,0.55)] p-6">
     <div class="max-w-6xl mx-auto">
       <div class="mb-6 flex items-center justify-between">
         <div>
-          <h1 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl">
+          <h1 class="text-2xl font-bold leading-7 text-tide-ink sm:text-3xl">
             {{ t('vesselVisitStats.title') }}
           </h1>
-          <RouterLink to="/vessels" class="text-sm text-blue-600 hover:underline">
+          <RouterLink to="/vessels" class="text-sm text-tide-blue-deep hover:underline">
             ← {{ t('vesselVisitStats.back') }}
           </RouterLink>
         </div>
       </div>
 
-      <div v-if="visits.length === 0" class="bg-white rounded-lg border border-gray-200 p-8 text-center text-gray-500">
+      <div v-if="visits.length === 0" class="bg-[rgba(255,253,247,0.92)] rounded-lg border border-[rgba(60,50,35,0.12)] p-8 text-center text-tide-ink/55">
         {{ t('vesselVisitStats.empty') }}
       </div>
 
@@ -20,72 +20,72 @@
         <div
           v-if="selectedVisit && drillDown"
           data-test="drill-down"
-          class="bg-blue-50 border border-blue-300 rounded-lg p-4 mb-6"
+          class="bg-[rgba(90,138,171,0.10)] border border-blue-300 rounded-lg p-4 mb-6"
         >
-          <div class="text-sm font-semibold text-gray-700">{{ t('vesselVisitStats.drillDown.title') }}</div>
+          <div class="text-sm font-semibold text-tide-ink/80">{{ t('vesselVisitStats.drillDown.title') }}</div>
           <div class="text-lg font-bold mt-1">
             {{ selectedVisit.vesselName }} ({{ selectedVisit.vesselId }}) — {{ selectedVisit.visitReference }}
           </div>
           <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mt-3 text-sm">
             <div>
-              <div class="text-xs text-gray-500">{{ t('vesselVisitStats.drillDown.plannedDwell') }}</div>
+              <div class="text-xs text-tide-ink/55">{{ t('vesselVisitStats.drillDown.plannedDwell') }}</div>
               <div class="font-medium">{{ drillDown.plannedDays === null ? '—' : drillDown.plannedDays.toFixed(1) + ' d' }}</div>
             </div>
             <div>
-              <div class="text-xs text-gray-500">{{ t('vesselVisitStats.drillDown.actualDwell') }}</div>
+              <div class="text-xs text-tide-ink/55">{{ t('vesselVisitStats.drillDown.actualDwell') }}</div>
               <div class="font-medium">{{ drillDown.actualDays === null ? '—' : drillDown.actualDays.toFixed(1) + ' d' }}</div>
             </div>
             <div>
-              <div class="text-xs text-gray-500">{{ t('vesselVisitStats.drillDown.delay') }}</div>
+              <div class="text-xs text-tide-ink/55">{{ t('vesselVisitStats.drillDown.delay') }}</div>
               <div class="font-medium" :class="{ 'text-red-600': drillDown.deltaHours !== null && drillDown.deltaHours > 0 }">
                 {{ drillDown.deltaHours === null ? '—' : (drillDown.deltaHours > 0 ? '+' : '') + drillDown.deltaHours.toFixed(1) + ' h' }}
               </div>
             </div>
             <div>
-              <div class="text-xs text-gray-500">{{ t('vesselVisitStats.drillDown.etaAta') }}</div>
+              <div class="text-xs text-tide-ink/55">{{ t('vesselVisitStats.drillDown.etaAta') }}</div>
               <div class="font-medium">{{ drillDown.etaAtaDeltaHours === null ? '—' : drillDown.etaAtaDeltaHours.toFixed(1) + ' h' }}</div>
             </div>
             <div>
-              <div class="text-xs text-gray-500">{{ t('vesselVisitStats.drillDown.etdAtd') }}</div>
+              <div class="text-xs text-tide-ink/55">{{ t('vesselVisitStats.drillDown.etdAtd') }}</div>
               <div class="font-medium">{{ drillDown.etdAtdDeltaHours === null ? '—' : drillDown.etdAtdDeltaHours.toFixed(1) + ' h' }}</div>
             </div>
           </div>
         </div>
 
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <div data-test="kpi-total-visits" class="bg-white rounded-lg border border-gray-200 p-4">
-            <div class="text-xs text-gray-500 uppercase">{{ t('vesselVisitStats.kpi.totalVisits') }}</div>
-            <div class="text-2xl font-bold text-gray-900">{{ visits.length }}</div>
+          <div data-test="kpi-total-visits" class="bg-[rgba(255,253,247,0.92)] rounded-lg border border-[rgba(60,50,35,0.12)] p-4">
+            <div class="text-xs text-tide-ink/55 uppercase">{{ t('vesselVisitStats.kpi.totalVisits') }}</div>
+            <div class="text-2xl font-bold text-tide-ink">{{ visits.length }}</div>
           </div>
-          <div data-test="kpi-active-visits" class="bg-white rounded-lg border border-gray-200 p-4">
-            <div class="text-xs text-gray-500 uppercase">{{ t('vesselVisitStats.kpi.activeVisits') }}</div>
+          <div data-test="kpi-active-visits" class="bg-[rgba(255,253,247,0.92)] rounded-lg border border-[rgba(60,50,35,0.12)] p-4">
+            <div class="text-xs text-tide-ink/55 uppercase">{{ t('vesselVisitStats.kpi.activeVisits') }}</div>
             <div class="text-2xl font-bold text-green-600">{{ phaseCounts.Active }}</div>
           </div>
-          <div data-test="kpi-avg-dwell" class="bg-white rounded-lg border border-gray-200 p-4">
-            <div class="text-xs text-gray-500 uppercase">{{ t('vesselVisitStats.kpi.avgDwellDays') }}</div>
-            <div class="text-2xl font-bold text-gray-900">{{ avgDwell === null ? '—' : avgDwell.toFixed(1) }}</div>
+          <div data-test="kpi-avg-dwell" class="bg-[rgba(255,253,247,0.92)] rounded-lg border border-[rgba(60,50,35,0.12)] p-4">
+            <div class="text-xs text-tide-ink/55 uppercase">{{ t('vesselVisitStats.kpi.avgDwellDays') }}</div>
+            <div class="text-2xl font-bold text-tide-ink">{{ avgDwell === null ? '—' : avgDwell.toFixed(1) }}</div>
           </div>
-          <div data-test="kpi-on-time" class="bg-white rounded-lg border border-gray-200 p-4">
-            <div class="text-xs text-gray-500 uppercase">{{ t('vesselVisitStats.kpi.onTimeRate') }}</div>
-            <div class="text-2xl font-bold text-gray-900">{{ onTime === null ? '—' : (onTime * 100).toFixed(0) + '%' }}</div>
+          <div data-test="kpi-on-time" class="bg-[rgba(255,253,247,0.92)] rounded-lg border border-[rgba(60,50,35,0.12)] p-4">
+            <div class="text-xs text-tide-ink/55 uppercase">{{ t('vesselVisitStats.kpi.onTimeRate') }}</div>
+            <div class="text-2xl font-bold text-tide-ink">{{ onTime === null ? '—' : (onTime * 100).toFixed(0) + '%' }}</div>
           </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="bg-white rounded-lg border border-gray-200 p-4">
-            <div class="text-sm font-semibold text-gray-700 mb-2">{{ t('vesselVisitStats.chart.phaseDistribution') }}</div>
+          <div class="bg-[rgba(255,253,247,0.92)] rounded-lg border border-[rgba(60,50,35,0.12)] p-4">
+            <div class="text-sm font-semibold text-tide-ink/80 mb-2">{{ t('vesselVisitStats.chart.phaseDistribution') }}</div>
             <div style="height: 240px"><Pie :data="phaseChartData" :options="pieOptions" /></div>
           </div>
-          <div class="bg-white rounded-lg border border-gray-200 p-4">
-            <div class="text-sm font-semibold text-gray-700 mb-2">{{ t('vesselVisitStats.chart.monthlyVisits') }}</div>
+          <div class="bg-[rgba(255,253,247,0.92)] rounded-lg border border-[rgba(60,50,35,0.12)] p-4">
+            <div class="text-sm font-semibold text-tide-ink/80 mb-2">{{ t('vesselVisitStats.chart.monthlyVisits') }}</div>
             <div style="height: 240px"><Bar :data="monthlyData" :options="verticalBarOptions" /></div>
           </div>
-          <div class="bg-white rounded-lg border border-gray-200 p-4">
-            <div class="text-sm font-semibold text-gray-700 mb-2">{{ t('vesselVisitStats.chart.topVessels') }}</div>
+          <div class="bg-[rgba(255,253,247,0.92)] rounded-lg border border-[rgba(60,50,35,0.12)] p-4">
+            <div class="text-sm font-semibold text-tide-ink/80 mb-2">{{ t('vesselVisitStats.chart.topVessels') }}</div>
             <div style="height: 240px"><Bar :data="topVesselsData" :options="horizontalBarOptions" /></div>
           </div>
-          <div class="bg-white rounded-lg border border-gray-200 p-4">
-            <div class="text-sm font-semibold text-gray-700 mb-2">{{ t('vesselVisitStats.chart.serviceDistribution') }}</div>
+          <div class="bg-[rgba(255,253,247,0.92)] rounded-lg border border-[rgba(60,50,35,0.12)] p-4">
+            <div class="text-sm font-semibold text-tide-ink/80 mb-2">{{ t('vesselVisitStats.chart.serviceDistribution') }}</div>
             <div style="height: 240px"><Bar :data="serviceData" :options="horizontalBarOptions" /></div>
           </div>
         </div>

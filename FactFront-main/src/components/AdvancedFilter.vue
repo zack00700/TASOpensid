@@ -521,12 +521,12 @@ watch(
 </script>
 
 <template>
-  <div class="bg-white shadow rounded-lg">
+  <div class="bg-[rgba(255,253,247,0.92)] shadow rounded-lg">
     <!-- Header -->
-    <div class="px-4 py-3 border-b border-gray-200">
+    <div class="px-4 py-3 border-b border-[rgba(60,50,35,0.12)]">
       <button
         @click="isExpanded = !isExpanded"
-        class="flex items-center text-sm text-gray-700 hover:text-gray-900"
+        class="flex items-center text-sm text-tide-ink/80 hover:text-tide-ink"
       >
         <Filter class="h-4 w-4 mr-2" />
         {{ t('advancedFilter.header.title') }}
@@ -539,32 +539,32 @@ watch(
       <!-- Saved Filters -->
       <div class="mb-4">
         <div class="flex justify-between items-center mb-2">
-          <h3 class="text-sm font-medium text-gray-700">{{ t('advancedFilter.savedFilters.title') }}</h3>
+          <h3 class="text-sm font-medium text-tide-ink/80">{{ t('advancedFilter.savedFilters.title') }}</h3>
           <button
             v-if="filterGroups[0].conditions.length > 0"
             @click="showSaveFilterModal = true"
-            class="inline-flex items-center text-sm text-blue-600 hover:text-blue-800"
+            class="inline-flex items-center text-sm text-tide-blue-deep hover:text-blue-800"
           >
             <BookmarkPlus class="h-4 w-4 mr-1" />
             {{ t('advancedFilter.savedFilters.saveCurrent') }}
           </button>
         </div>
         <div class="space-y-2">
-          <div v-if="savedFilters.length === 0" class="text-sm text-gray-500">
+          <div v-if="savedFilters.length === 0" class="text-sm text-tide-ink/55">
             {{ t('advancedFilter.savedFilters.empty') }}
           </div>
           <div
             v-for="filter in savedFilters"
             :key="filter.id"
-            class="flex items-center justify-between p-2 bg-gray-50 rounded-md"
+            class="flex items-center justify-between p-2 bg-[rgba(252,247,238,0.55)] rounded-md"
           >
             <button
               @click="loadFilter(filter)"
               :class="[
                 'flex items-center text-sm',
                 activePreset === filter.id
-                  ? 'text-blue-600'
-                  : 'text-gray-700 hover:text-gray-900',
+                  ? 'text-tide-blue-deep'
+                  : 'text-tide-ink/80 hover:text-tide-ink',
               ]"
             >
               <Bookmark class="h-4 w-4 mr-2" />
@@ -572,7 +572,7 @@ watch(
             </button>
             <button
               @click="deleteFilter(filter.id)"
-              class="text-gray-400 hover:text-red-600"
+              class="text-tide-ink/40 hover:text-red-600"
             >
               <Trash2 class="h-4 w-4" />
             </button>
@@ -585,14 +585,14 @@ watch(
         <div
           v-for="group in filterGroups"
           :key="group.id"
-          class="p-4 bg-gray-50 rounded-lg"
+          class="p-4 bg-[rgba(252,247,238,0.55)] rounded-lg"
         >
           <!-- Group Header -->
           <div class="flex justify-between items-center mb-4">
             <div class="flex items-center space-x-4">
               <select
                 v-model="group.logicalOperator"
-                class="text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                class="text-sm border-[rgba(60,50,35,0.16)] rounded-md focus:ring-tide-blue focus:border-tide-blue"
               >
                 <option value="AND">{{ t('advancedFilter.logical.and') }}</option>
                 <option value="OR">{{ t('advancedFilter.logical.or') }}</option>
@@ -618,7 +618,7 @@ watch(
               <div v-if="condition.logicalOperator" class="col-span-1">
                 <select
                   v-model="condition.logicalOperator"
-                  class="block w-full text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                  class="block w-full text-sm border-[rgba(60,50,35,0.16)] rounded-md focus:ring-tide-blue focus:border-tide-blue"
                 >
                   <option value="AND">{{ t('advancedFilter.logical.and') }}</option>
                   <option value="OR">{{ t('advancedFilter.logical.or') }}</option>
@@ -630,7 +630,7 @@ watch(
                   <div class="w-1/4">
                     <select
                       v-model="condition.field"
-                      class="block w-full text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                      class="block w-full text-sm border-[rgba(60,50,35,0.16)] rounded-md focus:ring-tide-blue focus:border-tide-blue"
                     >
                       <option
                         v-for="(field, key) in filterFields"
@@ -646,7 +646,7 @@ watch(
                   <div class="w-1/4">
                     <select
                       v-model="condition.operator"
-                      class="block w-full text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                      class="block w-full text-sm border-[rgba(60,50,35,0.16)] rounded-md focus:ring-tide-blue focus:border-tide-blue"
                     >
                       <option
                         v-for="operator in filterFields[condition.field].operators"
@@ -663,7 +663,7 @@ watch(
                     <template v-if="filterFields[condition.field].type === 'select'">
                       <select
                         v-model="condition.value"
-                        class="block w-full text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                        class="block w-full text-sm border-[rgba(60,50,35,0.16)] rounded-md focus:ring-tide-blue focus:border-tide-blue"
                       >
                         <option
                           v-for="option in filterFields[condition.field].options"
@@ -681,7 +681,7 @@ watch(
                       <select
                         v-model="condition.value"
                         multiple
-                        class="block w-full text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                        class="block w-full text-sm border-[rgba(60,50,35,0.16)] rounded-md focus:ring-tide-blue focus:border-tide-blue"
                       >
                         <option
                           v-for="option in filterFields[condition.field].options"
@@ -698,13 +698,13 @@ watch(
                         <input
                           v-model="condition.value"
                           type="date"
-                          class="block w-full text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                          class="block w-full text-sm border-[rgba(60,50,35,0.16)] rounded-md focus:ring-tide-blue focus:border-tide-blue"
                         />
                         <input
                           v-if="condition.operator === 'between'"
                           v-model="condition.value2"
                           type="date"
-                          class="block w-full text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                          class="block w-full text-sm border-[rgba(60,50,35,0.16)] rounded-md focus:ring-tide-blue focus:border-tide-blue"
                         />
                       </div>
                     </template>
@@ -714,13 +714,13 @@ watch(
                         <input
                           v-model.number="condition.value"
                           type="number"
-                          class="block w-full text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                          class="block w-full text-sm border-[rgba(60,50,35,0.16)] rounded-md focus:ring-tide-blue focus:border-tide-blue"
                         />
                         <input
                           v-if="condition.operator === 'between'"
                           v-model.number="condition.value2"
                           type="number"
-                          class="block w-full text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                          class="block w-full text-sm border-[rgba(60,50,35,0.16)] rounded-md focus:ring-tide-blue focus:border-tide-blue"
                         />
                       </div>
                     </template>
@@ -729,7 +729,7 @@ watch(
                       <input
                         v-model="condition.value"
                         type="text"
-                        class="block w-full text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                        class="block w-full text-sm border-[rgba(60,50,35,0.16)] rounded-md focus:ring-tide-blue focus:border-tide-blue"
                       />
                     </template>
                   </div>
@@ -748,7 +748,7 @@ watch(
             <!-- Add Condition -->
             <button
               @click="addCondition(group.id)"
-              class="inline-flex items-center text-sm text-blue-600 hover:text-blue-800"
+              class="inline-flex items-center text-sm text-tide-blue-deep hover:text-blue-800"
             >
               <Plus class="h-4 w-4 mr-1" />
               {{ t('advancedFilter.action.addCondition') }}
@@ -761,7 +761,7 @@ watch(
       <div class="mt-4">
         <button
           @click="addFilterGroup"
-          class="inline-flex items-center text-sm text-blue-600 hover:text-blue-800"
+          class="inline-flex items-center text-sm text-tide-blue-deep hover:text-blue-800"
         >
           <Plus class="h-4 w-4 mr-1" />
           {{ t('advancedFilter.action.addGroup') }}
@@ -772,13 +772,13 @@ watch(
       <div class="mt-6 flex justify-end space-x-4">
         <button
           @click="clearFilters"
-          class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+          class="px-4 py-2 border border-[rgba(60,50,35,0.16)] rounded-md text-sm font-medium text-tide-ink/80 hover:bg-[rgba(252,247,238,0.55)]"
         >
           {{ t('advancedFilter.action.clear') }}
         </button>
         <button
           @click="applyFilters"
-          class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
+          class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-tide-blue-btn-deep hover:bg-tide-blue-deep"
         >
           {{ t('advancedFilter.action.apply') }}
         </button>
@@ -791,12 +791,12 @@ watch(
         v-if="showSaveFilterModal"
         class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50"
       >
-        <div class="bg-white rounded-lg p-6 max-w-md w-full">
+        <div class="bg-[rgba(255,253,247,0.92)] rounded-lg p-6 max-w-md w-full">
           <div class="flex justify-between items-center mb-4">
-            <h3 class="text-lg font-medium text-gray-900">{{ t('advancedFilter.modal.title') }}</h3>
+            <h3 class="text-lg font-medium text-tide-ink">{{ t('advancedFilter.modal.title') }}</h3>
             <button
               @click="showSaveFilterModal = false"
-              class="text-gray-400 hover:text-gray-500"
+              class="text-tide-ink/40 hover:text-tide-ink/55"
             >
               <X class="h-6 w-6" />
             </button>
@@ -804,11 +804,11 @@ watch(
 
           <div class="space-y-4">
             <div>
-              <label class="block text-sm font-medium text-gray-700"> {{ t('advancedFilter.modal.nameLabel') }} </label>
+              <label class="block text-sm font-medium text-tide-ink/80"> {{ t('advancedFilter.modal.nameLabel') }} </label>
               <input
                 v-model="newFilterName"
                 type="text"
-                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                class="mt-1 block w-full rounded-md border-[rgba(60,50,35,0.16)] shadow-sm focus:ring-tide-blue focus:border-tide-blue"
                 :placeholder="t('advancedFilter.modal.namePlaceholder')"
               />
             </div>
@@ -816,13 +816,13 @@ watch(
             <div class="flex justify-end space-x-3">
               <button
                 @click="showSaveFilterModal = false"
-                class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+                class="px-4 py-2 border border-[rgba(60,50,35,0.16)] rounded-md text-sm font-medium text-tide-ink/80 hover:bg-[rgba(252,247,238,0.55)]"
               >
                 {{ t('advancedFilter.modal.cancel') }}
               </button>
               <button
                 @click="saveFilter"
-                class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
+                class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-tide-blue-btn-deep hover:bg-tide-blue-deep"
               >
                 {{ t('advancedFilter.modal.save') }}
               </button>

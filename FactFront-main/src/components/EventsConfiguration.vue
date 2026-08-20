@@ -68,7 +68,7 @@ const getEventTypeClasses = (type: string) => {
     case "OUT":
       return `${baseClasses} text-red-600`;
     case "INTERMEDIATE":
-      return `${baseClasses} text-blue-600`;
+      return `${baseClasses} text-tide-blue-deep`;
     default:
       return baseClasses;
   }
@@ -139,7 +139,7 @@ const handleSubmit = async () => {
 
 const getInputClasses = (fieldName: string) => {
   return {
-    "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500": true,
+    "mt-1 block w-full rounded-md border-[rgba(60,50,35,0.16)] shadow-sm focus:border-tide-blue focus:ring-tide-blue": true,
     "border-red-300": !!errors.value[fieldName],
   };
 };
@@ -148,14 +148,14 @@ const getInputClasses = (fieldName: string) => {
 <template>
   <div>
     <!-- List View -->
-    <div v-if="!showForm" class="bg-white shadow rounded-lg">
+    <div v-if="!showForm" class="bg-[rgba(255,253,247,0.92)] shadow rounded-lg">
       <!-- Header -->
-      <div class="px-4 py-3 border-b border-gray-200">
+      <div class="px-4 py-3 border-b border-[rgba(60,50,35,0.12)]">
         <div class="flex justify-between items-center">
-          <h2 class="text-lg font-semibold text-gray-900">{{ t('eventsConfiguration.title') }}</h2>
+          <h2 class="text-lg font-semibold text-tide-ink">{{ t('eventsConfiguration.title') }}</h2>
           <button
             @click="handleAdd"
-            class="inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700"
+            class="inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-tide-blue-btn-deep hover:bg-tide-blue-deep"
           >
             <Plus class="h-4 w-4 mr-2" />
             {{ t('eventsConfiguration.action.newEvent') }}
@@ -165,22 +165,22 @@ const getInputClasses = (fieldName: string) => {
 
       <!-- Table -->
       <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
+        <table class="min-w-full divide-y divide-[rgba(42,36,30,0.08)]">
+          <thead class="bg-[rgba(252,247,238,0.55)]">
             <tr>
               <th
                 v-for="header in tableHeaders"
                 :key="header"
-                class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                class="px-4 py-3 text-left text-xs font-medium text-tide-ink/55 uppercase tracking-wider"
               >
                 {{ header }}
               </th>
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
-            <tr v-for="event in eventConfigs" :key="event.id" :data-test="`event-row-${event.id}`" class="hover:bg-gray-50">
+          <tbody class="bg-[rgba(255,253,247,0.92)] divide-y divide-[rgba(42,36,30,0.08)]">
+            <tr v-for="event in eventConfigs" :key="event.id" :data-test="`event-row-${event.id}`" class="hover:bg-[rgba(252,247,238,0.55)]">
               <td class="px-4 py-3 whitespace-nowrap">
-                <div class="text-sm font-medium text-gray-900">
+                <div class="text-sm font-medium text-tide-ink">
                   {{ event.eventName }}
                 </div>
               </td>
@@ -205,7 +205,7 @@ const getInputClasses = (fieldName: string) => {
                 <button
                   @click="handleEdit(event)"
                   :data-test="`event-edit-${event.id}`"
-                  class="text-blue-600 hover:text-blue-900 mr-3"
+                  class="text-tide-blue-deep hover:text-tide-blue-deep mr-3"
                   :aria-label="t('common.edit')"
                 >
                   <Pencil class="h-5 w-5" />
@@ -226,13 +226,13 @@ const getInputClasses = (fieldName: string) => {
     </div>
 
     <!-- Form View -->
-    <div v-else class="bg-white shadow rounded-lg">
-      <div class="px-4 py-3 border-b border-gray-200">
+    <div v-else class="bg-[rgba(255,253,247,0.92)] shadow rounded-lg">
+      <div class="px-4 py-3 border-b border-[rgba(60,50,35,0.12)]">
         <div class="flex justify-between items-center">
-          <h2 class="text-lg font-semibold text-gray-900">
+          <h2 class="text-lg font-semibold text-tide-ink">
             {{ editingEvent ? t('eventsConfiguration.form.editTitle') : t('eventsConfiguration.form.newTitle') }}
           </h2>
-          <button @click="showForm = false" class="text-gray-400 hover:text-gray-500" :aria-label="t('common.close')">
+          <button @click="showForm = false" class="text-tide-ink/40 hover:text-tide-ink/55" :aria-label="t('common.close')">
             <X class="h-6 w-6" />
           </button>
         </div>
@@ -242,7 +242,7 @@ const getInputClasses = (fieldName: string) => {
         <!-- Event Information -->
         <div class="space-y-6">
           <div>
-            <label class="block text-sm font-medium text-gray-700">
+            <label class="block text-sm font-medium text-tide-ink/80">
               {{ t('eventsConfiguration.field.eventName') }} <span class="text-red-500">*</span>
             </label>
             <input
@@ -258,7 +258,7 @@ const getInputClasses = (fieldName: string) => {
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700">
+            <label class="block text-sm font-medium text-tide-ink/80">
               {{ t('eventsConfiguration.field.eventType') }} <span class="text-red-500">*</span>
             </label>
             <div class="mt-2 space-y-4">
@@ -274,11 +274,11 @@ const getInputClasses = (fieldName: string) => {
                     :value="type.value"
                     v-model="formData.eventType"
                     name="event-type"
-                    class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                    class="h-4 w-4 text-tide-blue-deep border-[rgba(60,50,35,0.16)] focus:ring-tide-blue"
                   />
                 </div>
                 <div class="ml-3 text-sm">
-                  <label :for="type.value" class="font-medium text-gray-700">{{
+                  <label :for="type.value" class="font-medium text-tide-ink/80">{{
                     type.label
                   }}</label>
                 </div>
@@ -295,30 +295,30 @@ const getInputClasses = (fieldName: string) => {
                 <input
                   v-model="formData.billedEvent"
                   type="checkbox"
-                  class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  class="h-4 w-4 text-tide-blue-deep border-[rgba(60,50,35,0.16)] rounded focus:ring-tide-blue"
                 />
               </div>
               <div class="ml-3 text-sm">
-                <label class="font-medium text-gray-700">{{ t('eventsConfiguration.field.billedEvent') }}</label>
-                <p class="text-gray-500">{{ t('eventsConfiguration.field.billedEventHelp') }}</p>
+                <label class="font-medium text-tide-ink/80">{{ t('eventsConfiguration.field.billedEvent') }}</label>
+                <p class="text-tide-ink/55">{{ t('eventsConfiguration.field.billedEventHelp') }}</p>
               </div>
             </div>
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700">
+            <label class="block text-sm font-medium text-tide-ink/80">
               {{ t('eventConfig.field.scope') }}
             </label>
             <select
               v-model="formData.scope"
               data-test="event-form-scope"
-              class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              class="mt-1 block w-full rounded-md border border-[rgba(60,50,35,0.16)] px-3 py-2 shadow-sm focus:border-tide-blue focus:ring-tide-blue"
             >
               <option value="ITEM">{{ t('eventConfig.scope.ITEM') }}</option>
               <option value="VESSEL">{{ t('eventConfig.scope.VESSEL') }}</option>
               <option value="BOTH">{{ t('eventConfig.scope.BOTH') }}</option>
             </select>
-            <p class="mt-1 text-xs text-gray-500">{{ t('eventConfig.field.scopeHelp') }}</p>
+            <p class="mt-1 text-xs text-tide-ink/55">{{ t('eventConfig.field.scopeHelp') }}</p>
           </div>
         </div>
 
@@ -327,14 +327,14 @@ const getInputClasses = (fieldName: string) => {
           <button
             type="button"
             @click="showForm = false"
-            class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50"
+            class="px-4 py-2 border border-[rgba(60,50,35,0.16)] rounded-lg text-sm font-medium text-tide-ink/80 hover:bg-[rgba(252,247,238,0.55)]"
           >
             {{ t('common.cancel') }}
           </button>
           <button
             type="submit"
             data-test="event-form-save"
-            class="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
+            class="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-tide-blue-btn-deep hover:bg-tide-blue-deep"
           >
             <Save class="h-4 w-4 mr-2" />
             {{ editingEvent ? t('eventsConfiguration.action.saveChanges') : t('eventsConfiguration.action.createEvent') }}
@@ -349,18 +349,18 @@ const getInputClasses = (fieldName: string) => {
         v-if="showDeleteConfirm"
         class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50"
       >
-        <div class="bg-white rounded-lg p-6 max-w-md w-full">
+        <div class="bg-[rgba(255,253,247,0.92)] rounded-lg p-6 max-w-md w-full">
           <div class="text-center">
             <AlertCircle class="mx-auto h-12 w-12 text-red-500" />
-            <h3 class="mt-4 text-lg font-medium text-gray-900">{{ t('eventsConfiguration.delete.title') }}</h3>
-            <p class="mt-2 text-sm text-gray-500">
+            <h3 class="mt-4 text-lg font-medium text-tide-ink">{{ t('eventsConfiguration.delete.title') }}</h3>
+            <p class="mt-2 text-sm text-tide-ink/55">
               {{ t('eventsConfiguration.delete.confirm', { name: eventToDelete?.eventName }) }}
             </p>
           </div>
           <div class="mt-6 flex justify-end space-x-3">
             <button
               @click="showDeleteConfirm = false"
-              class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50"
+              class="px-4 py-2 border border-[rgba(60,50,35,0.16)] rounded-lg text-sm font-medium text-tide-ink/80 hover:bg-[rgba(252,247,238,0.55)]"
             >
               {{ t('common.cancel') }}
             </button>

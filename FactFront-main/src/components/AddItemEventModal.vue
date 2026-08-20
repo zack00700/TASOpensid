@@ -95,47 +95,47 @@ const selectedEventType = computed(() => {
 </script>
 
 <template>
-  <div class="bg-white rounded-lg shadow p-6 w-full">
+  <div class="bg-[rgba(255,253,247,0.92)] rounded-lg shadow p-6 w-full">
     <div class="flex justify-between items-center mb-4">
-      <h3 class="text-lg font-medium text-gray-900">{{ t('addItemEventModal.title') }}</h3>
+      <h3 class="text-lg font-medium text-tide-ink">{{ t('addItemEventModal.title') }}</h3>
       <button @click="emit('cancel')" :aria-label="t('common.close')">
-        <X class="h-5 w-5 text-gray-500" />
+        <X class="h-5 w-5 text-tide-ink/55" />
       </button>
     </div>
     <form @submit.prevent="handleSubmit" class="space-y-4">
       <div>
-        <label class="block text-sm font-medium text-gray-700">{{ t('addItemEventModal.field.event') }}<span class="text-red-500">*</span></label>
+        <label class="block text-sm font-medium text-tide-ink/80">{{ t('addItemEventModal.field.event') }}<span class="text-red-500">*</span></label>
         <input
           v-model="query"
           type="text"
           :disabled="isSubmitting"
-          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          class="mt-1 block w-full rounded-md border-[rgba(60,50,35,0.16)] shadow-sm focus:border-tide-blue focus:ring-tide-blue"
         />
         <ul
           v-if="suggestions.length"
-          class="border rounded-md mt-1 bg-white max-h-40 overflow-auto"
+          class="border rounded-md mt-1 bg-[rgba(255,253,247,0.92)] max-h-40 overflow-auto"
         >
           <li
             v-for="s in suggestions"
             :key="s.id"
             @mousedown.prevent="selectEvent(s)"
-            class="px-3 py-2 hover:bg-gray-100 cursor-pointer"
+            class="px-3 py-2 hover:bg-[rgba(42,36,30,0.05)] cursor-pointer"
           >
             {{ s.eventName }}
           </li>
         </ul>
         <p v-if="errors.event" class="mt-1 text-sm text-red-600">{{ errors.event }}</p>
       </div>
-      <div v-if="selectedEventType" class="text-sm text-gray-600">
+      <div v-if="selectedEventType" class="text-sm text-tide-ink/70">
         {{ t('addItemEventModal.label.type', { type: selectedEventType }) }}
       </div>
       <div>
-        <label class="block text-sm font-medium text-gray-700">{{ t('addItemEventModal.field.eventDateTime') }}<span class="text-red-500">*</span></label>
+        <label class="block text-sm font-medium text-tide-ink/80">{{ t('addItemEventModal.field.eventDateTime') }}<span class="text-red-500">*</span></label>
         <input
           v-model="eventDate"
           type="datetime-local"
           :disabled="isSubmitting"
-          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          class="mt-1 block w-full rounded-md border-[rgba(60,50,35,0.16)] shadow-sm focus:border-tide-blue focus:ring-tide-blue"
         />
         <p v-if="errors.eventDate" class="mt-1 text-sm text-red-600">{{ errors.eventDate }}</p>
       </div>
@@ -145,14 +145,14 @@ const selectedEventType = computed(() => {
           type="button"
           @click="emit('cancel')"
           :disabled="isSubmitting"
-          class="px-4 py-2 border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50"
+          class="px-4 py-2 border border-[rgba(60,50,35,0.16)] rounded-md text-sm text-tide-ink/80 hover:bg-[rgba(252,247,238,0.55)]"
         >
           {{ t('common.cancel') }}
         </button>
         <button
           type="submit"
           :disabled="isSubmitting"
-          class="px-4 py-2 rounded-md text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
+          class="px-4 py-2 rounded-md text-sm font-medium text-white bg-tide-blue-btn-deep hover:bg-tide-blue-deep disabled:opacity-50"
         >
           {{ t('addItemEventModal.action.addEvent') }}
         </button>

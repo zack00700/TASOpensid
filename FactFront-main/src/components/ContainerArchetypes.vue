@@ -79,10 +79,10 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="bg-white shadow rounded-lg">
-    <div class="px-4 py-3 border-b border-gray-200">
+  <div class="bg-[rgba(255,253,247,0.92)] shadow rounded-lg">
+    <div class="px-4 py-3 border-b border-[rgba(60,50,35,0.12)]">
       <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-        <h2 class="text-lg font-semibold text-gray-900">
+        <h2 class="text-lg font-semibold text-tide-ink">
           {{ t('archetypes.title', { count: filtered.length }) }}
         </h2>
         <div class="flex flex-wrap items-center gap-2">
@@ -91,14 +91,14 @@ onMounted(async () => {
             data-test="arch-search"
             type="search"
             :placeholder="t('archetypes.placeholder.search')"
-            class="w-full sm:w-48 px-3 py-2 border border-gray-300 rounded-md text-sm"
+            class="w-full sm:w-48 px-3 py-2 border border-[rgba(60,50,35,0.16)] rounded-md text-sm"
           />
           <button
             v-if="isAdmin"
             @click="onAdd"
             data-test="arch-add"
             :title="t('archetypes.button.add')"
-            class="inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+            class="inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-tide-blue-btn-deep hover:bg-tide-blue-deep"
           >
             <Plus class="h-4 w-4 sm:mr-2" />
             <span class="hidden sm:inline">{{ t('archetypes.button.add') }}</span>
@@ -108,36 +108,36 @@ onMounted(async () => {
     </div>
 
     <div class="overflow-x-auto">
-      <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
+      <table class="min-w-full divide-y divide-[rgba(42,36,30,0.08)]">
+        <thead class="bg-[rgba(252,247,238,0.55)]">
           <tr>
-            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ t('archetypes.column.code') }}</th>
-            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ t('archetypes.column.name') }}</th>
-            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ t('archetypes.column.description') }}</th>
-            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ t('archetypes.column.assigned') }}</th>
-            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ t('archetypes.column.status') }}</th>
-            <th class="sticky right-0 bg-gray-50 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider shadow-[-4px_0_4px_-4px_rgba(0,0,0,0.06)]">{{ t('archetypes.column.actions') }}</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-tide-ink/55 uppercase tracking-wider">{{ t('archetypes.column.code') }}</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-tide-ink/55 uppercase tracking-wider">{{ t('archetypes.column.name') }}</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-tide-ink/55 uppercase tracking-wider">{{ t('archetypes.column.description') }}</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-tide-ink/55 uppercase tracking-wider">{{ t('archetypes.column.assigned') }}</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-tide-ink/55 uppercase tracking-wider">{{ t('archetypes.column.status') }}</th>
+            <th class="sticky right-0 bg-[rgba(252,247,238,0.55)] px-4 py-3 text-left text-xs font-medium text-tide-ink/55 uppercase tracking-wider shadow-[-4px_0_4px_-4px_rgba(0,0,0,0.06)]">{{ t('archetypes.column.actions') }}</th>
           </tr>
         </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-          <tr v-for="a in filtered" :key="a.id" :data-test="`arch-row-${a.id}`" class="group hover:bg-gray-50">
+        <tbody class="bg-[rgba(255,253,247,0.92)] divide-y divide-[rgba(42,36,30,0.08)]">
+          <tr v-for="a in filtered" :key="a.id" :data-test="`arch-row-${a.id}`" class="group hover:bg-[rgba(252,247,238,0.55)]">
             <td class="px-4 py-3 whitespace-nowrap font-mono text-sm">{{ a.code }}</td>
-            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{{ a.name }}</td>
-            <td class="px-4 py-3 text-sm text-gray-700 max-w-xs truncate" :title="a.description">{{ a.description }}</td>
+            <td class="px-4 py-3 whitespace-nowrap text-sm text-tide-ink">{{ a.name }}</td>
+            <td class="px-4 py-3 text-sm text-tide-ink/80 max-w-xs truncate" :title="a.description">{{ a.description }}</td>
             <td class="px-4 py-3 whitespace-nowrap text-sm">
-              <span :data-test="`arch-count-${a.id}`" class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">{{ assignedCount[a.id ?? ''] ?? 0 }}</span>
+              <span :data-test="`arch-count-${a.id}`" class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[rgba(90,138,171,0.10)] text-tide-blue-deep border border-blue-200">{{ assignedCount[a.id ?? ''] ?? 0 }}</span>
             </td>
             <td class="px-4 py-3 whitespace-nowrap text-sm">
               <span v-if="a.isActive" class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">{{ t('archetypes.status.active') }}</span>
               <span v-else class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red-700 border border-red-200">{{ t('archetypes.status.inactive') }}</span>
             </td>
-            <td class="sticky right-0 bg-white group-hover:bg-gray-50 transition-colors duration-150 px-4 py-3 whitespace-nowrap text-right text-sm font-medium shadow-[-4px_0_4px_-4px_rgba(0,0,0,0.06)]">
+            <td class="sticky right-0 bg-[rgba(255,253,247,0.92)] group-hover:bg-[rgba(252,247,238,0.55)] transition-colors duration-150 px-4 py-3 whitespace-nowrap text-right text-sm font-medium shadow-[-4px_0_4px_-4px_rgba(0,0,0,0.06)]">
               <div class="flex items-center justify-end space-x-2">
                 <button
                   v-if="isAdmin"
                   @click="onEdit(a)"
                   :data-test="`arch-edit-${a.id}`"
-                  class="text-blue-600 hover:text-blue-900 p-1 rounded hover:bg-blue-50"
+                  class="text-tide-blue-deep hover:text-tide-blue-deep p-1 rounded hover:bg-[rgba(90,138,171,0.10)]"
                   :title="t('archetypes.button.edit')"
                 >
                   <Pencil class="h-4 w-4" />
@@ -167,40 +167,40 @@ onMounted(async () => {
       data-test="arch-modal"
       class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50"
     >
-      <div class="bg-white rounded-lg max-w-lg w-full">
-        <div class="px-4 py-3 border-b border-gray-200">
-          <h3 class="text-lg font-medium text-gray-900">
+      <div class="bg-[rgba(255,253,247,0.92)] rounded-lg max-w-lg w-full">
+        <div class="px-4 py-3 border-b border-[rgba(60,50,35,0.12)]">
+          <h3 class="text-lg font-medium text-tide-ink">
             {{ modalIsCreate ? t('archetypes.modal.createTitle') : t('archetypes.modal.editTitle') }}
           </h3>
         </div>
         <div class="px-4 py-3 space-y-3">
           <div>
-            <label class="block text-sm font-medium text-gray-700">{{ t('archetypes.field.code') }}</label>
+            <label class="block text-sm font-medium text-tide-ink/80">{{ t('archetypes.field.code') }}</label>
             <input
               v-model="editing.code"
               data-test="arch-modal-code"
-              class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm text-sm px-3 py-2"
+              class="mt-1 block w-full rounded-md border border-[rgba(60,50,35,0.16)] shadow-sm text-sm px-3 py-2"
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700">{{ t('archetypes.field.name') }}</label>
+            <label class="block text-sm font-medium text-tide-ink/80">{{ t('archetypes.field.name') }}</label>
             <input
               v-model="editing.name"
               data-test="arch-modal-name"
-              class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm text-sm px-3 py-2"
+              class="mt-1 block w-full rounded-md border border-[rgba(60,50,35,0.16)] shadow-sm text-sm px-3 py-2"
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700">{{ t('archetypes.field.description') }}</label>
-            <textarea v-model="editing.description" rows="2" class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm text-sm px-3 py-2"></textarea>
+            <label class="block text-sm font-medium text-tide-ink/80">{{ t('archetypes.field.description') }}</label>
+            <textarea v-model="editing.description" rows="2" class="mt-1 block w-full rounded-md border border-[rgba(60,50,35,0.16)] shadow-sm text-sm px-3 py-2"></textarea>
           </div>
           <label class="inline-flex items-center text-sm gap-2">
             <input v-model="editing.isActive" type="checkbox" /> {{ t('archetypes.field.isActive') }}
           </label>
         </div>
-        <div class="px-4 py-3 border-t border-gray-200 flex justify-end gap-2">
-          <button @click="showModal = false" data-test="arch-modal-cancel" class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">{{ t('common.cancel') }}</button>
-          <button @click="onSave" data-test="arch-modal-save" class="px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">{{ t('common.save') }}</button>
+        <div class="px-4 py-3 border-t border-[rgba(60,50,35,0.12)] flex justify-end gap-2">
+          <button @click="showModal = false" data-test="arch-modal-cancel" class="px-4 py-2 border border-[rgba(60,50,35,0.16)] rounded-md text-sm font-medium text-tide-ink/80 hover:bg-[rgba(252,247,238,0.55)]">{{ t('common.cancel') }}</button>
+          <button @click="onSave" data-test="arch-modal-save" class="px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-tide-blue-btn-deep hover:bg-tide-blue-deep">{{ t('common.save') }}</button>
         </div>
       </div>
     </div>

@@ -124,15 +124,15 @@ const flatEvents = computed<Event[]>(() => {
 </script>
 
 <template>
-  <div class="bg-white rounded-lg shadow p-6 w-full max-h-[80vh] overflow-y-auto">
+  <div class="bg-[rgba(255,253,247,0.92)] rounded-lg shadow p-6 w-full max-h-[80vh] overflow-y-auto">
     <div class="flex justify-between items-center mb-4">
-      <h3 class="text-lg font-medium text-gray-900">{{ t('itemEventHistory.title') }}</h3>
+      <h3 class="text-lg font-medium text-tide-ink">{{ t('itemEventHistory.title') }}</h3>
       <button @click="emit('close')" :aria-label="t('common.close')">
-        <X class="h-5 w-5 text-gray-500" />
+        <X class="h-5 w-5 text-tide-ink/55" />
       </button>
     </div>
     <div class="flex items-center space-x-4 mb-4">
-      <select v-model="statusFilter" class="border-gray-300 rounded-md text-sm">
+      <select v-model="statusFilter" class="border-[rgba(60,50,35,0.16)] rounded-md text-sm">
         <option value="">{{ t('payments.filter.allStatuses') }}</option>
         <option value="IN_PROGRESS">IN_PROGRESS</option>
         <option value="COMPLETED">COMPLETED</option>
@@ -140,19 +140,19 @@ const flatEvents = computed<Event[]>(() => {
       </select>
       <button
         @click="sortDesc = !sortDesc"
-        class="text-sm text-blue-600 hover:underline"
+        class="text-sm text-tide-blue-deep hover:underline"
       >
         {{ sortDesc ? t('itemEventHistory.sortDesc') : t('itemEventHistory.sortAsc') }}
       </button>
       <button
         @click="refresh"
-        class="text-sm text-blue-600 hover:underline"
+        class="text-sm text-tide-blue-deep hover:underline"
         :aria-label="t('itemEventHistory.refresh')"
       >
         {{ t('itemEventHistory.refresh') }}
       </button>
     </div>
-    <div v-if="loading" class="text-center text-gray-500">{{ t('common.loading') }}</div>
+    <div v-if="loading" class="text-center text-tide-ink/55">{{ t('common.loading') }}</div>
     <div
       v-else-if="error"
       class="bg-red-100 text-red-700 p-2 rounded mb-4"
@@ -160,7 +160,7 @@ const flatEvents = computed<Event[]>(() => {
       {{ error }}
       <button @click="refresh" class="ml-2 underline">{{ t('itemEventHistory.retry') }}</button>
     </div>
-    <div v-else-if="flatEvents.length === 0" class="text-center text-gray-500">
+    <div v-else-if="flatEvents.length === 0" class="text-center text-tide-ink/55">
       {{ t('itemEventHistory.empty') }}
     </div>
     <div v-else>

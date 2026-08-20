@@ -81,20 +81,20 @@ const showingEnd = computed(() => {
 </script>
 
 <template>
-  <div class="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
+  <div class="flex items-center justify-between border-t border-[rgba(60,50,35,0.12)] bg-[rgba(255,253,247,0.92)] px-4 py-3 sm:px-6">
     <!-- Mobile pagination -->
     <div class="flex flex-1 justify-between sm:hidden">
       <button
         @click="handlePageChange(pagination.currentPage - 1)"
         :disabled="!pagination.hasPrevious"
-        class="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+        class="relative inline-flex items-center rounded-md border border-[rgba(60,50,35,0.16)] bg-[rgba(255,253,247,0.92)] px-4 py-2 text-sm font-medium text-tide-ink/80 hover:bg-[rgba(252,247,238,0.55)] disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {{ t('pagination.previous') }}
       </button>
       <button
         @click="handlePageChange(pagination.currentPage + 1)"
         :disabled="!pagination.hasNext"
-        class="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+        class="relative ml-3 inline-flex items-center rounded-md border border-[rgba(60,50,35,0.16)] bg-[rgba(255,253,247,0.92)] px-4 py-2 text-sm font-medium text-tide-ink/80 hover:bg-[rgba(252,247,238,0.55)] disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {{ t('pagination.next') }}
       </button>
@@ -104,7 +104,7 @@ const showingEnd = computed(() => {
     <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
       <!-- Results info and page size selector -->
       <div class="flex items-center space-x-4">
-        <p class="text-sm text-gray-700">
+        <p class="text-sm text-tide-ink/80">
           {{ t('pagination.showing') }}
           <span class="font-medium">{{ showingStart }}</span>
           {{ t('pagination.to') }}
@@ -115,12 +115,12 @@ const showingEnd = computed(() => {
         </p>
 
         <div class="flex items-center space-x-2">
-          <label for="page-size" class="text-sm text-gray-700">{{ t('pagination.show') }}</label>
+          <label for="page-size" class="text-sm text-tide-ink/80">{{ t('pagination.show') }}</label>
           <select
             id="page-size"
             :value="pagination.pageSize"
             @change="handleSizeChange"
-            class="rounded-md border border-gray-300 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            class="rounded-md border border-[rgba(60,50,35,0.16)] text-sm focus:border-tide-blue focus:ring-1 focus:ring-tide-blue"
           >
             <option v-for="size in pageSizeOptions" :key="size" :value="size">
               {{ size }}
@@ -135,7 +135,7 @@ const showingEnd = computed(() => {
         <button
           @click="handlePageChange(1)"
           :disabled="pagination.currentPage === 1"
-          class="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed"
+          class="relative inline-flex items-center rounded-l-md px-2 py-2 text-tide-ink/40 ring-1 ring-inset ring-gray-300 hover:bg-[rgba(252,247,238,0.55)] focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed"
           :title="t('pagination.label.firstPage')"
         >
           <ChevronsLeft class="h-5 w-5" />
@@ -145,7 +145,7 @@ const showingEnd = computed(() => {
         <button
           @click="handlePageChange(pagination.currentPage - 1)"
           :disabled="!pagination.hasPrevious"
-          class="relative inline-flex items-center px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed"
+          class="relative inline-flex items-center px-2 py-2 text-tide-ink/40 ring-1 ring-inset ring-gray-300 hover:bg-[rgba(252,247,238,0.55)] focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed"
           :title="t('pagination.label.previousPage')"
         >
           <ChevronLeft class="h-5 w-5" />
@@ -156,7 +156,7 @@ const showingEnd = computed(() => {
           <!-- Show ellipsis before if needed -->
           <span
             v-if="visiblePages[0] > 1"
-            class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-700 ring-1 ring-inset ring-gray-300"
+            class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-tide-ink/80 ring-1 ring-inset ring-gray-300"
           >
             ...
           </span>
@@ -167,10 +167,10 @@ const showingEnd = computed(() => {
             :key="page"
             @click="handlePageChange(page)"
             :class="[
-              'relative inline-flex items-center px-4 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0',
+              'relative inline-flex items-center px-4 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300 hover:bg-[rgba(252,247,238,0.55)] focus:z-20 focus:outline-offset-0',
               page === pagination.currentPage
-                ? 'z-10 bg-blue-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600'
-                : 'text-gray-900'
+                ? 'z-10 bg-tide-blue-btn-deep text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600'
+                : 'text-tide-ink'
             ]"
           >
             {{ page }}
@@ -179,7 +179,7 @@ const showingEnd = computed(() => {
           <!-- Show ellipsis after if needed -->
           <span
             v-if="visiblePages[visiblePages.length - 1] < pagination.totalPages"
-            class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-700 ring-1 ring-inset ring-gray-300"
+            class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-tide-ink/80 ring-1 ring-inset ring-gray-300"
           >
             ...
           </span>
@@ -189,7 +189,7 @@ const showingEnd = computed(() => {
         <button
           @click="handlePageChange(pagination.currentPage + 1)"
           :disabled="!pagination.hasNext"
-          class="relative inline-flex items-center px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed"
+          class="relative inline-flex items-center px-2 py-2 text-tide-ink/40 ring-1 ring-inset ring-gray-300 hover:bg-[rgba(252,247,238,0.55)] focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed"
           :title="t('pagination.label.nextPage')"
         >
           <ChevronRight class="h-5 w-5" />
@@ -199,7 +199,7 @@ const showingEnd = computed(() => {
         <button
           @click="handlePageChange(pagination.totalPages)"
           :disabled="pagination.currentPage === pagination.totalPages"
-          class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed"
+          class="relative inline-flex items-center rounded-r-md px-2 py-2 text-tide-ink/40 ring-1 ring-inset ring-gray-300 hover:bg-[rgba(252,247,238,0.55)] focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed"
           :title="t('pagination.label.lastPage')"
         >
           <ChevronsRight class="h-5 w-5" />

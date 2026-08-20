@@ -345,17 +345,17 @@ const formatDateRange = (startDate?: string, endDate?: string) => {
 
 const getInputClasses = (fieldName: string) => {
   return {
-    "block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors duration-200": true,
+    "block w-full rounded-lg border-[rgba(60,50,35,0.16)] shadow-sm focus:border-tide-blue focus:ring-tide-blue transition-colors duration-200": true,
     "border-red-300 focus:border-red-500 focus:ring-red-500": errors.value[fieldName],
   };
 };
 
 const getCardClasses = (rate: Rate) => {
   return {
-    "group relative bg-white border-2 rounded-xl hover:shadow-lg transition-all duration-200 overflow-hidden": true,
+    "group relative bg-[rgba(255,253,247,0.92)] border-2 rounded-xl hover:shadow-lg transition-all duration-200 overflow-hidden": true,
     "border-yellow-200 bg-yellow-50": rate.defaultRate,
-    "border-gray-200 hover:border-blue-300": !rate.defaultRate,
-    "ring-2 ring-blue-500 border-blue-500": selectedRates.value.includes(rate.id)
+    "border-[rgba(60,50,35,0.12)] hover:border-blue-300": !rate.defaultRate,
+    "ring-2 ring-tide-blue border-tide-blue": selectedRates.value.includes(rate.id)
   };
 };
 </script>
@@ -364,19 +364,19 @@ const getCardClasses = (rate: Rate) => {
   <div class="space-y-6">
 
     <!-- Header Section -->
-    <div class="bg-white rounded-lg border border-gray-200 p-6">
+    <div class="bg-[rgba(255,253,247,0.92)] rounded-lg border border-[rgba(60,50,35,0.12)] p-6">
       <div class="flex items-center justify-between mb-4">
         <div class="flex items-center space-x-3">
           <component :is="getRateTypeIcon()" class="h-6 w-6 text-blue-500" />
           <div>
-            <h3 class="text-lg font-semibold text-gray-900">{{ t('contractRateManagement.rateManagement') }}</h3>
-            <p class="text-sm text-gray-500">{{ t('contractRateManagement.configurePricingTiers', { calculationType }) }}</p>
+            <h3 class="text-lg font-semibold text-tide-ink">{{ t('contractRateManagement.rateManagement') }}</h3>
+            <p class="text-sm text-tide-ink/55">{{ t('contractRateManagement.configurePricingTiers', { calculationType }) }}</p>
           </div>
         </div>
         <button
           type="button"
           @click="handleAddRate"
-          class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+          class="inline-flex items-center px-4 py-2 bg-tide-blue-btn-deep border border-transparent rounded-lg shadow-sm text-sm font-medium text-white hover:bg-tide-blue-deep focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-tide-blue transition-colors duration-200"
         >
           <Plus class="h-4 w-4 mr-2" />
           {{ t('contractRateManagement.addRate') }}
@@ -385,12 +385,12 @@ const getCardClasses = (rate: Rate) => {
 
       <!-- Statistics -->
       <div v-if="hasRates" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div class="bg-gray-50 rounded-lg p-4">
+        <div class="bg-[rgba(252,247,238,0.55)] rounded-lg p-4">
           <div class="flex items-center">
-            <Hash class="h-5 w-5 text-gray-400 mr-2" />
+            <Hash class="h-5 w-5 text-tide-ink/40 mr-2" />
             <div>
-              <p class="text-sm font-medium text-gray-900">{{ totalRates }}</p>
-              <p class="text-xs text-gray-500">{{ t('contractRateManagement.totalRates') }}</p>
+              <p class="text-sm font-medium text-tide-ink">{{ totalRates }}</p>
+              <p class="text-xs text-tide-ink/55">{{ t('contractRateManagement.totalRates') }}</p>
             </div>
           </div>
         </div>
@@ -398,19 +398,19 @@ const getCardClasses = (rate: Rate) => {
           <div class="flex items-center">
             <Star class="h-5 w-5 text-yellow-500 mr-2" />
             <div>
-              <p class="text-sm font-medium text-gray-900">{{ hasDefaultRate ? t('common.yes') : t('common.no') }}</p>
-              <p class="text-xs text-gray-500">{{ t('contractRateManagement.defaultRateSet') }}</p>
+              <p class="text-sm font-medium text-tide-ink">{{ hasDefaultRate ? t('common.yes') : t('common.no') }}</p>
+              <p class="text-xs text-tide-ink/55">{{ t('contractRateManagement.defaultRateSet') }}</p>
             </div>
           </div>
         </div>
-        <div class="bg-blue-50 rounded-lg p-4">
+        <div class="bg-[rgba(90,138,171,0.10)] rounded-lg p-4">
           <div class="flex items-center">
             <DollarSign class="h-5 w-5 text-blue-500 mr-2" />
             <div>
-              <p class="text-sm font-medium text-gray-900">
+              <p class="text-sm font-medium text-tide-ink">
                 {{ rates.length > 0 ? `${Math.min(...rates.map(r => r.amount))} - ${Math.max(...rates.map(r => r.amount))}` : '0' }}
               </p>
-              <p class="text-xs text-gray-500">{{ t('contractRateManagement.rateRange') }}</p>
+              <p class="text-xs text-tide-ink/55">{{ t('contractRateManagement.rateRange') }}</p>
             </div>
           </div>
         </div>
@@ -418,10 +418,10 @@ const getCardClasses = (rate: Rate) => {
     </div>
 
     <!-- Bulk Actions -->
-    <div v-if="selectedRates.length > 0" class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+    <div v-if="selectedRates.length > 0" class="bg-[rgba(90,138,171,0.10)] border border-blue-200 rounded-lg p-4">
       <div class="flex items-center justify-between">
         <div class="flex items-center">
-          <span class="text-sm font-medium text-blue-900">
+          <span class="text-sm font-medium text-tide-blue-deep">
             {{ t('contractRateManagement.ratesSelected', { count: selectedRates.length }, selectedRates.length) }}
           </span>
         </div>
@@ -429,7 +429,7 @@ const getCardClasses = (rate: Rate) => {
           <button
             type="button"
             @click="selectedRates = []"
-            class="text-sm text-blue-700 hover:text-blue-900"
+            class="text-sm text-tide-blue-deep hover:text-tide-blue-deep"
           >
             {{ t('contractRateManagement.clearSelection') }}
           </button>
@@ -457,20 +457,20 @@ const getCardClasses = (rate: Rate) => {
               :checked="selectedRates.length === rates.length && rates.length > 0"
               :indeterminate="selectedRates.length > 0 && selectedRates.length < rates.length"
               @change="toggleSelectAll"
-              class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+              class="h-4 w-4 text-tide-blue-deep border-[rgba(60,50,35,0.16)] rounded focus:ring-tide-blue"
             />
-            <label class="ml-2 text-sm text-gray-700">{{ t('contractRateManagement.selectAll') }}</label>
+            <label class="ml-2 text-sm text-tide-ink/80">{{ t('contractRateManagement.selectAll') }}</label>
           </div>
         </div>
 
         <div class="flex items-center space-x-2">
-          <span class="text-sm text-gray-500">{{ t('itemLifecycleView.sortBy') }}</span>
+          <span class="text-sm text-tide-ink/55">{{ t('itemLifecycleView.sortBy') }}</span>
           <button
             type="button"
             @click="toggleSort('priority')"
             :class="[
               'inline-flex items-center px-3 py-1.5 text-sm rounded-md',
-              sortBy === 'priority' ? 'bg-blue-100 text-blue-700' : 'text-gray-500 hover:text-gray-700'
+              sortBy === 'priority' ? 'bg-blue-100 text-tide-blue-deep' : 'text-tide-ink/55 hover:text-tide-ink/80'
             ]"
           >
             {{ t('contractRateManagement.priority') }}
@@ -481,7 +481,7 @@ const getCardClasses = (rate: Rate) => {
             @click="toggleSort('amount')"
             :class="[
               'inline-flex items-center px-3 py-1.5 text-sm rounded-md',
-              sortBy === 'amount' ? 'bg-blue-100 text-blue-700' : 'text-gray-500 hover:text-gray-700'
+              sortBy === 'amount' ? 'bg-blue-100 text-tide-blue-deep' : 'text-tide-ink/55 hover:text-tide-ink/80'
             ]"
           >
             {{ t('payments.column.alloc.amount') }}
@@ -493,7 +493,7 @@ const getCardClasses = (rate: Rate) => {
             @click="toggleSort('quantity')"
             :class="[
               'inline-flex items-center px-3 py-1.5 text-sm rounded-md',
-              sortBy === 'quantity' ? 'bg-blue-100 text-blue-700' : 'text-gray-500 hover:text-gray-700'
+              sortBy === 'quantity' ? 'bg-blue-100 text-tide-blue-deep' : 'text-tide-ink/55 hover:text-tide-ink/80'
             ]"
           >
             {{ t('contractRateManagement.quantity') }}
@@ -505,7 +505,7 @@ const getCardClasses = (rate: Rate) => {
             @click="toggleSort('date')"
             :class="[
               'inline-flex items-center px-3 py-1.5 text-sm rounded-md',
-              sortBy === 'date' ? 'bg-blue-100 text-blue-700' : 'text-gray-500 hover:text-gray-700'
+              sortBy === 'date' ? 'bg-blue-100 text-tide-blue-deep' : 'text-tide-ink/55 hover:text-tide-ink/80'
             ]"
           >
             {{ t('payments.column.alloc.date') }}
@@ -527,7 +527,7 @@ const getCardClasses = (rate: Rate) => {
               v-model="selectedRates"
               :value="rate.id"
               type="checkbox"
-              class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+              class="h-4 w-4 text-tide-blue-deep border-[rgba(60,50,35,0.16)] rounded focus:ring-tide-blue"
             />
           </div>
 
@@ -543,13 +543,13 @@ const getCardClasses = (rate: Rate) => {
             <!-- Rate Amount -->
             <div class="mb-4">
               <div class="flex items-baseline space-x-1">
-                <span class="text-2xl font-bold text-gray-900">{{ rate.amount }}</span>
-                <span class="text-lg text-gray-600">{{ rate.currency }}</span>
+                <span class="text-2xl font-bold text-tide-ink">{{ rate.amount }}</span>
+                <span class="text-lg text-tide-ink/70">{{ rate.currency }}</span>
               </div>
-              <p class="text-sm text-gray-500">
+              <p class="text-sm text-tide-ink/55">
                 {{ t('contractRateManagement.perUnit', { unit: rate.unitOfMeasurement || t('contractRateManagement.unit') }) }}
               </p>
-              <p v-if="rate.flatCost && rate.flatCost > 0" class="text-sm text-gray-500 mt-1">
+              <p v-if="rate.flatCost && rate.flatCost > 0" class="text-sm text-tide-ink/55 mt-1">
                 {{ t('contractRateManagement.flatCostSummary', { amount: rate.flatCost, currency: rate.currency }) }}
               </p>
             </div>
@@ -557,22 +557,22 @@ const getCardClasses = (rate: Rate) => {
             <!-- Rate Details -->
             <div class="space-y-3">
               <div v-if="rate.startQuantity !== undefined && rate.endQuantity !== undefined" class="flex items-center text-sm">
-                <Package class="h-4 w-4 text-gray-400 mr-2 flex-shrink-0" />
-                <span class="text-gray-600">
+                <Package class="h-4 w-4 text-tide-ink/40 mr-2 flex-shrink-0" />
+                <span class="text-tide-ink/70">
                   {{ rate.startQuantity }} - {{ rate.endQuantity }} {{ rate.unitOfMeasurement }}
                 </span>
               </div>
 
               <div v-if="rate.startDate && rate.endDate" class="flex items-center text-sm">
-                <Calendar class="h-4 w-4 text-gray-400 mr-2 flex-shrink-0" />
-                <span class="text-gray-600">
+                <Calendar class="h-4 w-4 text-tide-ink/40 mr-2 flex-shrink-0" />
+                <span class="text-tide-ink/70">
                   {{ formatDateRange(rate.startDate, rate.endDate) }}
                 </span>
               </div>
 
               <div class="flex items-center text-sm">
-                <Hash class="h-4 w-4 text-gray-400 mr-2 flex-shrink-0" />
-                <span class="text-gray-600">{{ t('contractRateManagement.priorityValue', { priority: rate.priority }) }}</span>
+                <Hash class="h-4 w-4 text-tide-ink/40 mr-2 flex-shrink-0" />
+                <span class="text-tide-ink/70">{{ t('contractRateManagement.priorityValue', { priority: rate.priority }) }}</span>
               </div>
 
               <div v-if="rate.applicableCategory || rate.applicableFreightKind" class="flex flex-wrap gap-1 mt-1">
@@ -586,12 +586,12 @@ const getCardClasses = (rate: Rate) => {
             </div>
 
             <!-- Actions -->
-            <div class="flex items-center justify-between mt-6 pt-4 border-t border-gray-100">
+            <div class="flex items-center justify-between mt-6 pt-4 border-t border-[rgba(42,36,30,0.07)]">
               <div class="flex space-x-1">
                 <button
                   type="button"
                   @click="handleCopyRate(rate)"
-                  class="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                  class="p-2 text-tide-ink/40 hover:text-tide-blue-deep hover:bg-[rgba(90,138,171,0.10)] rounded-lg transition-colors"
                   :title="t('contractRateManagement.label.copyRate')"
                 >
                   <Copy class="h-4 w-4" />
@@ -599,7 +599,7 @@ const getCardClasses = (rate: Rate) => {
                 <button
                   type="button"
                   @click="handleEditRate(rate)"
-                  class="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                  class="p-2 text-tide-ink/40 hover:text-tide-blue-deep hover:bg-[rgba(90,138,171,0.10)] rounded-lg transition-colors"
                   :title="t('contractRateManagement.label.editRate')"
                 >
                   <Edit3 class="h-4 w-4" />
@@ -608,7 +608,7 @@ const getCardClasses = (rate: Rate) => {
               <button
                 type="button"
                 @click="handleDeleteRate(rate)"
-                class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                class="p-2 text-tide-ink/40 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                 :title="t('contractRateManagement.label.deleteRate')"
               >
                 <Trash2 class="h-4 w-4" />
@@ -620,17 +620,17 @@ const getCardClasses = (rate: Rate) => {
     </div>
 
     <!-- Empty State -->
-    <div v-else class="text-center py-12 bg-white rounded-lg border-2 border-dashed border-gray-300">
-      <component :is="getRateTypeIcon()" class="mx-auto h-12 w-12 text-gray-400" />
-      <h3 class="mt-4 text-lg font-medium text-gray-900">{{ t('contractRateManagement.noRatesConfigured') }}</h3>
-      <p class="mt-2 text-sm text-gray-500 max-w-sm mx-auto">
+    <div v-else class="text-center py-12 bg-[rgba(255,253,247,0.92)] rounded-lg border-2 border-dashed border-[rgba(60,50,35,0.16)]">
+      <component :is="getRateTypeIcon()" class="mx-auto h-12 w-12 text-tide-ink/40" />
+      <h3 class="mt-4 text-lg font-medium text-tide-ink">{{ t('contractRateManagement.noRatesConfigured') }}</h3>
+      <p class="mt-2 text-sm text-tide-ink/55 max-w-sm mx-auto">
         {{ t('contractRateManagement.emptyState') }}
       </p>
       <div class="mt-6">
         <button
           type="button"
           @click="handleAddRate"
-          class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700"
+          class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-tide-blue-btn-deep hover:bg-tide-blue-deep"
         >
           <Plus class="h-4 w-4 mr-2" />
           {{ t('contractRateManagement.addYourFirstRate') }}
@@ -644,20 +644,20 @@ const getCardClasses = (rate: Rate) => {
         v-if="showAddRate"
         class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 p-4"
       >
-        <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-          <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 rounded-t-xl">
+        <div class="bg-[rgba(255,253,247,0.92)] rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <div class="sticky top-0 bg-[rgba(255,253,247,0.92)] border-b border-[rgba(60,50,35,0.12)] px-6 py-4 rounded-t-xl">
             <div class="flex justify-between items-center">
               <div>
-                <h3 class="text-lg font-semibold text-gray-900">
+                <h3 class="text-lg font-semibold text-tide-ink">
                   {{ editingRate ? t('contractRateManagement.editRate') : t('contractRateManagement.addNewRate') }}
                 </h3>
-                <p class="text-sm text-gray-500 mt-1">
+                <p class="text-sm text-tide-ink/55 mt-1">
                   {{ t('contractRateManagement.configurePricing', { calculationType }) }}
                 </p>
               </div>
               <button
                 @click="showAddRate = false"
-                class="text-gray-400 hover:text-gray-500 p-1 rounded-lg hover:bg-gray-100"
+                class="text-tide-ink/40 hover:text-tide-ink/55 p-1 rounded-lg hover:bg-[rgba(42,36,30,0.05)]"
               >
                 <X class="h-6 w-6" />
               </button>
@@ -668,13 +668,13 @@ const getCardClasses = (rate: Rate) => {
             <!-- Rate Amount -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">
+                <label class="block text-sm font-medium text-tide-ink/80 mb-2">
                   {{ isTieredOrBanded() ? t('contractRateManagement.unitCost') : t('contractRateManagement.rateAmount') }}
                   <span class="text-red-500">*</span>
                 </label>
                 <div class="relative rounded-lg shadow-sm">
                   <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <DollarSign class="h-5 w-5 text-gray-400" />
+                    <DollarSign class="h-5 w-5 text-tide-ink/40" />
                   </div>
                   <input
                     v-model.number="newRate.amount"
@@ -692,7 +692,7 @@ const getCardClasses = (rate: Rate) => {
               </div>
 
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">
+                <label class="block text-sm font-medium text-tide-ink/80 mb-2">
                   {{ t('payments.form.currency') }} <span class="text-red-500">*</span>
                 </label>
                 <select v-model="newRate.currency" :class="getInputClasses('currency')">
@@ -705,12 +705,12 @@ const getCardClasses = (rate: Rate) => {
 
             <!-- Flat Cost (Tiered / Banded only) -->
             <div v-if="isTieredOrBanded()">
-              <label class="block text-sm font-medium text-gray-700 mb-2">
-                {{ t('contractRateManagement.flatCost') }} <span class="text-gray-400 font-normal">{{ t('contractRateManagement.flatCostHint') }}</span>
+              <label class="block text-sm font-medium text-tide-ink/80 mb-2">
+                {{ t('contractRateManagement.flatCost') }} <span class="text-tide-ink/40 font-normal">{{ t('contractRateManagement.flatCostHint') }}</span>
               </label>
               <div class="relative rounded-lg shadow-sm">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <DollarSign class="h-5 w-5 text-gray-400" />
+                  <DollarSign class="h-5 w-5 text-tide-ink/40" />
                 </div>
                 <input
                   v-model.number="newRate.flatCost"
@@ -726,30 +726,30 @@ const getCardClasses = (rate: Rate) => {
             <!-- Applicable taxes -->
             <div data-test="rate-taxes-section">
               <div class="flex items-center justify-between mb-2">
-                <label class="block text-sm font-medium text-gray-700">
+                <label class="block text-sm font-medium text-tide-ink/80">
                   <Percent class="inline h-4 w-4 mr-1 -mt-0.5" />
                   {{ t('contractRateManagement.taxes.title') }}
                 </label>
-                <span v-if="(newRate.taxes ?? []).length" class="text-xs text-gray-500">
+                <span v-if="(newRate.taxes ?? []).length" class="text-xs text-tide-ink/55">
                   {{ t('contractRateManagement.taxes.selected', { n: (newRate.taxes ?? []).length }) }}
                 </span>
               </div>
-              <p v-if="activeTaxes.length === 0" data-test="rate-taxes-none" class="text-xs text-gray-500 italic">
+              <p v-if="activeTaxes.length === 0" data-test="rate-taxes-none" class="text-xs text-tide-ink/55 italic">
                 {{ t('contractRateManagement.taxes.noneAvailable') }}
               </p>
-              <div v-else class="border border-gray-200 rounded-lg divide-y divide-gray-100 max-h-48 overflow-y-auto">
+              <div v-else class="border border-[rgba(60,50,35,0.12)] rounded-lg divide-y divide-[rgba(42,36,30,0.06)] max-h-48 overflow-y-auto">
                 <label
                   v-for="tx in activeTaxes"
                   :key="tx.id"
                   :data-test="`rate-tax-row-${tx.id}`"
-                  class="flex items-center justify-between gap-3 px-3 py-2 hover:bg-gray-50 cursor-pointer"
+                  class="flex items-center justify-between gap-3 px-3 py-2 hover:bg-[rgba(252,247,238,0.55)] cursor-pointer"
                 >
-                  <span class="flex items-center gap-2 text-sm text-gray-700">
+                  <span class="flex items-center gap-2 text-sm text-tide-ink/80">
                     <input
                       type="checkbox"
                       :data-test="`rate-tax-toggle-${tx.id}`"
                       :checked="isTaxOnRate(tx.id!)"
-                      class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      class="rounded border-[rgba(60,50,35,0.16)] text-tide-blue-deep focus:ring-tide-blue"
                       @change="(e: Event) => toggleTax(tx.id!, (e.target as HTMLInputElement).checked)"
                     />
                     {{ taxName(tx.id!) }}
@@ -761,8 +761,8 @@ const getCardClasses = (rate: Rate) => {
                     :class="[
                       'text-xs px-2 py-0.5 rounded border',
                       isTaxInclusive(tx.id!)
-                        ? 'bg-blue-50 border-blue-200 text-blue-700'
-                        : 'bg-gray-50 border-gray-200 text-gray-600',
+                        ? 'bg-[rgba(90,138,171,0.10)] border-blue-200 text-tide-blue-deep'
+                        : 'bg-[rgba(252,247,238,0.55)] border-[rgba(60,50,35,0.12)] text-tide-ink/70',
                     ]"
                     @click.prevent="toggleInclusive(tx.id!)"
                   >
@@ -772,7 +772,7 @@ const getCardClasses = (rate: Rate) => {
                   </button>
                 </label>
               </div>
-              <p class="text-xs text-gray-500 mt-1">
+              <p class="text-xs text-tide-ink/55 mt-1">
                 {{ t('contractRateManagement.taxes.hint') }}
               </p>
             </div>
@@ -781,7 +781,7 @@ const getCardClasses = (rate: Rate) => {
             <div v-if="calculationType === 'Quantity' || calculationType === 'DateByTEU' || isTieredOrBanded()" class="space-y-6">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
+                  <label class="block text-sm font-medium text-tide-ink/80 mb-2">
                     {{ t('contractRateManagement.startQuantity') }} <span class="text-red-500">*</span>
                   </label>
                   <input
@@ -798,7 +798,7 @@ const getCardClasses = (rate: Rate) => {
                 </div>
 
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
+                  <label class="block text-sm font-medium text-tide-ink/80 mb-2">
                     {{ t('contractRateManagement.endQuantity') }} <span class="text-red-500">*</span>
                   </label>
                   <input
@@ -816,7 +816,7 @@ const getCardClasses = (rate: Rate) => {
               </div>
 
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">
+                <label class="block text-sm font-medium text-tide-ink/80 mb-2">
                   {{ t('contractRateManagement.unitOfMeasurement') }} <span class="text-red-500">*</span>
                 </label>
                 <select v-model="newRate.unitOfMeasurement" :class="getInputClasses('unitOfMeasurement')">
@@ -835,7 +835,7 @@ const getCardClasses = (rate: Rate) => {
             <!-- Date Fields (for Date and DateByTEU types) -->
             <div v-if="calculationType === 'Date' || calculationType === 'DateByTEU'" class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">
+                <label class="block text-sm font-medium text-tide-ink/80 mb-2">
                   {{ t('itemLifecycleView.column.startDate') }} <span class="text-red-500">*</span>
                 </label>
                 <input
@@ -850,7 +850,7 @@ const getCardClasses = (rate: Rate) => {
               </div>
 
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">
+                <label class="block text-sm font-medium text-tide-ink/80 mb-2">
                   {{ t('itemLifecycleView.column.endDate') }} <span class="text-red-500">*</span>
                 </label>
                 <input
@@ -867,45 +867,45 @@ const getCardClasses = (rate: Rate) => {
             </div>
 
             <!-- Rate Settings -->
-            <div class="bg-gray-50 rounded-lg p-4 space-y-4">
-              <h4 class="text-sm font-medium text-gray-900">{{ t('contractRateManagement.rateSettings') }}</h4>
+            <div class="bg-[rgba(252,247,238,0.55)] rounded-lg p-4 space-y-4">
+              <h4 class="text-sm font-medium text-tide-ink">{{ t('contractRateManagement.rateSettings') }}</h4>
 
               <div class="flex items-center justify-between">
                 <div class="flex items-center">
                   <input
                     v-model="newRate.defaultRate"
                     type="checkbox"
-                    class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    class="h-4 w-4 text-tide-blue-deep border-[rgba(60,50,35,0.16)] rounded focus:ring-tide-blue"
                   />
-                  <label class="ml-3 text-sm text-gray-700">
+                  <label class="ml-3 text-sm text-tide-ink/80">
                     {{ t('contractRateManagement.setAsDefaultRate') }}
                   </label>
                 </div>
                 <div class="flex items-center space-x-3">
-                  <label class="text-sm text-gray-700">{{ t('contractRateManagement.priorityLabel') }}</label>
+                  <label class="text-sm text-tide-ink/80">{{ t('contractRateManagement.priorityLabel') }}</label>
                   <input
                     v-model.number="newRate.priority"
                     type="number"
                     min="0"
-                    class="w-20 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                    class="w-20 rounded-lg border-[rgba(60,50,35,0.16)] focus:ring-tide-blue focus:border-tide-blue"
                   />
                 </div>
               </div>
 
-              <p class="text-xs text-gray-500">
+              <p class="text-xs text-tide-ink/55">
                 {{ t('contractRateManagement.defaultRateHint') }}
               </p>
             </div>
 
             <!-- Item Filtering -->
-            <div class="bg-gray-50 rounded-lg p-4 space-y-4">
+            <div class="bg-[rgba(252,247,238,0.55)] rounded-lg p-4 space-y-4">
               <div>
-                <h4 class="text-sm font-medium text-gray-900">{{ t('contractRateManagement.itemFilters') }}</h4>
-                <p class="text-xs text-gray-500 mt-0.5">{{ t('contractRateManagement.itemFiltersHint') }}</p>
+                <h4 class="text-sm font-medium text-tide-ink">{{ t('contractRateManagement.itemFilters') }}</h4>
+                <p class="text-xs text-tide-ink/55 mt-0.5">{{ t('contractRateManagement.itemFiltersHint') }}</p>
               </div>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('itemForm.field.category') }}</label>
+                  <label class="block text-sm font-medium text-tide-ink/80 mb-2">{{ t('itemForm.field.category') }}</label>
                   <select v-model="newRate.applicableCategory" :class="getInputClasses('applicableCategory')">
                     <option value="">{{ t('contractRateManagement.allCategories') }}</option>
                     <option value="Import">{{ t('itemForm.category.import') }}</option>
@@ -914,7 +914,7 @@ const getCardClasses = (rate: Rate) => {
                   </select>
                 </div>
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('itemForm.field.freightKind') }}</label>
+                  <label class="block text-sm font-medium text-tide-ink/80 mb-2">{{ t('itemForm.field.freightKind') }}</label>
                   <select v-model="newRate.applicableFreightKind" :class="getInputClasses('applicableFreightKind')">
                     <option value="">{{ t('contractRateManagement.allTypes') }}</option>
                     <option value="FCL">{{ t('contractRateManagement.fcl') }}</option>
@@ -942,17 +942,17 @@ const getCardClasses = (rate: Rate) => {
             </div>
 
             <!-- Actions -->
-            <div class="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+            <div class="flex justify-end space-x-3 pt-4 border-t border-[rgba(60,50,35,0.12)]">
               <button
                 type="button"
                 @click="showAddRate = false"
-                class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                class="px-4 py-2 border border-[rgba(60,50,35,0.16)] rounded-lg text-sm font-medium text-tide-ink/80 hover:bg-[rgba(252,247,238,0.55)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-tide-blue"
               >
                 {{ t('common.cancel') }}
               </button>
               <button
                 type="submit"
-                class="px-6 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                class="px-6 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-tide-blue-btn-deep hover:bg-tide-blue-deep focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-tide-blue"
               >
                 {{ editingRate ? t('contractRateManagement.saveChanges') : t('contractRateManagement.addRate') }}
               </button>
@@ -968,24 +968,24 @@ const getCardClasses = (rate: Rate) => {
         v-if="showDeleteConfirm"
         class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 p-4"
       >
-        <div class="bg-white rounded-xl shadow-xl max-w-md w-full">
+        <div class="bg-[rgba(255,253,247,0.92)] rounded-xl shadow-xl max-w-md w-full">
           <div class="p-6">
             <div class="flex items-center space-x-3">
               <div class="flex-shrink-0">
                 <AlertCircle class="h-10 w-10 text-red-500" />
               </div>
               <div class="flex-1">
-                <h3 class="text-lg font-semibold text-gray-900">{{ t('contractRateManagement.deleteRate') }}</h3>
-                <p class="mt-1 text-sm text-gray-600">
+                <h3 class="text-lg font-semibold text-tide-ink">{{ t('contractRateManagement.deleteRate') }}</h3>
+                <p class="mt-1 text-sm text-tide-ink/70">
                   {{ t('contractRateManagement.deleteRateConfirm') }}
                 </p>
               </div>
             </div>
           </div>
-          <div class="px-6 py-4 bg-gray-50 rounded-b-xl flex justify-end space-x-3">
+          <div class="px-6 py-4 bg-[rgba(252,247,238,0.55)] rounded-b-xl flex justify-end space-x-3">
             <button
               @click="showDeleteConfirm = false"
-              class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50"
+              class="px-4 py-2 border border-[rgba(60,50,35,0.16)] rounded-lg text-sm font-medium text-tide-ink/80 hover:bg-[rgba(252,247,238,0.55)]"
             >
               {{ t('common.cancel') }}
             </button>

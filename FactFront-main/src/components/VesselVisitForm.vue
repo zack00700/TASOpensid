@@ -94,7 +94,7 @@ const services = [
 
 const getInputClasses = (fieldName: keyof VesselVisit) => {
   return {
-    "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500": true,
+    "mt-1 block w-full rounded-md border-[rgba(60,50,35,0.16)] shadow-sm focus:border-tide-blue focus:ring-tide-blue": true,
     "border-red-300": !!errors.value[fieldName],
   };
 };
@@ -127,13 +127,13 @@ const applyAta = () => {
 </script>
 
 <template>
-  <div class="bg-white shadow rounded-lg">
-    <div class="px-6 py-4 border-b border-gray-200">
+  <div class="bg-[rgba(255,253,247,0.92)] shadow rounded-lg">
+    <div class="px-6 py-4 border-b border-[rgba(60,50,35,0.12)]">
       <div class="flex justify-between items-center">
-        <h2 class="text-lg font-semibold text-gray-900">
+        <h2 class="text-lg font-semibold text-tide-ink">
           {{ editMode ? t('vesselVisitForm.title.edit') : t('vesselVisitForm.title.new') }}
         </h2>
-        <button @click="emit('cancel')" class="text-gray-400 hover:text-gray-500">
+        <button @click="emit('cancel')" class="text-tide-ink/40 hover:text-tide-ink/55">
           <X class="h-6 w-6" />
         </button>
       </div>
@@ -142,9 +142,9 @@ const applyAta = () => {
     <form @submit.prevent="handleSubmit" class="p-6 space-y-6">
       <!-- Vessel Information -->
       <div>
-        <h3 class="text-lg font-medium text-gray-900 mb-4">{{ t('vesselVisitForm.section.vesselInformation') }}</h3>
+        <h3 class="text-lg font-medium text-tide-ink mb-4">{{ t('vesselVisitForm.section.vesselInformation') }}</h3>
         <div class="mb-6">
-          <label class="block text-sm font-medium text-gray-700">
+          <label class="block text-sm font-medium text-tide-ink/80">
             {{ t('vesselVisitForm.field.visitReference') }} <span class="text-red-500">*</span>
           </label>
           <input
@@ -160,7 +160,7 @@ const applyAta = () => {
         </div>
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <div>
-            <label class="block text-sm font-medium text-gray-700">
+            <label class="block text-sm font-medium text-tide-ink/80">
               {{ t('vesselVisitForm.field.vesselName') }} <span class="text-red-500">*</span>
             </label>
             <VesselAutocomplete
@@ -176,7 +176,7 @@ const applyAta = () => {
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700">
+            <label class="block text-sm font-medium text-tide-ink/80">
               {{ t('vesselVisitForm.field.vesselId') }} <span class="text-red-500">*</span>
             </label>
             <input
@@ -186,10 +186,10 @@ const applyAta = () => {
               :readonly="vesselLocked"
               :class="[
                 getInputClasses('vesselId'),
-                vesselLocked && 'bg-gray-100 cursor-not-allowed',
+                vesselLocked && 'bg-[rgba(42,36,30,0.05)] cursor-not-allowed',
               ]"
             />
-            <p v-if="vesselLocked" class="mt-1 text-xs text-gray-500">
+            <p v-if="vesselLocked" class="mt-1 text-xs text-tide-ink/55">
               {{ t('vesselVisitForm.hint.vesselIdAutofilled') }}
             </p>
             <p v-if="errors.vesselId" class="mt-1 text-sm text-red-600">
@@ -198,7 +198,7 @@ const applyAta = () => {
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700">
+            <label class="block text-sm font-medium text-tide-ink/80">
               {{ t('vesselVisitForm.field.service') }} <span class="text-red-500">*</span>
             </label>
             <select
@@ -224,7 +224,7 @@ const applyAta = () => {
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700"> {{ t('vesselVisitForm.field.facility') }} </label>
+            <label class="block text-sm font-medium text-tide-ink/80"> {{ t('vesselVisitForm.field.facility') }} </label>
             <select v-model="formData.facility" :class="getInputClasses('facility')">
               <option value="">{{ t('vesselVisitForm.placeholder.selectFacility') }}</option>
               <option v-for="facility in facilities" :key="facility" :value="facility">
@@ -237,10 +237,10 @@ const applyAta = () => {
 
       <!-- Port Information -->
       <div>
-        <h3 class="text-lg font-medium text-gray-900 mb-4">{{ t('vesselVisitForm.section.portInformation') }}</h3>
+        <h3 class="text-lg font-medium text-tide-ink mb-4">{{ t('vesselVisitForm.section.portInformation') }}</h3>
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
           <div>
-            <label class="block text-sm font-medium text-gray-700">
+            <label class="block text-sm font-medium text-tide-ink/80">
               {{ t('vesselVisitForm.field.pol') }} <span class="text-red-500">*</span>
             </label>
             <input
@@ -252,7 +252,7 @@ const applyAta = () => {
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700">
+            <label class="block text-sm font-medium text-tide-ink/80">
               {{ t('vesselVisitForm.field.pod') }} <span class="text-red-500">*</span>
             </label>
             <input
@@ -264,7 +264,7 @@ const applyAta = () => {
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700">
+            <label class="block text-sm font-medium text-tide-ink/80">
               {{ t('vesselVisitForm.field.finalDestination') }}
             </label>
             <input
@@ -279,13 +279,13 @@ const applyAta = () => {
 
       <!-- Schedule Information -->
       <div>
-        <h3 class="text-lg font-medium text-gray-900 mb-4">{{ t('vesselVisitForm.section.scheduleInformation') }}</h3>
+        <h3 class="text-lg font-medium text-tide-ink mb-4">{{ t('vesselVisitForm.section.scheduleInformation') }}</h3>
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <div>
             <div
               v-if="suggestion?.suggestedEta && !appliedEta"
               data-test="ais-suggestion-eta"
-              class="mb-2 px-3 py-2 bg-blue-50 border border-blue-200 text-blue-800 text-sm rounded flex items-center justify-between gap-2"
+              class="mb-2 px-3 py-2 bg-[rgba(90,138,171,0.10)] border border-blue-200 text-blue-800 text-sm rounded flex items-center justify-between gap-2"
             >
               <span class="flex items-center gap-2">
                 <Radio class="h-4 w-4 shrink-0" />
@@ -295,10 +295,10 @@ const applyAta = () => {
                 type="button"
                 @click="applyEta"
                 data-test="ais-suggestion-eta-apply"
-                class="text-blue-600 hover:underline font-medium text-sm whitespace-nowrap"
+                class="text-tide-blue-deep hover:underline font-medium text-sm whitespace-nowrap"
               >{{ t('vesselVisitForm.aisSuggestion.apply') }}</button>
             </div>
-            <label class="block text-sm font-medium text-gray-700">
+            <label class="block text-sm font-medium text-tide-ink/80">
               {{ t('vesselVisitForm.field.eta') }} <span class="text-red-500">*</span>
             </label>
             <DatetimeInput
@@ -312,7 +312,7 @@ const applyAta = () => {
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700">
+            <label class="block text-sm font-medium text-tide-ink/80">
               {{ t('vesselVisitForm.field.etd') }} <span class="text-red-500">*</span>
             </label>
             <DatetimeInput
@@ -330,7 +330,7 @@ const applyAta = () => {
             <div
               v-if="suggestion?.suggestedAta && !appliedAta"
               data-test="ais-suggestion-ata"
-              class="mb-2 px-3 py-2 bg-blue-50 border border-blue-200 text-blue-800 text-sm rounded flex items-center justify-between gap-2"
+              class="mb-2 px-3 py-2 bg-[rgba(90,138,171,0.10)] border border-blue-200 text-blue-800 text-sm rounded flex items-center justify-between gap-2"
             >
               <span class="flex items-center gap-2">
                 <Radio class="h-4 w-4 shrink-0" />
@@ -340,10 +340,10 @@ const applyAta = () => {
                 type="button"
                 @click="applyAta"
                 data-test="ais-suggestion-ata-apply"
-                class="text-blue-600 hover:underline font-medium text-sm whitespace-nowrap"
+                class="text-tide-blue-deep hover:underline font-medium text-sm whitespace-nowrap"
               >{{ t('vesselVisitForm.aisSuggestion.apply') }}</button>
             </div>
-            <label class="block text-sm font-medium text-gray-700"> {{ t('vesselVisitForm.field.ata') }} </label>
+            <label class="block text-sm font-medium text-tide-ink/80"> {{ t('vesselVisitForm.field.ata') }} </label>
             <DatetimeInput
               v-model="formData.ata"
               data-test="visit-ata"
@@ -352,7 +352,7 @@ const applyAta = () => {
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700"> {{ t('vesselVisitForm.field.atd') }} </label>
+            <label class="block text-sm font-medium text-tide-ink/80"> {{ t('vesselVisitForm.field.atd') }} </label>
             <DatetimeInput
               v-model="formData.atd"
               data-test="visit-atd"
@@ -361,7 +361,7 @@ const applyAta = () => {
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700"> {{ t('vesselVisitForm.field.beginReceive') }} </label>
+            <label class="block text-sm font-medium text-tide-ink/80"> {{ t('vesselVisitForm.field.beginReceive') }} </label>
             <DatetimeInput
               v-model="formData.beginReceive"
               data-test="visit-begin-receive"
@@ -370,7 +370,7 @@ const applyAta = () => {
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700"> {{ t('vesselVisitForm.field.emptyPickup') }} </label>
+            <label class="block text-sm font-medium text-tide-ink/80"> {{ t('vesselVisitForm.field.emptyPickup') }} </label>
             <DatetimeInput
               v-model="formData.emptyPickup"
               data-test="visit-empty-pickup"
@@ -382,10 +382,10 @@ const applyAta = () => {
 
       <!-- Cut-off Times -->
       <div>
-        <h3 class="text-lg font-medium text-gray-900 mb-4">{{ t('vesselVisitForm.section.cutOffTimes') }}</h3>
+        <h3 class="text-lg font-medium text-tide-ink mb-4">{{ t('vesselVisitForm.section.cutOffTimes') }}</h3>
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
           <div>
-            <label class="block text-sm font-medium text-gray-700">
+            <label class="block text-sm font-medium text-tide-ink/80">
               {{ t('vesselVisitForm.field.dryCargoCutOff') }}
             </label>
             <DatetimeInput
@@ -396,7 +396,7 @@ const applyAta = () => {
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700">
+            <label class="block text-sm font-medium text-tide-ink/80">
               {{ t('vesselVisitForm.field.reeferCutOff') }}
             </label>
             <DatetimeInput
@@ -407,7 +407,7 @@ const applyAta = () => {
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700">
+            <label class="block text-sm font-medium text-tide-ink/80">
               {{ t('vesselVisitForm.field.hazardousCutOff') }}
             </label>
             <DatetimeInput
@@ -421,10 +421,10 @@ const applyAta = () => {
 
       <!-- Voyage Information -->
       <div>
-        <h3 class="text-lg font-medium text-gray-900 mb-4">{{ t('vesselVisitForm.section.voyageInformation') }}</h3>
+        <h3 class="text-lg font-medium text-tide-ink mb-4">{{ t('vesselVisitForm.section.voyageInformation') }}</h3>
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <div>
-            <label class="block text-sm font-medium text-gray-700">
+            <label class="block text-sm font-medium text-tide-ink/80">
               {{ t('vesselVisitForm.field.inboundVoyage') }}
             </label>
             <input
@@ -435,7 +435,7 @@ const applyAta = () => {
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700">
+            <label class="block text-sm font-medium text-tide-ink/80">
               {{ t('vesselVisitForm.field.outboundVoyage') }}
             </label>
             <input
@@ -446,7 +446,7 @@ const applyAta = () => {
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700">
+            <label class="block text-sm font-medium text-tide-ink/80">
               {{ t('vesselVisitForm.field.inboundCaptain') }}
             </label>
             <input
@@ -457,7 +457,7 @@ const applyAta = () => {
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700">
+            <label class="block text-sm font-medium text-tide-ink/80">
               {{ t('vesselVisitForm.field.outboundCaptain') }}
             </label>
             <input
@@ -480,9 +480,9 @@ const applyAta = () => {
 
       <!-- Additional Information -->
       <div>
-        <h3 class="text-lg font-medium text-gray-900 mb-4">{{ t('vesselVisitForm.section.additionalInformation') }}</h3>
+        <h3 class="text-lg font-medium text-tide-ink mb-4">{{ t('vesselVisitForm.section.additionalInformation') }}</h3>
         <div>
-          <label class="block text-sm font-medium text-gray-700"> {{ t('vesselVisitForm.field.notes') }} </label>
+          <label class="block text-sm font-medium text-tide-ink/80"> {{ t('vesselVisitForm.field.notes') }} </label>
           <textarea
             v-model="formData.notes"
             rows="3"
@@ -496,13 +496,13 @@ const applyAta = () => {
         <button
           type="button"
           @click="emit('cancel')"
-          class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+          class="px-4 py-2 border border-[rgba(60,50,35,0.16)] rounded-md text-sm font-medium text-tide-ink/80 hover:bg-[rgba(252,247,238,0.55)]"
         >
           {{ t('common.cancel') }}
         </button>
         <button
           type="submit"
-          class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
+          class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-tide-blue-btn-deep hover:bg-tide-blue-deep"
         >
           {{ editMode ? t('vesselVisitForm.button.saveChanges') : t('vesselVisitForm.button.createVisit') }}
         </button>

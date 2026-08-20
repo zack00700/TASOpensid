@@ -89,18 +89,18 @@ const handleSubmit = () => {
 
 const getInputClasses = (fieldName: string) => {
   return {
-    "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500": true,
+    "mt-1 block w-full rounded-md border-[rgba(60,50,35,0.16)] shadow-sm focus:border-tide-blue focus:ring-tide-blue": true,
     "border-red-300": errors.value[fieldName],
   };
 };
 </script>
 
 <template>
-  <div class="bg-white shadow rounded-lg">
-    <div class="px-6 py-4 border-b border-gray-200">
+  <div class="bg-[rgba(255,253,247,0.92)] shadow rounded-lg">
+    <div class="px-6 py-4 border-b border-[rgba(60,50,35,0.12)]">
       <div class="flex justify-between items-center">
-        <h2 class="text-lg font-semibold text-gray-900">{{ t('itemEventForm.title') }}</h2>
-        <button @click="emit('cancel')" class="text-gray-400 hover:text-gray-500">
+        <h2 class="text-lg font-semibold text-tide-ink">{{ t('itemEventForm.title') }}</h2>
+        <button @click="emit('cancel')" class="text-tide-ink/40 hover:text-tide-ink/55">
           <X class="h-6 w-6" />
         </button>
       </div>
@@ -110,7 +110,7 @@ const getInputClasses = (fieldName: string) => {
       <!-- Event Details -->
       <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
         <div>
-          <label class="block text-sm font-medium text-gray-700">
+          <label class="block text-sm font-medium text-tide-ink/80">
             {{ t('itemEventForm.field.eventType') }} <span class="text-red-500">*</span>
           </label>
           <select
@@ -131,7 +131,7 @@ const getInputClasses = (fieldName: string) => {
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700">
+          <label class="block text-sm font-medium text-tide-ink/80">
             {{ t('itemEventForm.field.timestamp') }} <span class="text-red-500">*</span>
           </label>
           <input
@@ -145,7 +145,7 @@ const getInputClasses = (fieldName: string) => {
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700">
+          <label class="block text-sm font-medium text-tide-ink/80">
             {{ t('itemEventForm.field.location') }} <span class="text-red-500">*</span>
           </label>
           <input
@@ -159,7 +159,7 @@ const getInputClasses = (fieldName: string) => {
         </div>
 
         <div class="sm:col-span-2">
-          <label class="block text-sm font-medium text-gray-700">{{ t('payments.field.notes') }}</label>
+          <label class="block text-sm font-medium text-tide-ink/80">{{ t('payments.field.notes') }}</label>
           <textarea
             v-model="eventData.notes"
             rows="3"
@@ -169,7 +169,7 @@ const getInputClasses = (fieldName: string) => {
 
         <!-- Metadata Fields -->
         <div class="sm:col-span-2">
-          <label class="block text-sm font-medium text-gray-700 mb-2">
+          <label class="block text-sm font-medium text-tide-ink/80 mb-2">
             {{ t('itemEventForm.field.additionalInformation') }}
           </label>
           <div class="space-y-4">
@@ -178,13 +178,13 @@ const getInputClasses = (fieldName: string) => {
                 v-model="metadataKey"
                 type="text"
                 :placeholder="t('itemEventForm.placeholder.key')"
-                class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                class="flex-1 rounded-md border-[rgba(60,50,35,0.16)] shadow-sm focus:border-tide-blue focus:ring-tide-blue"
               />
               <input
                 v-model="metadataValue"
                 type="text"
                 :placeholder="t('itemEventForm.placeholder.value')"
-                class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                class="flex-1 rounded-md border-[rgba(60,50,35,0.16)] shadow-sm focus:border-tide-blue focus:ring-tide-blue"
               />
             </div>
           </div>
@@ -196,13 +196,13 @@ const getInputClasses = (fieldName: string) => {
         <button
           type="button"
           @click="emit('cancel')"
-          class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+          class="px-4 py-2 border border-[rgba(60,50,35,0.16)] rounded-md text-sm font-medium text-tide-ink/80 hover:bg-[rgba(252,247,238,0.55)]"
         >
           {{ t('common.cancel') }}
         </button>
         <button
           type="submit"
-          class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
+          class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-tide-blue-btn-deep hover:bg-tide-blue-deep"
         >
           {{ t('itemEventForm.title') }}
         </button>

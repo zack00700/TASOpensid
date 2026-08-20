@@ -89,7 +89,7 @@ describe('VesselVisits — selection + edit toolbar', () => {
 
     const rows = wrapper.findAll('tbody tr');
     expect(rows.length).toBe(2);
-    rows.forEach((r) => expect(r.classes().some((c) => c.includes('ring-blue-500'))).toBe(false));
+    rows.forEach((r) => expect(r.classes().some((c) => c.includes('ring-tide-blue'))).toBe(false));
 
     const editButton = wrapper.find('[data-test="toolbar-edit-details"]');
     expect(editButton.exists()).toBe(true);
@@ -104,7 +104,7 @@ describe('VesselVisits — selection + edit toolbar', () => {
     await wrapper.vm.$nextTick();
 
     const firstRow = wrapper.findAll('tbody tr')[0];
-    expect(firstRow.classes().some((c) => c.includes('ring-blue-500'))).toBe(true);
+    expect(firstRow.classes().some((c) => c.includes('ring-tide-blue'))).toBe(true);
 
     const editButton = wrapper.find('[data-test="toolbar-edit-details"]');
     expect(editButton.attributes('disabled')).toBeUndefined();
@@ -117,11 +117,11 @@ describe('VesselVisits — selection + edit toolbar', () => {
 
     await row().trigger('click');
     await wrapper.vm.$nextTick();
-    expect(row().classes().some((c) => c.includes('ring-blue-500'))).toBe(true);
+    expect(row().classes().some((c) => c.includes('ring-tide-blue'))).toBe(true);
 
     await row().trigger('click');
     await wrapper.vm.$nextTick();
-    expect(row().classes().some((c) => c.includes('ring-blue-500'))).toBe(false);
+    expect(row().classes().some((c) => c.includes('ring-tide-blue'))).toBe(false);
   });
 
   it('clicking a different row swaps the selection', async () => {
@@ -134,8 +134,8 @@ describe('VesselVisits — selection + edit toolbar', () => {
     await wrapper.vm.$nextTick();
 
     const rows = wrapper.findAll('tbody tr');
-    expect(rows[0].classes().some((c) => c.includes('ring-blue-500'))).toBe(false);
-    expect(rows[1].classes().some((c) => c.includes('ring-blue-500'))).toBe(true);
+    expect(rows[0].classes().some((c) => c.includes('ring-tide-blue'))).toBe(false);
+    expect(rows[1].classes().some((c) => c.includes('ring-tide-blue'))).toBe(true);
   });
 
   it('preview Eye click does not select the row', async () => {
@@ -148,7 +148,7 @@ describe('VesselVisits — selection + edit toolbar', () => {
     await wrapper.vm.$nextTick();
 
     const firstRow = wrapper.findAll('tbody tr')[0];
-    expect(firstRow.classes().some((c) => c.includes('ring-blue-500'))).toBe(false);
+    expect(firstRow.classes().some((c) => c.includes('ring-tide-blue'))).toBe(false);
   });
 
   it('clicking Edit Details with a selection opens the form in edit mode', async () => {
