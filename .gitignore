@@ -1,0 +1,32 @@
+# Runtime logs & pids produits par ./start.sh / ./stop.sh
+.run/
+!.run/.gitkeep
+
+# Environnements Python (rare mais au cas où)
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Node modules et builds éventuels dans le workspace (les vrais deps
+# vivent dans FactFront-main/node_modules)
+node_modules/
+dist/
+
+# Éditeurs
+.vscode/
+.idea/
+*.swp
+*~
+
+# macOS
+.DS_Store
+Thumbs.db
+
+# Backups / snapshots temporaires
+*.zip.bak
+*.old
+
+# Résultats de tests locaux
+target/
+!FactBack-main/target/  # Le snapshot back peut contenir target/, on laisse Quarkus le gérer
