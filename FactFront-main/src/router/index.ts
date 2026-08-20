@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import { h, defineAsyncComponent } from 'vue';
+import { h, defineAsyncComponent, type Component } from 'vue';
 import { useAuthStore } from '../stores/authStore';
 
 /** Wraps a lazy component with AuthGuard (admin role), preserving the existing access-denied UI. */
@@ -10,6 +10,9 @@ function admin(lazyComponent: () => Promise<any>, message: string) {
         lazyComponent(),
         import('../components/AuthGuard.vue'),
       ]);
+      // A render-only options object is a valid async-component result at
+      // runtime, but it does not match AsyncComponentLoader's constructor-shaped
+      // signature, so it has to be widened explicitly.
       return {
         render() {
           return h(
@@ -18,7 +21,7 @@ function admin(lazyComponent: () => Promise<any>, message: string) {
             { default: () => h(comp) }
           );
         },
-      };
+      } as unknown as Component;
     },
   });
 }
@@ -122,8 +125,14 @@ const routes = [
   },
   {
     path: '/i18n',
-    component: () => import('../pages/I18nAdmin.vue'),
-    meta: { requiresAuth: true, roles: ['ROLE_ADMIN'] },
+    // Was the only route declaring `meta.roles`, which the guard below never
+    // reads — so the translations admin was reachable by any authenticated user
+    // while its sibling admin pages went through admin(). Aligned on that wrapper.
+    component: admin(
+      () => import('../pages/I18nAdmin.vue'),
+      'Seuls les administrateurs peuvent gérer les traductions.'
+    ),
+    meta: { requiresAuth: true },
   },
   {
     path: '/configuration/sequences',
