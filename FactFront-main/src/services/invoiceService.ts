@@ -1,6 +1,7 @@
 import api from '../plugin/axios';
 import { InvoiceLineDto } from '../types/invoice';
 import { renderInvoiceLines } from '../utils/invoice-html';
+import { DEFAULT_CURRENCY } from '../utils/currency';
 
 export const generateDraft = async (blId: string, customerName: string): Promise<any> => {
   try {
@@ -51,6 +52,40 @@ export const finalize = async (invoiceId: string): Promise<any> => {
   }
 };
 
+/**
+ * Most recent invoice, or `null` when the tenant has none yet.
+ *
+ * Goes through `api` (and therefore the Bearer interceptor) — a bare `fetch`
+ * here reaches the backend anonymously and is rejected by the deny-by-default
+ * `/api/*` policy.
+ */
+export const fetchMostRecent = async (): Promise<any | null> => {
+  try {
+    const response = await api.get('/invoices', {
+      params: { page: 1, pageSize: 1, sort: 'createdDate:desc' },
+    });
+    const items = response.data?.items;
+    return Array.isArray(items) && items.length > 0 ? items[0] : null;
+  } catch (error) {
+    console.error('[InvoiceService] Failed to fetch the most recent invoice:', error);
+    throw error;
+  }
+};
+
+/** Single invoice by id. */
+export const fetchById = async (invoiceId: string): Promise<any> => {
+  if (!invoiceId) {
+    throw new Error('fetchById: invoiceId is required');
+  }
+  try {
+    const response = await api.get(`/invoices/${encodeURIComponent(invoiceId)}`);
+    return response.data;
+  } catch (error) {
+    console.error(`[InvoiceService] Failed to fetch invoice ${invoiceId}:`, error);
+    throw error;
+  }
+};
+
 const remove = async (invoiceId: string): Promise<void> => {
   if (!invoiceId) {
     throw new Error('delete: invoiceId is required');
@@ -71,7 +106,7 @@ const remove = async (invoiceId: string): Promise<void> => {
 export const buildInvoiceLinesHtml = (
   invoiceId: string,
   lines: InvoiceLineDto[],
-  currency = 'USD'
+  currency = DEFAULT_CURRENCY
 ): string => {
   return renderInvoiceLines(lines, { id: invoiceId, currency });
 };
@@ -80,6 +115,8 @@ export default {
   generateDraft,
   getInvoicePreviewUrl,
   fetchInvoiceHtml,
+  fetchMostRecent,
+  fetchById,
   finalize,
   delete: remove,
   buildInvoiceLinesHtml,

@@ -99,6 +99,7 @@
   import { ref, watch, onMounted } from 'vue';
   import { useI18n } from 'vue-i18n';
   import invoiceService from '../services/invoiceService';
+  import { formatCurrency as sharedFormatCurrency } from '../utils/currency';
 
   const { t } = useI18n();
   
@@ -115,10 +116,8 @@
   const error = ref<string | null>(null);
   
   function formatCurrency(amount: unknown) {
-    const num = typeof amount === 'number' ? amount : parseFloat(String(amount));
-    return (Number.isFinite(num) ? num : 0).toLocaleString(undefined, {
-      style: 'currency',
-      currency: 'EUR',
+    return sharedFormatCurrency(amount, currentData.value?.invoice?.currency, {
+      fallback: sharedFormatCurrency(0),
     });
   }
   
@@ -176,19 +175,15 @@
       loading.value = true;
       error.value = null;
   
-      // Récupérer la liste des invoices et prendre la plus récente
-      const response = await fetch('/api/invoices?page=1&pageSize=1&sort=createdDate:desc');
-      if (!response.ok) {
-        throw new Error('Failed to fetch recent invoice');
-      }
-      
-      const data = await response.json();
-      if (data.items && data.items.length > 0) {
-        const invoice = data.items[0];
-        currentData.value = transformInvoiceData(invoice);
-      } else {
+      // Through the service layer (and thus the axios Bearer interceptor): a
+      // bare fetch() reaches /api anonymously and is rejected 401, which used
+      // to surface as the sample-data fallback below — silently showing made-up
+      // figures instead of the real invoice.
+      const invoice = await invoiceService.fetchMostRecent();
+      if (!invoice) {
         throw new Error('No invoices found');
       }
+      currentData.value = transformInvoiceData(invoice);
     } catch (err: any) {
       console.error('Failed to load recent invoice:', err);
       error.value = err.message;
@@ -206,12 +201,7 @@
       loading.value = true;
       error.value = null;
   
-      const response = await fetch(`/api/invoices/${encodeURIComponent(specificInvoiceId.value)}`);
-      if (!response.ok) {
-        throw new Error('Invoice not found');
-      }
-      
-      const invoice = await response.json();
+      const invoice = await invoiceService.fetchById(specificInvoiceId.value);
       currentData.value = transformInvoiceData(invoice);
     } catch (err: any) {
       console.error('Failed to load specific invoice:', err);
