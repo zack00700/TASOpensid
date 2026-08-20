@@ -33,14 +33,14 @@ api.interceptors.request.use(
         // Fallback to stored token
         const authHeaders = authStore.getAuthHeaders();
         if (authHeaders) {
-          config.headers = { ...config.headers, ...authHeaders };
+          Object.assign(config.headers, authHeaders);
         }
       }
     } else {
       // Use traditional auth headers
       const authHeaders = authStore.getAuthHeaders();
       if (authHeaders) {
-        config.headers = { ...config.headers, ...authHeaders };
+        Object.assign(config.headers, authHeaders);
       } else {
         console.warn('⚠️ [AUTH] No auth headers available');
       }
@@ -91,15 +91,6 @@ api.interceptors.response.use(
         await authStore.logout();
       }
 
-      // Emit event for any listeners
-      window.dispatchEvent(new CustomEvent('auth-error', {
-        detail: {
-          message: authStore.useAzureAD
-            ? 'Backend not configured for Azure AD. See console for details.'
-            : 'Session expired',
-          status: 401
-        }
-      }));
     }
 
     return Promise.reject(error);

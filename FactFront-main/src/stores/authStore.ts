@@ -125,6 +125,10 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       const loginUrl = `${API_BASE_URL}/auth/login`;
 
+      // Deliberately a bare fetch, not the axios instance: the axios response
+      // interceptor turns any 401 into authStore.logout(), which reloads the
+      // page — a rejected login would wipe its own error message before the
+      // user could read it. Same reason for the logout call below.
       const response = await fetch(loginUrl, {
         method: 'POST',
         headers: {
