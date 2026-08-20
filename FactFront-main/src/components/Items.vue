@@ -1,11 +1,10 @@
 <script setup lang="ts">
+import type { AxiosInstance } from "axios";
 import { ref, inject, computed, watch, reactive, onMounted } from "vue";
 import { useI18n } from 'vue-i18n';
-import { v4 as uuidv4 } from "uuid";
 
 const { t } = useI18n();
 import {
-  Search,
   Download,
   X,
   Clock,
@@ -16,7 +15,6 @@ import {
   MoreVertical,
   BadgeDollarSign,
   Check,
-  Filter,
   RefreshCw,
 } from "lucide-vue-next";
 import DataTable from './ui/DataTable.vue';
@@ -41,11 +39,9 @@ import FilterChips from "./ui/FilterChips.vue";
 import ToastNotification from "./ui/ToastNotification.vue";
 import PageHeader from "./ui/PageHeader.vue";
 import { useToast } from "../composables/useToast";
-import { Item, Event } from "../types/item";
-import { ItemService } from "../services/itemService";
+import { Item, ItemFormData } from "../types/item";
 
-const itemService = ItemService.getInstance();
-const $axios = inject('$axios');
+const $axios = inject<AxiosInstance>('$axios') as AxiosInstance;
 
 import { useItem } from "../composables/use.item.ts";
 import { useKeyboardShortcut } from "../composables/useKeyboardShortcut";
@@ -68,7 +64,7 @@ const {
 
 // Component state
 const showForm = ref(false);
-const editingItem = ref<Item | null>(null);
+const editingItem = ref<ItemFormData | null>(null);
 const showDeleteConfirm = ref(false);
 const itemToDelete = ref<Item | null>(null);
 const showHistory = ref(false);
@@ -145,7 +141,7 @@ onMounted(() => {
 });
 
 // Debounced search
-watch(searchQuery, (newValue) => {
+watch(searchQuery, () => {
   if (searchDebounceTimer.value) {
     clearTimeout(searchDebounceTimer.value);
   }
@@ -163,13 +159,17 @@ const handleSearch = async () => {
 };
 
 const handleFilter = async (filters: any[]) => {
-  // Convert AdvancedFilter format to our filter format
-  const filterObj = filters.reduce((acc, filter) => {
-    if (filter.field && filter.value) {
-      acc[filter.field] = filter.value;
+  // AdvancedFilter emits FilterGroup[] — { id, conditions[], logicalOperator } —
+  // so the conditions have to be flattened out first. Reading `.field` straight
+  // off the groups always yielded an empty object, which is why applying a
+  // filter silently changed nothing.
+  const conditions = (filters ?? []).flatMap((group: any) => group?.conditions ?? []);
+  const filterObj = conditions.reduce((acc: Record<string, any>, condition: any) => {
+    if (condition?.field && condition?.value !== '' && condition?.value != null) {
+      acc[condition.field] = condition.value;
     }
     return acc;
-  }, {});
+  }, {} as Record<string, any>);
   
   Object.assign(activeFilters, filterObj);
   await applyFilters({
@@ -215,7 +215,7 @@ const handleEdit = (item: Item) => {
     type: item.type || "",
     ownerId: item.ownerId || "",
     position: item.position || "",
-    status: item.status || item.itemStatus || "Available",
+    status: (item.status || item.itemStatus || "Available") as ItemFormData["status"],
     lastInspection: item.lastInspectionDate
       ? (item.lastInspectionDate instanceof Date
           ? item.lastInspectionDate.toISOString().split('T')[0] 
@@ -249,7 +249,7 @@ const confirmDelete = async () => {
   }
 };
 
-const handleFormSubmit = async (formData: any) => {
+const handleFormSubmit = async () => {
   try {
     // The composable handles the actual creation/update
     showForm.value = false;
@@ -271,42 +271,6 @@ const handleFormCancel = () => {
 const handleViewHistory = (item: Item) => {
   selectedItemForHistory.value = item;
   showHistory.value = true;
-};
-
-const handleStartLifecycle = async (item: Item) => {
-  try {
-    const event: Event = {
-      id: uuidv4(),
-      timestamp: new Date().toISOString(),
-      type: "IN",
-      itemId: item.id,
-      lifecycleId: "",
-      location: item.position,
-    };
-
-    await itemService.addEvent(item, event);
-    await refreshItems(); // Refresh to show updated item
-  } catch (error) {
-    console.error("Error starting lifecycle:", error);
-  }
-};
-
-const handleEndLifecycle = async (item: Item) => {
-  try {
-    const event: Event = {
-      id: uuidv4(),
-      timestamp: new Date().toISOString(),
-      type: "OUT",
-      itemId: item.id,
-      lifecycleId: item.currentLifecycleId!,
-      location: item.position,
-    };
-
-    await itemService.addEvent(item, event);
-    await refreshItems(); // Refresh to show updated item
-  } catch (error) {
-    console.error("Error ending lifecycle:", error);
-  }
 };
 
 const handleAddEvent = (item: Item) => {
@@ -466,23 +430,7 @@ const viewItems = computed(() =>
   }))
 );
 
-const getStatusBadgeClasses = (status: string) => {
-  const baseClasses = "px-2 py-1 text-xs font-medium rounded-full";
-  switch (status) {
-    case "Available":
-      return `${baseClasses} bg-green-100 text-green-800`;
-    case "In Use":
-      return `${baseClasses} bg-blue-100 text-blue-800`;
-    case "Maintenance":
-      return `${baseClasses} bg-yellow-100 text-yellow-800`;
-    case "Out of Service":
-      return `${baseClasses} bg-red-100 text-red-800`;
-    default:
-      return baseClasses;
-  }
-};
 
-// Computed properties for UI state
 const hasActiveFilters = computed(() => {
   return !!(searchQuery.value || activeFilters.itemType || activeFilters.status || activeFilters.ownerId);
 });
@@ -811,7 +759,7 @@ const { toast, showToast, dismissToast } = useToast();
     <ItemForm
       v-else-if="showForm"
       :edit-mode="!!editingItem"
-      :initial-data="editingItem"
+      :initial-data="editingItem ?? undefined"
       @submit="handleFormSubmit"
       @cancel="handleFormCancel"
     />
@@ -848,7 +796,7 @@ const { toast, showToast, dismissToast } = useToast();
       >
         <div class="max-w-md w-full">
           <AddItemEventModal
-            :item-id="selectedItemForEvent.id"
+            :item-id="selectedItemForEvent.id!"
             @success="handleEventSuccess"
             @cancel="handleEventCancel"
           />
@@ -865,7 +813,7 @@ const { toast, showToast, dismissToast } = useToast();
       >
         <div class="max-w-2xl w-full">
           <ItemEventHistory
-            :item-id="selectedItemForHistory.id"
+            :item-id="selectedItemForHistory.id!"
             ref="historyRef"
             @close="handleHistoryClose"
           />

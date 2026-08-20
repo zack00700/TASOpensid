@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, computed, watch } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import fieldService from '../services/fieldService';
 import type { Field } from '../types/field';
@@ -17,6 +17,11 @@ const loading = ref(false);
 const saveStatus = ref<{ [key: string]: 'idle' | 'saving' | 'saved' | 'error' }>({});
 const bulkTranslateMode = ref(false);
 const selectedFields = ref<Set<string>>(new Set());
+// Source/target of the bulk copy. The two selects in the Bulk Operations panel
+// carried no v-model and its Copy button had no @click, so bulkCopyTranslations()
+// below — fully implemented — was unreachable and the button did nothing.
+const bulkCopyFrom = ref('');
+const bulkCopyTo = ref('');
 
 // Language management
 const languages = computed(() => {
@@ -155,6 +160,14 @@ function clearFieldSelection() {
   selectedFields.value.clear();
 }
 
+const canBulkCopy = computed(
+  () =>
+    selectedFields.value.size > 0 &&
+    !!bulkCopyFrom.value &&
+    !!bulkCopyTo.value &&
+    bulkCopyFrom.value !== bulkCopyTo.value
+);
+
 async function bulkCopyTranslations(fromLang: string, toLang: string) {
   const selectedFieldsList = Array.from(selectedFields.value);
   if (selectedFieldsList.length === 0) return;
@@ -199,7 +212,7 @@ function exportTranslations() {
 
 // Auto-save on input with debouncing
 const debouncedSave = (() => {
-  const timeouts: { [key: string]: NodeJS.Timeout } = {};
+  const timeouts: { [key: string]: ReturnType<typeof setTimeout> } = {};
   return (field: Field, lang: string) => {
     const key = `${field.key}-${lang}`;
     clearTimeout(timeouts[key]);
@@ -355,18 +368,22 @@ onMounted(loadFields);
         </button>
         <div class="flex items-center gap-2 ml-auto">
           <span class="text-sm text-gray-600">{{ t('fields.bulk.copyFrom') }}</span>
-          <select class="border border-gray-300 rounded px-2 py-1 text-sm">
+          <select v-model="bulkCopyFrom" class="border border-gray-300 rounded px-2 py-1 text-sm">
             <option v-for="lang in languages" :key="lang" :value="lang">
               {{ languageNames[lang] || lang }}
             </option>
           </select>
           <span class="text-sm text-gray-600">{{ t('fields.bulk.to') }}</span>
-          <select class="border border-gray-300 rounded px-2 py-1 text-sm">
+          <select v-model="bulkCopyTo" class="border border-gray-300 rounded px-2 py-1 text-sm">
             <option v-for="lang in languages" :key="lang" :value="lang">
               {{ languageNames[lang] || lang }}
             </option>
           </select>
-          <button class="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600">
+          <button
+            :disabled="!canBulkCopy"
+            @click="bulkCopyTranslations(bulkCopyFrom, bulkCopyTo)"
+            class="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600 disabled:opacity-40 disabled:cursor-not-allowed"
+          >
             {{ t('fields.bulk.copy') }}
           </button>
         </div>
@@ -443,7 +460,7 @@ onMounted(loadFields);
               <th v-if="bulkTranslateMode" class="px-4 py-3 text-left">
                 <input
                   type="checkbox"
-                  @change="$event.target.checked ? selectAllFields() : clearFieldSelection()"
+                  @change="($event.target as HTMLInputElement).checked ? selectAllFields() : clearFieldSelection()"
                   class="rounded border-gray-300"
                 />
               </th>

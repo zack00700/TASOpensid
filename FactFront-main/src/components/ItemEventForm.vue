@@ -23,7 +23,7 @@ const availableEventConfigs = computed(() => props.eventConfigs ?? []);
 
 const eventData = ref<Omit<Event, "id">>({
   timestamp: new Date().toISOString(),
-  eventType: "",
+  eventType: undefined,
   itemId: props.itemId,
   lifecycleId: props.lifecycleId || "",
   location: "",
@@ -31,14 +31,22 @@ const eventData = ref<Omit<Event, "id">>({
   metadata: {},
 });
 
+// Single optional key/value pair. Kept as local refs and mirrored into
+// eventData.metadata only when both sides are meaningful — binding the inputs
+// straight to metadata added one entry per keystroke.
+const metadataKey = ref("");
+const metadataValue = ref("");
+
+watchEffect(() => {
+  const key = metadataKey.value.trim();
+  eventData.value.metadata = key ? { [key]: metadataValue.value } : {};
+});
+
 watchEffect(() => {
   if (!eventData.value.eventType && availableEventConfigs.value.length > 0) {
     const first = availableEventConfigs.value[0];
     // eventType may be a string or an object with name property
-    eventData.value.eventType =
-      typeof first.eventType === "string"
-        ? first.eventType
-        : first.eventType.name;
+    eventData.value.eventType = first.eventType;
   }
 });
 
@@ -112,7 +120,7 @@ const getInputClasses = (fieldName: string) => {
             <option
               v-for="config in availableEventConfigs"
               :key="config.id"
-              :value="typeof config.eventType === 'string' ? config.eventType : config.eventType.name"
+              :value="config.eventType"
             >
               {{ config.eventName }}
             </option>
@@ -167,16 +175,16 @@ const getInputClasses = (fieldName: string) => {
           <div class="space-y-4">
             <div class="flex items-center space-x-4">
               <input
+                v-model="metadataKey"
                 type="text"
                 :placeholder="t('itemEventForm.placeholder.key')"
                 class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                @input="e => eventData.metadata![e.target.value] = ''"
               />
               <input
+                v-model="metadataValue"
                 type="text"
                 :placeholder="t('itemEventForm.placeholder.value')"
                 class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                @input="e => eventData.metadata![Object.keys(eventData.metadata!)[0]] = e.target.value"
               />
             </div>
           </div>

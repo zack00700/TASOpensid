@@ -2,8 +2,6 @@
 import { ref, onMounted, computed, watch, reactive } from 'vue';
 import { useI18n } from 'vue-i18n';
 import {
-  Search,
-  Filter,
   Download,
   Plus,
   Pencil,
@@ -44,6 +42,7 @@ import FilterChips from './ui/FilterChips.vue';
 import ToastNotification from './ui/ToastNotification.vue';
 import PageHeader from './ui/PageHeader.vue';
 import { useBillOfLading } from '../composables/useBillOfLading';
+import type { BillOfLading as StoredBillOfLading } from '../services/billOfLadingService';
 import { useKeyboardShortcut } from '../composables/useKeyboardShortcut';
 import ColumnPicker from './ui/ColumnPicker.vue';
 import StatusBadge from './ui/StatusBadge.vue';
@@ -224,7 +223,7 @@ onMounted(() => {
 });
 
 // Debounced search
-watch(searchQuery, (newValue) => {
+watch(searchQuery, () => {
   if (searchDebounceTimer.value) {
     clearTimeout(searchDebounceTimer.value);
   }
@@ -242,13 +241,17 @@ const handleSearch = async () => {
 };
 
 const handleFilter = async (filters: any[]) => {
-  // Convert AdvancedFilter format to our filter format
-  const filterObj = filters.reduce((acc, filter) => {
-    if (filter.field && filter.value) {
-      acc[filter.field] = filter.value;
+  // AdvancedFilter emits FilterGroup[] — { id, conditions[], logicalOperator } —
+  // so the conditions have to be flattened out first. Reading `.field` straight
+  // off the groups always yielded an empty object, which is why applying a
+  // filter silently changed nothing.
+  const conditions = (filters ?? []).flatMap((group: any) => group?.conditions ?? []);
+  const filterObj = conditions.reduce((acc: Record<string, any>, condition: any) => {
+    if (condition?.field && condition?.value !== '' && condition?.value != null) {
+      acc[condition.field] = condition.value;
     }
     return acc;
-  }, {});
+  }, {} as Record<string, any>);
   
   Object.assign(activeFilters, filterObj);
   await applyFilters({
@@ -278,19 +281,6 @@ const handleRefresh = async () => {
   await refreshBills();
 };
 
-const getStatusBadgeClasses = (status: string) => {
-  const baseClasses = "px-2 py-1 text-xs font-medium rounded-full";
-  switch (status) {
-    case 'Final':
-      return `${baseClasses} bg-green-100 text-green-800`;
-    case 'Draft':
-      return `${baseClasses} bg-yellow-100 text-yellow-800`;
-    case 'Cancelled':
-      return `${baseClasses} bg-red-100 text-red-800`;
-    default:
-      return baseClasses;
-  }
-};
 
 const handleAdd = () => {
   editingBL.value = null;
@@ -369,7 +359,7 @@ const INVOICE_GUARD_MS = 10000; // 10 seconds
 const previewInvoice = ref<{ id: string; url: string } | null>(null);
 
 // Excel Export Functions
-const formatExportData = (bills: BillOfLading[]) => {
+const formatExportData = (bills: StoredBillOfLading[]) => {
   return bills.map(bl => ({
     'BL Number': bl.blNumber,
     'Status': bl.status,
@@ -398,7 +388,7 @@ const formatExportData = (bills: BillOfLading[]) => {
   }));
 };
 
-const formatItemsData = (bills: BillOfLading[]) => {
+const formatItemsData = (bills: StoredBillOfLading[]) => {
   const itemsData: any[] = [];
   bills.forEach(bl => {
     bl.items?.forEach(item => {
@@ -1035,6 +1025,7 @@ const blStats = computed(() => {
                 :disabled="isInvoicing(row as BillOfLading)"
                 class="inline-flex items-center p-1.5 rounded text-green-600 hover:bg-green-50 hover:text-green-800 disabled:opacity-40"
                 :title="t('billOfLading.action.generateInvoice')"
+                :aria-label="t('billOfLading.action.generateInvoice')"
               >
                 <Loader2 v-if="isInvoicing(row as BillOfLading)" class="h-4 w-4 animate-spin" />
                 <Receipt v-else class="h-4 w-4" />
@@ -1043,6 +1034,7 @@ const blStats = computed(() => {
                 @click="handleEdit(row as BillOfLading)"
                 class="inline-flex items-center p-1.5 rounded text-blue-600 hover:bg-blue-50"
                 :title="t('billOfLading.action.edit')"
+                :aria-label="t('billOfLading.action.edit')"
               >
                 <Pencil class="h-4 w-4" />
               </button>
@@ -1051,6 +1043,7 @@ const blStats = computed(() => {
                 @click="handleDelete(row as BillOfLading)"
                 class="inline-flex items-center p-1.5 rounded text-red-500 hover:bg-red-50"
                 :title="t('billOfLading.action.delete')"
+                :aria-label="t('billOfLading.action.delete')"
               >
                 <Trash2 class="h-4 w-4" />
               </button>
@@ -1072,7 +1065,7 @@ const blStats = computed(() => {
     <BillOfLadingForm
       v-else
       :edit-mode="!!editingBL"
-      :initial-data="editingBL"
+      :initial-data="(editingBL as any) ?? undefined"
       @submit="handleFormSubmit"
       @cancel="handleFormCancel"
     />

@@ -185,7 +185,7 @@ const TRANSPORT_ICONS = {
 
 /* --------------------------------- Helpers --------------------------------- */
 
-function isUuid(v: any): boolean {
+function isUuid(v: any): v is string {
   return typeof v === "string" &&
     /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(v);
 }
@@ -193,10 +193,6 @@ function ensureUuid(id?: string): string {
   return isUuid(id) ? id : uuidv4();
 }
 
-function isMongoObjectIdString(v: any): boolean {
-  // Classic 24-hex ObjectId string
-  return typeof v === "string" && /^[0-9a-f]{24}$/i.test(v);
-}
 
 /**
  * Extract a string id from various shapes:
@@ -387,106 +383,14 @@ const createCleanPayload = (basePayload: any) => {
   return cleanPayload;
 };
 
-/* ------------------------- Diff helpers ------------------------ */
 
-type Patch = Record<string, any> & { id: string };
-
-const normalizeForCompare = (it: Item) => {
-  const num = (x: any) => (Number.isFinite(Number(x)) ? Number(x) : 0);
-  return {
-    id: it.id || null,
-    itemNumber: (it.itemNumber || "").trim(),
-    itemType: TITLE_ITEM_TYPE[it.itemType],
-    type: (it.type || "").trim(),
-    ownerId: (it.ownerId || "").trim(),
-    position: (it.position || "").trim(),
-    // Convert to ISO strings for comparison
-    lastInspectionDate: dateInputToISO(it.lastInspection),
-    nextInspectionDate: dateInputToISO(it.nextInspection),
-    notes: it.notes || "",
-    status: it.status || null,
-    weight: num(it.weightKg),
-    volume: num(it.volumeM3),
-    lifeCycles: Array.isArray(it.lifeCycles) ? it.lifeCycles : [],
-    relatedInvoice: it.relatedInvoice ?? null,
-    billOfLadingId: it.billOfLadingId ?? null,
-  };
-};
-
-function computeChanges(
-  originalApiItems: any[] | null | undefined,
-  currentUiItems: Item[]
-) {
-  // Normalize originals (snapshot from backend at load time)
-  const originalNorm = (originalApiItems ?? []).map((x) =>
-    normalizeForCompare(mapApiItemToItem(x))
-  );
-
-  // Index ALL originals that have an id
-  const originalById = new Map<string, any>(
-    originalNorm
-      .filter((x) => !!x.id)
-      .map((x) => [x.id as string, x])
-  );
-
-  // Normalize current UI items and ensure they carry an id (fallback to clientId for comparison)
-  const currentNorm = (currentUiItems ?? []).map((x) => {
-    const n = normalizeForCompare(x);
-    n.id = (x.id || x.clientId) as string | null;
-    return n;
-  });
-
-  const currentById = new Map<string, any>(
-    currentNorm
-      .filter((x) => !!x.id)
-      .map((x) => [x.id as string, x])
-  );
-
-  // NEW = in current but NOT in original
-  const newItems = currentNorm
-    .filter((n) => !n.id || !originalById.has(n.id as string))
-    .map((n) => ({
-      ...n,
-      id: ensureUuid(typeof n.id === "string" ? n.id : undefined), // ensure UUID id for backend
-    }));
-
-  // UPDATED = present in both sets and any field differs
-  const updatedItems: Patch[] = [];
-  for (const [id, now] of currentById.entries()) {
-    const was = originalById.get(id);
-    if (!was) continue;
-
-    const patch: Patch = { id };
-    let changed = false;
-
-    for (const k of Object.keys(now)) {
-      if (k === "id") continue;
-      const a = JSON.stringify(now[k]);
-      const b = JSON.stringify(was[k]);
-      if (a !== b) {
-        (patch as any)[k] = now[k];
-        changed = true;
-      }
-    }
-
-    if (changed) updatedItems.push(patch);
-  }
-
-  // REMOVED = in original but NOT in current
-  const removedItemIds = [...originalById.keys()].filter(
-    (id) => !currentById.has(id)
-  );
-
-  return { newItems, updatedItems, removedItemIds };
-}
-
-/* --------------------------------- Props/IO -------------------------------- */
 
 const props = defineProps<{
   editMode?: boolean;
-  initialData?: BillOfLading & {
-    id?: string;
+  initialData?: Omit<BillOfLading, "notifyParty" | "items"> & {
+    notifyParty?: string | { name: string; address: string };
     items?: any[] | null;
+    id?: string;
     itemIds?: string[] | null;
     transport?: any;
   };
@@ -762,7 +666,7 @@ const getInputClasses = (fieldName: string, variant: 'default' | 'sm' = 'default
   
   return {
     [baseClasses]: true,
-    "border-red-300 bg-red-50": errors.value[fieldName],
+    "border-red-300 bg-red-50": !!errors.value[fieldName],
   };
 };
 
@@ -1004,6 +908,32 @@ const validateForm = () => {
 /* --------------------------------- Submit ---------------------------------- */
 
 // Updated handleSubmit function in BillOfLadingForm.vue
+
+/**
+ * Field-by-field comparison of two commodity blocks for the dirty check.
+ *
+ * `||` short-circuits, so the call site is only reached when every other field
+ * is unchanged — which is exactly why the missing definition went unnoticed:
+ * editing a bill of lading and touching only the commodity threw
+ * "commodityEqual is not defined" instead of detecting the change.
+ *
+ * Numbers are compared after coercion because the backend sends them as strings
+ * on some payloads, and a null/undefined commodity is treated as an empty one.
+ */
+function commodityEqual(a?: Commodity | null, b?: Commodity | null): boolean {
+  const num = (v: unknown) => (Number.isFinite(Number(v)) ? Number(v) : 0);
+  const str = (v: unknown) => (v ?? "").toString().trim();
+
+  return (
+    str(a?.description) === str(b?.description) &&
+    num(a?.weightKg) === num(b?.weightKg) &&
+    num(a?.volumeM3) === num(b?.volumeM3) &&
+    num(a?.packagesNumber) === num(b?.packagesNumber) &&
+    !!a?.hazardous === !!b?.hazardous &&
+    str(a?.hazardClass) === str(b?.hazardClass) &&
+    str(a?.unNumber) === str(b?.unNumber)
+  );
+}
 
 const handleSubmit = async () => {
   isSubmitting.value = true;
@@ -1531,7 +1461,7 @@ const generateInvoice = async () => {
               <label class="block text-sm font-medium text-gray-700 mb-4">{{ t("billOfLadingForm.field.transportType") }}</label>
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div
-                  v-for="type in ['Vessel', 'Train', 'Truck']"
+                  v-for="type in (['Vessel', 'Train', 'Truck'] as const)"
                   :key="type"
                   @click="formData.transportType = type"
                   :class="[
@@ -1632,7 +1562,7 @@ const generateInvoice = async () => {
                       {{ field.label }}
                     </label>
                     <div class="text-sm text-gray-900">
-                      {{ formData.transportSnapshot[field.key] || '-' }}
+                      {{ (formData.transportSnapshot as Record<string, any>)[field.key] || '-' }}
                     </div>
                   </div>
                 </div>

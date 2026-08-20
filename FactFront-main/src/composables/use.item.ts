@@ -22,7 +22,6 @@ export function useItem() {
 
     // Expose store slices under the same names components expect
     const items = computed(() => store.items as Item[] | null);
-    const loading = computed(() => store.loading);
     const pagination = computed(() => store.pagination);
     const filters = store.filters; // reactive object — mutations propagate to store
 
@@ -208,6 +207,9 @@ export function useItem() {
         // NEW: Pagination exports
         pagination,
         loading: isLoading,
+        // Items.vue renders an error panel from this; without it the panel could
+        // never show and a failed load looked like an empty result set.
+        error: computed(() => store.error),
         filters: computed(() => ({ ...filters })),
         hasItems,
         totalItems,
