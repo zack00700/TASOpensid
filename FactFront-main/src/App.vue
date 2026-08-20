@@ -70,7 +70,7 @@ onUnmounted(() => {
 
 <template>
   <!-- Loading screen -->
-  <div v-if="loading" class="min-h-screen bg-gray-50 flex items-center justify-center">
+  <div v-if="loading" class="min-h-screen flex items-center justify-center">
     <div class="text-center">
       <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
       <p class="text-gray-600">{{ $t('common.loading') }}</p>
@@ -81,7 +81,7 @@ onUnmounted(() => {
   <Login v-else-if="!isAuthenticated" />
 
   <!-- Main application (when authenticated) -->
-  <div v-else class="flex min-h-[100dvh] bg-gray-50">
+  <div v-else class="flex min-h-[100dvh]">
     <!-- Mobile overlay backdrop -->
     <transition name="fade">
       <div
@@ -102,11 +102,11 @@ onUnmounted(() => {
     <!-- Main Content -->
     <div class="flex-1 flex flex-col min-w-0">
       <!-- Header -->
-      <header class="bg-white shadow sticky top-0 z-30 h-16 flex items-center justify-between px-4 gap-2">
+      <header class="sticky top-0 z-30 h-16 flex items-center justify-between px-4 gap-2 bg-[rgba(253,250,242,0.72)] backdrop-blur-[18px] border-b border-[rgba(42,36,30,0.07)]">
         <!-- Hamburger button: mobile only -->
         <button
           @click="sidebarOpen = true"
-          class="lg:hidden p-2 rounded-lg text-gray-500 hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 flex-shrink-0"
+          class="lg:hidden p-2 rounded-tide-pill text-tide-ink/55 hover:bg-[rgba(255,253,247,0.75)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tide-blue flex-shrink-0"
           :aria-label="$t('nav.openMenu')"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -114,7 +114,9 @@ onUnmounted(() => {
           </svg>
         </button>
 
-        <img :src="logoUrl" :alt="$t('app.label.companyLogo')" class="h-14 w-auto" />
+        <div class="flex items-center rounded-tide-card bg-gradient-to-br from-[rgba(255,253,247,0.85)] to-[rgba(252,247,238,0.55)] border border-[rgba(60,50,35,0.08)] px-3 py-1">
+          <img :src="logoUrl" :alt="$t('app.label.companyLogo')" class="h-11 w-auto" />
+        </div>
 
         <!-- Locale switcher -->
         <LocaleSwitcher />
@@ -123,17 +125,17 @@ onUnmounted(() => {
         <div ref="userMenuRef" class="relative flex-shrink-0">
           <button
             @click="userMenuOpen = !userMenuOpen"
-            class="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-gray-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+            class="flex items-center gap-2 px-2 py-1.5 rounded-tide-pill hover:bg-[rgba(255,253,247,0.75)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tide-blue"
             aria-haspopup="true"
             :aria-expanded="userMenuOpen"
             :aria-label="$t('nav.userMenu')"
           >
             <!-- Avatar -->
-            <div class="w-8 h-8 bg-gradient-to-br from-slate-600 to-slate-800 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+            <div class="w-8 h-8 bg-gradient-to-br from-tide-blue to-tide-blue-deep rounded-full flex items-center justify-center text-tide-paper text-xs font-semibold flex-shrink-0">
               {{ initials }}
             </div>
             <!-- Name (hidden on very small screens) -->
-            <span class="hidden sm:block text-sm font-medium text-gray-700 max-w-[120px] truncate">{{ displayName }}</span>
+            <span class="hidden sm:block text-sm font-medium text-tide-ink/80 max-w-[120px] truncate">{{ displayName }}</span>
             <!-- Chevron -->
             <svg class="w-3.5 h-3.5 text-gray-400 flex-shrink-0 transition-transform duration-200" :class="userMenuOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
@@ -151,7 +153,7 @@ onUnmounted(() => {
           >
             <div
               v-if="userMenuOpen"
-              class="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 py-1 z-50 origin-top-right"
+              class="absolute right-0 top-full mt-2 w-56 bg-[rgba(255,253,247,0.97)] backdrop-blur-[18px] rounded-tide-card shadow-glass-deep border border-[rgba(60,50,35,0.10)] py-1 z-50 origin-top-right"
               role="menu"
             >
               <!-- User info -->

@@ -2,12 +2,12 @@
   <div class="relative flex shrink-0 h-full">
     <aside
       v-if="isOpen"
-      class="w-64 shrink-0 border-r border-slate-600/30 flex flex-col h-full shadow-xl backdrop-blur-sm bg-gradient-to-b from-slate-800 to-slate-900"
+      class="w-64 shrink-0 border-r border-[rgba(42,36,30,0.08)] flex flex-col h-full bg-[rgba(253,250,242,0.35)] backdrop-blur-[2px]"
     >
       <!-- Mobile close button -->
       <button
         @click="emit('close')"
-        class="lg:hidden absolute top-3 right-3 p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+        class="lg:hidden absolute top-3 right-3 p-1.5 rounded-tide-pill text-tide-ink/45 hover:text-tide-ink hover:bg-[rgba(255,253,247,0.7)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tide-blue"
         :aria-label="$t('nav.closeSidebar')"
       >
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -16,14 +16,14 @@
       </button>
 
       <!-- Header with User Info -->
-      <div class="p-4 border-b border-slate-600/30">
-        <div class="flex items-center space-x-3 p-3 rounded-xl bg-slate-700/20 border border-slate-600/20 shadow-sm">
-          <div class="w-10 h-10 bg-gradient-to-br from-slate-300 to-slate-200 rounded-full flex items-center justify-center shadow-md flex-shrink-0 text-sm font-bold text-slate-700">
+      <div class="p-4 border-b border-[rgba(42,36,30,0.06)]">
+        <div class="flex items-center space-x-3 p-3 rounded-tide-card bg-gradient-to-br from-[rgba(255,253,247,0.95)] to-[rgba(252,247,238,0.7)] border border-[rgba(60,50,35,0.10)] shadow-glass">
+          <div class="w-10 h-10 bg-gradient-to-br from-tide-blue to-tide-blue-deep rounded-full flex items-center justify-center flex-shrink-0 text-sm font-semibold text-tide-paper">
             {{ initials }}
           </div>
           <div class="flex-1 min-w-0">
-            <p class="text-sm font-semibold text-white truncate">{{ displayName }}</p>
-            <p class="text-xs text-slate-400 truncate">{{ displayEmail }}</p>
+            <p class="text-sm font-semibold text-tide-ink truncate">{{ displayName }}</p>
+            <p class="text-xs text-tide-ink/45 truncate font-mono">{{ displayEmail }}</p>
           </div>
         </div>
       </div>
@@ -38,20 +38,20 @@
           <button
             :data-test="`section-${section.key}`"
             @click="toggleSection(section)"
-            class="flex items-center w-full px-3 py-3 text-slate-200 hover:bg-slate-600/30 rounded-xl transition-all duration-200 group focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-1 focus-visible:ring-offset-slate-900"
+            class="flex items-center w-full px-2 py-2 text-tide-ink/40 hover:text-tide-ink/70 rounded-tide-pill transition-colors duration-200 group focus-visible:ring-2 focus-visible:ring-tide-blue focus-visible:ring-offset-1"
             :aria-expanded="section.open"
             :aria-controls="`section-${section.key}-list`"
           >
             <div
-              class="flex items-center justify-center w-9 h-9 rounded-lg bg-slate-600/20 group-hover:bg-slate-500/30 border border-slate-500/20 transition-all duration-200 mr-3"
+              class="flex items-center justify-center w-5 h-5 mr-2 transition-colors duration-200"
             >
-              <component :is="section.icon" class="w-4 h-4 text-slate-300" />
+              <component :is="section.icon" class="w-3.5 h-3.5" />
             </div>
-            <span class="flex-1 text-sm font-medium text-left text-white">{{ $t(section.i18nKey) }}</span>
+            <span class="flex-1 text-[10px] font-semibold tracking-[0.12em] uppercase text-left">{{ $t(section.i18nKey) }}</span>
 
             <ChevronRight
-              class="w-4 h-4 transition-all duration-300 text-slate-400"
-              :class="{ 'rotate-90 text-slate-200': section.open }"
+              class="w-3.5 h-3.5 transition-all duration-300 opacity-50"
+              :class="{ 'rotate-90 opacity-80': section.open }"
               :aria-label="t('sidebarMenu.label.toggleSection', { name: t(section.i18nKey) })"
             />
           </button>
@@ -62,37 +62,37 @@
             class="overflow-hidden transition-all duration-300 ease-out"
             :class="section.open ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0'"
           >
-            <ul class="mt-2 ml-3 pl-6 border-l border-slate-600/30 space-y-1">
+            <ul class="mt-1 ml-2 pl-4 border-l border-[rgba(42,36,30,0.08)] space-y-0.5">
               <li v-for="item in section.items" :key="item.name">
                 <button
                   @click="setActive(item)"
                   :data-active="activeItem === item.name"
                   :data-test="`menu-item-${item.name.toLowerCase().replace(/\s+/g, '-')}`"
                   :tabindex="activeItem === item.name ? -1 : 0"
-                  class="flex items-center w-full px-3 py-2.5 text-sm rounded-lg group relative focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-1 focus-visible:ring-offset-slate-900"
+                  class="flex items-center w-full px-2.5 py-2 text-[13px] rounded-tide-pill group relative focus-visible:ring-2 focus-visible:ring-tide-blue focus-visible:ring-offset-1"
                   :class="
                     activeItem === item.name
-                      ? 'bg-gradient-to-r from-slate-500/20 to-slate-400/20 text-white shadow-sm border border-slate-400/30 backdrop-blur-sm transition-none'
-                      : 'text-slate-300 hover:bg-slate-600/20 hover:text-white transition-all duration-150'
+                      ? 'bg-gradient-to-br from-[rgba(255,253,247,0.95)] to-[rgba(252,247,238,0.70)] text-tide-ink font-medium border border-[rgba(60,50,35,0.10)] transition-none'
+                      : 'text-tide-ink/70 border border-transparent hover:bg-[rgba(255,253,247,0.45)] hover:text-tide-ink transition-all duration-150'
                   "
                 >
                   <!-- Active indicator -->
                   <div
                     v-if="activeItem === item.name"
-                    class="absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-6 bg-gradient-to-b from-slate-300 to-slate-400 rounded-full -ml-3 shadow-sm"
+                    class="absolute left-0 top-1/2 transform -translate-y-1/2 w-[3px] h-5 bg-gradient-to-b from-tide-blue to-tide-blue-deep rounded-full -ml-[17px]"
                   ></div>
 
                   <div
-                    class="flex items-center justify-center w-7 h-7 rounded-md mr-3"
+                    class="flex items-center justify-center w-5 h-5 mr-2.5"
                     :class="
                       activeItem === item.name
-                        ? 'bg-slate-400/20 text-white border border-slate-400/20 transition-none'
-                        : 'text-slate-400 group-hover:text-white group-hover:bg-slate-600/20 transition-all duration-150'
+                        ? 'text-tide-blue-deep transition-none'
+                        : 'text-tide-ink/40 group-hover:text-tide-ink/70 transition-all duration-150'
                     "
                   >
                     <component :is="item.icon" class="w-4 h-4" />
                   </div>
-                  <span class="font-medium">{{ $t(item.i18nKey) }}</span>
+                  <span>{{ $t(item.i18nKey) }}</span>
                 </button>
               </li>
             </ul>
@@ -101,13 +101,13 @@
       </nav>
 
       <!-- Pinned logout -->
-      <div class="p-3 border-t border-slate-600/30 flex-shrink-0">
+      <div class="p-3 border-t border-[rgba(42,36,30,0.06)] flex-shrink-0">
         <button
           @click="handleLogout"
-          class="flex items-center w-full px-3 py-2.5 rounded-xl text-slate-300 hover:bg-red-500/15 hover:text-red-300 transition-all duration-200 group focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:ring-offset-1 focus-visible:ring-offset-slate-900"
+          class="flex items-center w-full px-2.5 py-2 rounded-tide-pill text-tide-ink/65 hover:bg-[rgba(181,99,88,0.10)] hover:text-tide-rust-deep transition-all duration-200 group focus-visible:ring-2 focus-visible:ring-tide-rust focus-visible:ring-offset-1"
           :aria-label="$t('nav.signOut')"
         >
-          <div class="flex items-center justify-center w-7 h-7 rounded-md mr-3 text-slate-400 group-hover:text-red-300 transition-colors duration-200">
+          <div class="flex items-center justify-center w-5 h-5 mr-2.5 text-tide-ink/40 group-hover:text-tide-rust-deep transition-colors duration-200">
             <LogOut class="w-4 h-4" />
           </div>
           <span class="text-sm font-medium">{{ $t('nav.signOut') }}</span>
@@ -124,7 +124,7 @@
     >
       <button
         @click="isOpen = !isOpen; scheduleHide(true)"
-        class="relative flex items-center justify-center w-9 h-9 rounded-full bg-white/95 backdrop-blur border border-slate-200/60 shadow-lg transition-opacity duration-300 hover:bg-white hover:shadow-xl focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-1 focus-visible:ring-offset-slate-900"
+        class="relative flex items-center justify-center w-9 h-9 rounded-full bg-[rgba(255,253,247,0.95)] backdrop-blur border border-[rgba(60,50,35,0.12)] shadow-glass transition-opacity duration-300 hover:bg-tide-paper focus-visible:ring-2 focus-visible:ring-tide-blue focus-visible:ring-offset-1"
         :class="[
           showToggle ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         ]"
@@ -132,8 +132,8 @@
         :aria-hidden="!showToggle"
         :tabindex="showToggle ? 0 : -1"
       >
-        <ChevronLeft v-if="isOpen" class="w-5 h-5 text-slate-700" />
-        <ChevronRight v-else class="w-5 h-5 text-slate-700" />
+        <ChevronLeft v-if="isOpen" class="w-5 h-5 text-tide-ink/70" />
+        <ChevronRight v-else class="w-5 h-5 text-tide-ink/70" />
       </button>
     </div>
   </div>
