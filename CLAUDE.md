@@ -1143,14 +1143,38 @@ Deux fichiers de règles vivent à la racine de TASOpensid, **écrits par le col
 - **La CI front ne gate que le build.** `.github/workflows/deploy.yml` n'exécute que `npm ci`
   puis `npm run build` — ni `npm run typecheck`, ni `npm run test`. Conséquence : `pigch/FactFront@main`
   peut être (et est) rouge sur ces deux commandes tout en déployant vert. État au 20/08/2026 :
-  `npm run build` ✅, `npm run typecheck` ❌ 8 erreurs (6 dans `src/stores/i18nStore.ts` — le type
-  dérivé de `en.json` est figé en littéral de 2005 clés — + 2 `TS6133` d'imports morts dans
-  `invoiceStore.ts` / `itemStore.ts`), `npm run test` ❌ 18 échecs / 396 sur 6 fichiers
-  (`invoice`, `sidebar-menu`, `bill-of-lading`, `invoices`, `invoice-sort`, `item-service` —
-  Pinia non actif, `useRouter` non mocké, format monétaire `0 €` vs `$0.00`).
+  `npm run build` ✅, `npm run typecheck` ❌ **192 erreurs**, `npm run test` ❌ 18 échecs / 396.
+  ⚠️ Une note antérieure annonçait « 8 erreurs » de typecheck : c'était faux (comptage sur un
+  extrait tronqué de la sortie). Répartition réelle, recomptée le 20/08/2026 :
+  ~72 `TS6133/6192/6196` (imports et variables morts — mécanique, sans risque),
+  ~60 typages Vue (`:class`, props, casts) concentrés sur `Items.vue`, `BillOfLadingForm.vue`,
+  `ContractForm.vue`, 10 `$axios` de type `unknown` (`use.vessel/event-config/contract.ts`),
+  9 dans `itemService.ts` (`currentLifecycleId`, `Lifecycle.status` désalignés du back),
+  6 dans `i18nStore.ts` (type dérivé de `en.json` figé en littéral de 2005 clés).
+  Les 18 échecs de test portent sur 6 fichiers : 8 `invoice.spec` (`HTMLCanvasElement.getContext`
+  non implémenté par jsdom — chart.js), 5 `sidebar-menu.spec` (`useRouter is not a function`),
+  2 `bill-of-lading.spec` (Pinia non actif), 1 `invoices.spec` (jsdom `navigation`),
+  1 `invoice-sort.spec` (format monétaire `0 €` vs `$0.00`), 1 `item-service.spec` (appel `/item`).
   Ces échecs **préexistent** au resync : ils viennent de commits amont anciens (migrations i18n notamment).
 - **Autorisation deny-by-default côté back** (arrivée avec PR #171) :
   `quarkus.http.auth.permission.authenticated.paths=/api/*` dans `application.properties`.
-  Elle est **indépendante** de `quarkus.oidc.enabled` et `quarkus.security.auth.enabled-in-dev-mode`,
-  donc `./start.sh --no-auth` (qui ne passe que ces deux `-D`) peut désormais ne plus suffire et
-  renvoyer des 401 sur `/api/*`. À revérifier au prochain démarrage local.
+  **Vérifié le 20/08/2026 — elle fonctionne, et `./start.sh --no-auth` fonctionne toujours.**
+  Deux doutes notés précédemment sont levés :
+  1. *« Les endpoints ne sont pas sous /api, donc la règle ne matche rien »* → **faux**.
+     `quarkus.http.root-path` est bien commenté et aucun `@Path` n'est préfixé `/api`, mais
+     [`fr/alb/TosBeApplication.java`](FactBack-main/src/main/java/fr/alb/TosBeApplication.java)
+     porte `@ApplicationPath("api")` : c'est **lui** qui monte toutes les resources JAX-RS sous
+     `/api/*`. Ne pas chercher le préfixe uniquement dans `application.properties`.
+  2. *« `--no-auth` va renvoyer des 401 »* → **faux**. `quarkus.security.auth.enabled-in-dev-mode=false`
+     court-circuite aussi les policies HTTP, pas seulement les `@RolesAllowed`. Mesuré :
+     `GET /api/invoices` et `GET /api/contract` en anonyme → **200**.
+  Non-régression verrouillée par
+  [`HttpAuthorizationPolicyTest`](FactBack-main/src/test/java/fr/alb/security/HttpAuthorizationPolicyTest.java)
+  (anonyme sur 3 resources non annotées → 401, `/q/health` → 200).
+- **Reste ouvert : 12 resources sans aucune annotation de rôle.** Le backstop les rend
+  inaccessibles en anonyme, mais **tout utilisateur authentifié** (y compris `ROLE_READONLY`)
+  peut les appeler en écriture : `AuthResource`, `InvoicesResource`, `InvoiceDebugResource`,
+  `TaxCalculationResource`, `BillOfLadingResource`, `BillOfLadingItemsResource`,
+  `ThirdPartyPatchResource`, `ItemEventResource`, `ItemEventLookupResource`, `LifecycleResource`,
+  `VesselVisitQueryResource`, `AskAiResource`. C'est un durcissement à arbitrer avec le collègue
+  (choix des rôles par endpoint), pas un trou d'accès anonyme.
