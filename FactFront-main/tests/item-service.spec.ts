@@ -20,14 +20,14 @@ describe('itemService', () => {
     axiosMock.get.mockImplementation(() => Promise.resolve({ data: {} }));
   });
 
-  it('uses singular endpoint when creating item', async () => {
+  it('posts to the /items collection endpoint when creating an item', async () => {
     await itemService.create({
       type: 'container',
       itemNumber: 'ABC123',
       status: 'Pending',
       billOfLadingId: 'bl1',
     });
-    expect(api.post).toHaveBeenCalledWith('/item', expect.any(Object));
+    expect(api.post).toHaveBeenCalledWith('/items', expect.any(Object));
   });
 
   it('normalizes item id from nested identifiers when retrieving', async () => {

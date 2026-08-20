@@ -2,6 +2,7 @@ import { describe, it, expect, vi, afterEach } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { computed, reactive } from 'vue';
 import { i18n } from '../src/i18n';
+import { formatCurrency } from '../src/utils/currency';
 
 const mocks = vi.hoisted(() => ({
   fetchInvoicesMock: vi.fn(),
@@ -97,11 +98,11 @@ describe('Invoices', () => {
     document.body.querySelectorAll('[role="dialog"]').forEach((n) => n.remove());
   });
 
-  it('shows $0.00 when amount is undefined', async () => {
+  it('renders a zero amount in the default currency when the amount is undefined', async () => {
     const wrapper = mount(Invoices, { global: { plugins: [i18n], provide: { $axios: {} } } });
     await wrapper.vm.$nextTick();
     const cells = wrapper.findAll('tbody tr td');
-    expect(cells[6].text()).toBe('$0.00');
+    expect(cells[6].text()).toBe(formatCurrency(0));
   });
 
   it('allows sorting by status and updates state', async () => {
