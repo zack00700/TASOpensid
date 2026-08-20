@@ -6,16 +6,15 @@ import {
   Plus,
   Pencil,
   Trash2,
-  CheckCircle,
   XCircle,
-  Calendar,
   DollarSign,
   Filter,
 } from 'lucide-vue-next';
 import { tariffService } from '../services/tariffService';
-import type { Tariff, RateManagementExtended, ServiceType } from '../types/contrat';
+import type { Tariff, ServiceType } from '../types/contrat';
 import PageHeader from './ui/PageHeader.vue';
 import Button from './ui/Button.vue';
+import { DEFAULT_CURRENCY } from '../utils/currency';
 
 const { t } = useI18n();
 
@@ -205,7 +204,7 @@ const addRate = () => {
   if (!form.value.rates) form.value.rates = [];
   form.value.rates.push({
     amount: undefined,
-    currency: 'USD',
+    currency: DEFAULT_CURRENCY,
     unitOfMeasurement: '',
     rateType: 'SIMPLE',
     glCode: '',

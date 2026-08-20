@@ -73,7 +73,7 @@
           </div>
 
           <!-- Scrollable report -->
-          <div class="askai-report-scroll" ref="reportRef">
+          <div class="askai-report-scroll">
             <div class="askai-report-page">
 
               <!-- ── Report header ───────────────────── -->
@@ -188,6 +188,7 @@
 import { ref, computed, nextTick, onMounted, onUnmounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import askAiService from '../services/askAiService';
+import { formatCurrency, DEFAULT_CURRENCY } from '../utils/currency';
 
 const { t } = useI18n();
 
@@ -226,7 +227,6 @@ const reportSpec = ref<AskAiSpec | null>(null);
 const lastQuestion = ref('');
 const textareaRef  = ref<HTMLTextAreaElement | null>(null);
 const chartEl      = ref<HTMLElement | null>(null);
-const reportRef    = ref<HTMLElement | null>(null);
 let echartsInst: any = null;
 
 // ─── Modal ──────────────────────────────────────────────────
@@ -383,9 +383,9 @@ function statusBadge(val: string): string {
 function fmtAmount(val: any): string {
   const n = parseFloat(String(val ?? '0').replace(/[^0-9.-]/g, ''));
   if (isNaN(n)) return String(val ?? '');
-  return new Intl.NumberFormat('fr-FR', {
-    style: 'currency', currency: 'EUR', maximumFractionDigits: 0,
-  }).format(n);
+  // Compact: these render inside chat answers and chart tooltips, where cents
+  // would crowd the line. The amounts are indicative, never reconciled.
+  return formatCurrency(n, DEFAULT_CURRENCY, { compact: true });
 }
 
 function fmtDate(val: any): string {

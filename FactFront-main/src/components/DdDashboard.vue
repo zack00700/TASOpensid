@@ -16,6 +16,7 @@ import {
 import Pagination from './Pagination.vue';
 import { getDdSummary, getDdAccruals, applyWaiver, recomputeAccrual } from '../services/ddService';
 import type { DdAccrual, DdDashboardSummary, DdWaiver } from '../types/dd';
+import { formatOptionalCurrency } from '../utils/currency';
 
 const { t } = useI18n();
 
@@ -185,18 +186,8 @@ const formatDate = (dateStr?: string) => {
   }
 };
 
-const formatCurrency = (amount?: number) => {
-  if (amount == null) return '—';
-  try {
-    return new Intl.NumberFormat(undefined, {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2,
-    }).format(amount);
-  } catch {
-    return `$${amount.toFixed(2)}`;
-  }
-};
+const formatCurrency = (amount?: number, currency?: string | null) =>
+  formatOptionalCurrency(amount, currency);
 
 // ── Detail modal ─────────────────────────────────────────────────────────────
 
@@ -285,7 +276,7 @@ const dailyLogHeaders = computed(() => [
             <div class="mt-2 flex items-center text-sm text-gray-500 space-x-4">
               <span class="flex items-center">
                 <TrendingUp class="h-4 w-4 mr-1 text-blue-500" />
-                {{ t('ddDashboard.accrualCount', totalItems, { count: totalItems }) }}
+                {{ t('ddDashboard.accrualCount', { count: totalItems }, totalItems) }}
               </span>
             </div>
           </div>

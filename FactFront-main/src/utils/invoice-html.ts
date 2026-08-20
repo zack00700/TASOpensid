@@ -1,4 +1,5 @@
 import { InvoiceLineDto } from '../types/invoice';
+import { DEFAULT_CURRENCY } from './currency';
 
 export interface InvoiceHtmlOptions {
   /** Identifier only used in debug logging */
@@ -21,7 +22,7 @@ export function renderInvoiceLines(
   opts: InvoiceHtmlOptions
 ): string {
   const locale = opts.locale ?? 'en-US';
-  const currency = opts.currency ?? 'USD';
+  const currency = opts.currency ?? DEFAULT_CURRENCY;
   const nf = new Intl.NumberFormat(locale, {
     style: 'currency',
     currency,

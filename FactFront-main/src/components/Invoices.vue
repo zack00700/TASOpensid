@@ -7,15 +7,11 @@ import {
   ChevronDown,
   ChevronUp,
   RotateCcw,
-  X,
-  FileSearch,
   CheckCircle,
   MoreVertical,
   Eye,
   FileText,
   Trash2,
-  TrendingUp,
-  TrendingDown,
   Search,
   Calendar,
   Users,
@@ -41,6 +37,7 @@ import PaymentStatusBadge from './ui/PaymentStatusBadge.vue';
 import { derivePaymentStatus, getInvoiceOutstanding, type Invoice } from '../types/invoice';
 import { useColumnPreferences, type ColumnDefinition } from '../composables/useColumnPreferences';
 import PageHeader from './ui/PageHeader.vue';
+import { formatCurrency, DEFAULT_CURRENCY } from '../utils/currency';
 
 const { state, displayedCount, fetchInvoices, clearFilters, hydrateFromUrl } =
   useInvoice();
@@ -123,13 +120,24 @@ function getRowAmount(inv: any): number {
   return Number.isFinite(num) ? num : 0;
 }
 
-function formatCurrency(amount: unknown) {
-  const num = typeof amount === 'number' ? amount : parseFloat(String(amount));
-  return (Number.isFinite(num) ? num : 0).toLocaleString('fr-FR', {
-    style: 'currency',
-    currency: 'EUR',
-    maximumFractionDigits: 0,
-  });
+function getRowCurrency(inv: any): string {
+  return inv?.currency ?? DEFAULT_CURRENCY;
+}
+
+/**
+ * Line/total amounts: always in the invoice's own currency, cents included —
+ * these are reconciled against real invoices.
+ */
+function formatRowAmount(inv: any): string {
+  return formatCurrency(getRowAmount(inv), getRowCurrency(inv), { fallback: formatCurrency(0) });
+}
+
+/**
+ * KPI tiles aggregate across invoices, so no single row currency applies: they
+ * stay in the default currency and drop the cents to stay compact.
+ */
+function formatTotal(amount: unknown): string {
+  return formatCurrency(amount, DEFAULT_CURRENCY, { compact: true, fallback: formatCurrency(0, DEFAULT_CURRENCY, { compact: true }) });
 }
 
 function formatDate(value: string | number | Date) {
@@ -234,7 +242,7 @@ const dataTableColumns: Column<any>[] = [
   { key: 'customerName', label: t('invoices.column.customerName'),  sortable: true, mobile: 'meta' },
   { key: 'facility',     label: t('invoices.column.facility'),      sortable: true, mobile: 'hidden' },
   { key: 'createdDate',  label: t('invoices.column.createdDateShort'), sortable: true, format: (v) => formatDate(v as string), mobile: 'meta' },
-  { key: 'totalAmount',  label: t('invoices.column.totalAmount'),   sortable: true, align: 'right', format: (_, row: any) => formatCurrency(getRowAmount(row)), mobile: 'meta' },
+  { key: 'totalAmount',  label: t('invoices.column.totalAmount'),   sortable: true, align: 'right', format: (_, row: any) => formatRowAmount(row), mobile: 'meta' },
   { key: 'paymentStatus', label: t('invoices.column.paymentStatus'), sortable: false, mobile: 'meta' },
   { key: 'outstanding',   label: t('invoices.column.outstanding'),  sortable: false, align: 'right', mobile: 'meta' },
   { key: 'dueDate',       label: t('invoices.column.dueDate'),      sortable: true,  format: (v) => v ? formatDate(v as string) : '—', mobile: 'meta' },
@@ -277,7 +285,7 @@ function openPreview(id: string) {
     showToast(t('invoices.toast.idMissing'));
     return;
   }
-  const inv =
+  const inv: Record<string, any> =
     state.items.find((i: any) => i._id === id || i.id === id || i.invoiceId === id) || {};
   previewInvoice.value = {
     id: String(id),
@@ -369,7 +377,7 @@ async function finalizePreview() {
   try {
     await invoiceService.finalize(previewInvoice.value.id);
     await fetchInvoices();
-    const inv =
+    const inv: Record<string, any> =
       state.items.find(
         (i: any) => i._id === previewInvoice.value!.id || i.id === previewInvoice.value!.id || i.invoiceId === previewInvoice.value!.id
       ) || {};
@@ -422,7 +430,7 @@ onMounted(async () => {
       <template #kpi>
           <KpiCard
             :label="t('invoices.kpi.totalAmount')"
-            :value="formatCurrency(state.totalAmount)"
+            :value="formatTotal(state.totalAmount)"
             :sub-label="t('invoices.kpi.totalAmountSub', { count: state.totalCount })"
             :trend="totalTrend || undefined"
             color="slate"
@@ -434,7 +442,7 @@ onMounted(async () => {
 
           <KpiCard
             :label="t('invoices.kpi.draftInvoices')"
-            :value="formatCurrency(state.statusAmounts.DRAFT)"
+            :value="formatTotal(state.statusAmounts.DRAFT)"
             :sub-label="t('invoices.kpi.draftInvoicesSub', { count: state.statusCounts.DRAFT, pct: draftPercent })"
             :trend="draftTrend || undefined"
             color="amber"
@@ -446,7 +454,7 @@ onMounted(async () => {
 
           <KpiCard
             :label="t('invoices.kpi.finalInvoices')"
-            :value="formatCurrency(state.statusAmounts.FINAL)"
+            :value="formatTotal(state.statusAmounts.FINAL)"
             :sub-label="t('invoices.kpi.finalInvoicesSub', { count: state.statusCounts.FINAL, pct: finalPercent })"
             :trend="finalTrend || undefined"
             color="emerald"
@@ -710,7 +718,7 @@ onMounted(async () => {
 
         <template #cell-outstanding="{ row }">
           <span :class="getInvoiceOutstanding(row as Invoice) > 0 ? 'text-amber-700 font-medium' : 'text-slate-400'">
-            {{ formatCurrency(getInvoiceOutstanding(row as Invoice)) }}
+            {{ formatCurrency(getInvoiceOutstanding(row as Invoice), getRowCurrency(row)) }}
           </span>
         </template>
 
@@ -791,7 +799,7 @@ onMounted(async () => {
             </div>
             <div class="flex items-center justify-between text-xs text-slate-500">
               <span>{{ (row as any).createdDate ? new Date((row as any).createdDate).toLocaleDateString() : '—' }}</span>
-              <span class="font-semibold text-slate-900 text-sm">{{ formatCurrency(getRowAmount(row)) }}</span>
+              <span class="font-semibold text-slate-900 text-sm">{{ formatRowAmount(row) }}</span>
             </div>
           </div>
         </template>
@@ -801,7 +809,7 @@ onMounted(async () => {
           <div class="bg-slate-50 px-6 py-3 text-sm text-slate-600 border-b border-slate-200">
             <div class="flex items-center justify-between">
               <div>
-                {{ t('invoices.footer.summary', { count: displayedCount, total: formatCurrency(displayedTotalAmount) }) }}
+                {{ t('invoices.footer.summary', { count: displayedCount, total: formatTotal(displayedTotalAmount) }) }}
               </div>
               <div>
                 {{ t('invoices.footer.showing', { from: ((state.page - 1) * state.pageSize) + 1, to: Math.min(state.page * state.pageSize, state.totalCount), total: state.totalCount }) }}

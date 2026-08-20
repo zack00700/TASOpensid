@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { formatOptionalCurrency } from '../utils/currency';
 import {
-  RefreshCw, Plus, X, AlertCircle, CheckCircle, FileText, ShieldCheck,
-  ShieldX, Send, Pause, Ban,
+  RefreshCw, Plus, X, AlertCircle, FileText, ShieldCheck,
+  Send, Pause, Ban,
 } from 'lucide-vue-next';
 import {
   listCustomsDeclarations,
@@ -209,16 +210,8 @@ const submitCreate = async () => {
 const formatDate = (s?: string | null) =>
   !s ? '—' : new Date(s).toLocaleString();
 
-const formatMoney = (amount?: number | null, currency?: string | null) => {
-  if (amount == null) return '—';
-  try {
-    return new Intl.NumberFormat(undefined, {
-      style: 'currency', currency: currency || 'USD', minimumFractionDigits: 2,
-    }).format(amount);
-  } catch {
-    return `${amount.toFixed(2)} ${currency ?? ''}`;
-  }
-};
+const formatMoney = (amount?: number | null, currency?: string | null) =>
+  formatOptionalCurrency(amount, currency);
 </script>
 
 <template>

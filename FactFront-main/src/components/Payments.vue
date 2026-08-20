@@ -11,9 +11,7 @@ import {
   Pencil,
   X,
   CreditCard,
-  CheckCircle,
   AlertCircle,
-  Clock,
 } from 'lucide-vue-next';
 import Pagination from './Pagination.vue';
 import paymentService from '../services/paymentService';
@@ -22,6 +20,7 @@ import Button from './ui/Button.vue';
 import Select from './ui/Select.vue';
 import Input from './ui/Input.vue';
 import type { Payment, PaymentAllocation, PaymentMethod, PaymentStatus } from '../types/payment';
+import { formatCurrency, DEFAULT_CURRENCY } from '../utils/currency';
 
 const { t } = useI18n();
 
@@ -65,7 +64,7 @@ const isAllocating = ref(false);
 const emptyForm = (): Omit<Payment, 'id'> => ({
   customerName: '',
   amount: 0,
-  currency: 'EUR',
+  currency: DEFAULT_CURRENCY,
   paymentMethod: 'WIRE_TRANSFER',
   paymentDate: new Date().toISOString().split('T')[0],
   bankReference: '',
@@ -188,13 +187,7 @@ const getStatusBadgeClasses = (status: PaymentStatus | undefined) => {
 
 // ── Formatters ───────────────────────────────────────────────────────────────
 
-const formatAmount = (amount: number, currency: string) => {
-  try {
-    return new Intl.NumberFormat(undefined, { style: 'currency', currency, minimumFractionDigits: 2 }).format(amount);
-  } catch {
-    return `${currency} ${amount.toFixed(2)}`;
-  }
-};
+const formatAmount = (amount: number, currency: string) => formatCurrency(amount, currency);
 
 const formatDate = (dateStr?: string) => {
   if (!dateStr) return '—';
@@ -363,7 +356,7 @@ const submitReverse = async () => {
   <div class="min-h-screen bg-gray-50">
     <PageHeader
       :title="t('nav.payments')"
-      :subtitle="t('payments.subtitle', { cleared: formatAmount(totalClearedAmount, 'EUR'), pending: pendingCount, total: totalItems })"
+      :subtitle="t('payments.subtitle', { cleared: formatAmount(totalClearedAmount, DEFAULT_CURRENCY), pending: pendingCount, total: totalItems })"
       :count="totalItems"
     >
       <template #actions>
