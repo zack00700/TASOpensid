@@ -173,8 +173,15 @@ echo "  Swagger UI   : http://localhost:8080/swagger-ui"
 echo "  Health       : http://localhost:8080/q/health"
 echo "  MongoDB      : mongodb://localhost:27017 (database: tos3d)"
 echo
-echo "  Connexion    : bouton 'Sign in with Microsoft' (compte Azure AD du tenant)"
-echo "                 Le login local par mot de passe est désactivé côté back."
+if [ "$NO_AUTH" -eq 1 ]; then
+  echo "  Connexion    : devuser / devpass123  (court-circuit dev, cf. src/stores/devLocalLogin.ts)"
+  echo "                 ou bouton 'Sign in with Microsoft'"
+else
+  echo "  Connexion    : bouton 'Sign in with Microsoft' (compte Azure AD du tenant)"
+  echo "                 Le login local par mot de passe exige --no-auth : le back"
+  echo "                 refuse toute authentification locale, et sans --no-auth le"
+  echo "                 jeton de dev est rejete par /api/* (401 -> retour au login)."
+fi
 echo
 echo "  Logs back  : tail -f $LOG_DIR/back.log"
 echo "  Logs front : tail -f $LOG_DIR/front.log"
