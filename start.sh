@@ -148,25 +148,21 @@ for i in $(seq 1 60); do
   fi
 done
 
-# --- 4. Seed local dev user (idempotent) -------------------------------------
-# The Vue Login screen always asks for credentials, even when --no-auth disables
-# server-side enforcement. We provision a deterministic local account through the
-# existing /auth/register endpoint so the tester can sign in immediately.
-SEED_USER="devuser"
-SEED_PASS="devpass123"
-SEED_EMAIL="devuser@local.test"
-info "Création du compte de dev local ($SEED_USER) si nécessaire…"
-REGISTER_BODY=$(printf '{"username":"%s","email":"%s","password":"%s","fullName":"Dev User"}' \
-  "$SEED_USER" "$SEED_EMAIL" "$SEED_PASS")
-REGISTER_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-  -H "Content-Type: application/json" \
-  -d "$REGISTER_BODY" \
-  http://localhost:8080/auth/register || echo "000")
-case "$REGISTER_STATUS" in
-  201) ok "Compte de dev créé." ;;
-  400) info "Compte de dev déjà présent." ;;
-  *)   warn "Création du compte de dev : réponse HTTP $REGISTER_STATUS (le compte n'est peut-être pas exploitable)." ;;
-esac
+# --- 4. Authentification ------------------------------------------------------
+# Ce script provisionnait un compte "devuser/devpass123" et l'affichait dans le
+# récapitulatif. Ça ne pouvait pas fonctionner, pour trois raisons cumulées :
+#
+#   1. l'appel visait http://localhost:8080/auth/register, alors que
+#      @ApplicationPath("api") monte toutes les resources sous /api -> 405 ;
+#   2. /api/auth/register n'est pas dans les chemins publics (seul
+#      /api/auth/login l'est), donc la baseline deny-by-default répond 401 ;
+#   3. et surtout AuthService.login() retourne inconditionnellement
+#      "Veuillez vous connecter via Azure AD." — le login local par mot de passe
+#      est desactivé volontairement en amont (cf. CLAUDE_back.md).
+#
+# Le compte n'a donc jamais existé, et le récapitulatif envoyait le testeur vers
+# une impasse. Bloc retiré : la seule voie d'entrée est le bouton
+# "Sign in with Microsoft".
 
 # --- Récap --------------------------------------------------------------------
 echo
@@ -177,8 +173,8 @@ echo "  Swagger UI   : http://localhost:8080/swagger-ui"
 echo "  Health       : http://localhost:8080/q/health"
 echo "  MongoDB      : mongodb://localhost:27017 (database: tos3d)"
 echo
-echo "  Identifiants dev : username=$SEED_USER  mot de passe=$SEED_PASS"
-echo "                     (ou bouton 'Sign in with Microsoft' si tu as un compte Azure AD du tenant)"
+echo "  Connexion    : bouton 'Sign in with Microsoft' (compte Azure AD du tenant)"
+echo "                 Le login local par mot de passe est désactivé côté back."
 echo
 echo "  Logs back  : tail -f $LOG_DIR/back.log"
 echo "  Logs front : tail -f $LOG_DIR/front.log"
