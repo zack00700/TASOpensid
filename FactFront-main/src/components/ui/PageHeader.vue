@@ -55,14 +55,14 @@ defineProps<{
   gap: 0.6rem;
 }
 .page-header-title {
-  /* Titre de page en Instrument Serif, signature typographique de Tide. */
-  font-family: 'Instrument Serif', Georgia, ui-serif, serif;
-  font-size: 2.125rem;
-  font-weight: 400;
+  /* Inter en semi-gras : la hiérarchie Tide passe par la taille et
+     l'interlettrage, pas par une serif. */
+  font-size: 1.75rem;
+  font-weight: 600;
   color: #2a241e;
   margin: 0;
-  line-height: 1.05;
-  letter-spacing: -0.02em;
+  line-height: 1.15;
+  letter-spacing: -0.035em;
 }
 .page-header-count {
   display: inline-flex;
@@ -107,7 +107,7 @@ defineProps<{
     gap: 0.75rem;
   }
   .page-header-title {
-    font-size: 1.6rem;
+    font-size: 1.375rem;
   }
 }
 </style>

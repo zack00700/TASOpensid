@@ -12,7 +12,7 @@
         <div :class="['mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full', tonePalette.iconBg]">
           <component :is="tonePalette.icon" data-tone-icon :class="['h-10 w-10', tonePalette.iconColor]" />
         </div>
-        <h2 :id="titleId" class="font-display text-xl font-normal text-tide-ink">{{ title }}</h2>
+        <h2 :id="titleId" class="text-lg font-semibold tracking-[-0.02em] text-tide-ink">{{ title }}</h2>
       </div>
     </template>
 

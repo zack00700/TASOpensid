@@ -4,11 +4,11 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        // Tide: Inter porte le corps de texte, Instrument Serif les titres de page,
-        // JetBrains Mono les données et libellés techniques.
+        // Tide: Inter porte le corps de texte ET les titres (la serif Instrument
+        // a été écartée), JetBrains Mono les données et libellés techniques.
         sans: ['Inter', '"Plus Jakarta Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
-        display: ['"Instrument Serif"', 'Georgia', 'ui-serif', 'serif'],
+        display: ['Inter', '"Plus Jakarta Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },
       letterSpacing: {
         display: '-0.025em',

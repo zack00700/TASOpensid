@@ -15,7 +15,7 @@ defineEmits<{ (e: 'action'): void }>()
           d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
       </svg>
     </div>
-    <h3 class="font-display text-xl font-normal text-tide-ink mb-1">{{ title }}</h3>
+    <h3 class="text-lg font-semibold tracking-[-0.02em] text-tide-ink mb-1">{{ title }}</h3>
     <p v-if="description" class="text-sm text-tide-ink/60 mb-4 max-w-xs">{{ description }}</p>
     <button
       v-if="actionLabel"

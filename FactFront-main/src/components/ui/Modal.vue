@@ -29,7 +29,7 @@
         >
           <slot name="header" :title-id="titleId">
             <div v-if="title" class="px-6 pt-6">
-              <h2 :id="titleId" class="font-display text-xl font-normal text-tide-ink">{{ title }}</h2>
+              <h2 :id="titleId" class="text-lg font-semibold tracking-[-0.02em] text-tide-ink">{{ title }}</h2>
             </div>
           </slot>
           <div class="px-6 py-4">
