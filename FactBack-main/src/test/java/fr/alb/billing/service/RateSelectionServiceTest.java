@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 class RateSelectionServiceTest {
@@ -99,16 +100,36 @@ class RateSelectionServiceTest {
     }
 
     @Test
-    void selectRate_tier3_fallsThroughToAnyDefaultFlaggedRate() {
-        // No date matches, but there is a default-flagged rate
+    void selectRate_defaultRate_notSelectedOutsideItsWindow() {
+        // A default-flagged rate whose validity window does not cover the query
+        // date must NOT be selected (a default is a fallback only WITHIN its own
+        // window — billing an expired/future tariff is a defect).
         RateManagement def = ContractFixtures.aRate();
-        def.setStartDate(java.util.Date.from(java.time.Instant.parse("2030-01-01T00:00:00Z"))); // way in the future
+        def.setStartDate(java.util.Date.from(java.time.Instant.parse("2030-01-01T00:00:00Z"))); // future window
         def.setEndDate(java.util.Date.from(java.time.Instant.parse("2031-01-01T00:00:00Z")));
         def.setDefaultRate(true);
         def.setAmount(11.0);
 
         RateManagement chosen = service.selectRate(List.of(def), LocalDate.of(2026, 6, 1), "EUR", "DAY");
-        assertEquals(11.0, chosen.getAmount(), "tier 3 should pick a default-flagged rate even when no date matches");
+        assertNull(chosen, "a default rate outside its validity window must not be selected");
+    }
+
+    @Test
+    void selectRate_defaultRate_selectedWithinWindow_onCurrencyMismatch() {
+        // Legitimate default-rate fallback: the rate IS valid at the query date
+        // but its currency differs from the requested one — the default tier still
+        // picks it up (this is the behaviour the default flag is meant to provide).
+        RateManagement def = ContractFixtures.aRate();
+        def.setStartDate(java.util.Date.from(java.time.Instant.parse("2026-01-01T00:00:00Z")));
+        def.setEndDate(java.util.Date.from(java.time.Instant.parse("2026-12-31T00:00:00Z")));
+        def.setUnitOfMeasurement("DAY");
+        def.setCurrency("USD"); // query asks for EUR
+        def.setDefaultRate(true);
+        def.setAmount(11.0);
+
+        RateManagement chosen = service.selectRate(List.of(def), LocalDate.of(2026, 6, 1), "EUR", "DAY");
+        assertNotNull(chosen, "an in-window default rate is still a valid fallback on currency mismatch");
+        assertEquals(11.0, chosen.getAmount());
     }
 
     @Test

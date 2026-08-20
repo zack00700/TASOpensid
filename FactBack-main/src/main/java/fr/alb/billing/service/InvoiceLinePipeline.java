@@ -65,6 +65,9 @@ public class InvoiceLinePipeline {
     ContractDao contractDao;
 
     @Inject
+    ContractSelectionService contractSelectionService;
+
+    @Inject
     InvoiceCalculationService invoiceCalculationService;
 
     @Inject
@@ -86,12 +89,6 @@ public class InvoiceLinePipeline {
         if (items.isEmpty()) {
             LOG.debugf("[InvoicePipeline] No items linked to invoice=%s", inv.id);
             return new DraftResult(List.of(), List.of(), 0, scope.tag);
-        }
-
-        List<Contract> contracts = contractDao.findActiveContracts();
-        if (contracts.isEmpty()) {
-            LOG.debugf("[InvoicePipeline] No active contracts for invoice=%s", inv.id);
-            return new DraftResult(List.of(), List.of(), items.size(), scope.tag);
         }
 
         List<InvoiceLineDto> lines = new ArrayList<>();
@@ -116,6 +113,25 @@ public class InvoiceLinePipeline {
             if (item.getBillOfLadingId() != null) {
                 bol = BillOfLading.findById(item.getBillOfLadingId());
             }
+
+            // N4-aligned resolution: exactly ONE contract per item, scoped to the
+            // invoice customer (falling back to global contracts) with addendum
+            // overrides applied. Replaces the previous "loop every active contract
+            // and sum a line each" behaviour, which double-billed items and let one
+            // customer be charged on another customer's contract.
+            java.util.Optional<ContractSelectionService.Selection> selOpt =
+                    contractSelectionService.resolve(
+                            inv.customerKey, inv.customerName,
+                            item.getCategory() != null ? item.getCategory().getValue() : null,
+                            item.getFreightKind() != null ? item.getFreightKind().getValue() : null,
+                            item.getId(), invoiceDate);
+            if (selOpt.isEmpty()) {
+                LOG.debugf("[InvoicePipeline] Skip item %s: no applicable contract for customer=%s",
+                        item.getId(), inv.customerKey);
+                continue;
+            }
+            List<Contract> contracts = List.of(
+                    ContractSelectionService.copyWithRates(selOpt.get().contract(), selOpt.get().effectiveRates()));
 
             LocalDate inDate = inEvent.getTimeStamp().toInstant().atZone(z).toLocalDate();
             long days = ChronoUnit.DAYS.between(inDate, invoiceDate);

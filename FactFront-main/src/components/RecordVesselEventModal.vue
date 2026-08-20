@@ -55,10 +55,10 @@
           <label class="block text-sm font-medium text-gray-700">
             {{ t('vesselEvent.form.eventDate') }} <span class="text-red-500">*</span>
           </label>
-          <input
+          <DatetimeInput
             v-model="eventDate"
-            type="datetime-local"
-            class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            data-test="vessel-event-date"
+            class="mt-1"
           />
         </div>
 
@@ -102,6 +102,7 @@ import { useI18n } from 'vue-i18n';
 import { X } from 'lucide-vue-next';
 import { useVesselEvent } from '../composables/use.vessel-event';
 import { useEventConfig } from '../composables/use.event-config';
+import DatetimeInput from './ui/DatetimeInput.vue';
 import type { VesselVisit } from '../types/vessel-visit';
 import type { EventConfig } from '../types/event-config';
 
@@ -115,9 +116,15 @@ const { t } = useI18n();
 const { events, getVesselEvents, addVesselEvent } = useVesselEvent();
 const { eventConfigs, getEventConfig } = useEventConfig();
 
+function nowLocalDatetime(): string {
+  const now = new Date();
+  const tzOffsetMs = now.getTimezoneOffset() * 60_000;
+  return new Date(now.getTime() - tzOffsetMs).toISOString().slice(0, 16);
+}
+
 const eventQuery = ref('');
 const selectedConfig = ref<EventConfig | null>(null);
-const eventDate = ref(new Date().toISOString().slice(0, 16));
+const eventDate = ref(nowLocalDatetime());
 const notes = ref('');
 const saving = ref(false);
 const error = ref('');
@@ -174,7 +181,7 @@ async function handleSubmit() {
     selectedConfig.value = null;
     eventQuery.value = '';
     notes.value = '';
-    eventDate.value = new Date().toISOString().slice(0, 16);
+    eventDate.value = nowLocalDatetime();
   } catch (e) {
     error.value = (e as Error)?.message ?? String(e);
   } finally {

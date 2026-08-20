@@ -185,28 +185,31 @@ public class ItemResource {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed("ROLE_ADMIN")
     public Response updateItemFull(@PathParam("id") String id, JsonNode incoming) {
-        // Merge-update semantics: only keys present in the incoming JSON are written.
-        // This is intentionally NOT a strict PUT (which would full-replace) because the
-        // frontend currently sends a partial payload — full-replace would null out the
-        // port/customs/commercial fields the form does not expose. Callers that need
-        // to explicitly clear a field should use the PATCH endpoint above.
+        // Merge-update semantics: only the keys present in the incoming JSON are
+        // written. This is intentionally NOT a strict PUT (which would full-replace)
+        // because the frontend currently sends a partial payload — full-replace would
+        // null out the port / customs / commercial fields the form doesn't expose
+        // (cahier TC-13). Callers that need to clear a field explicitly should use
+        // the PATCH endpoint above.
+        //
+        // Per CLAUDE_back: we do NOT reset existing.status before merging — a partial
+        // PUT must never erase a previously-stored value.
+        if (incoming == null) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(new ErrorResponse("BAD_REQUEST", "request body required", 400))
+                    .build();
+        }
         try {
-            if (incoming == null) {
-                return Response.status(Response.Status.BAD_REQUEST)
-                        .entity(new ErrorResponse("BAD_REQUEST", "request body required", 400))
-                        .build();
-            }
-
-            Item existing = itemDao.getItem(id);
+            // Item.findById (not itemDao.getItem) so the lazy compute fallback on the
+            // status field doesn't run — otherwise readerForUpdating would persist the
+            // computed value back as if it had been stored explicitly.
+            Item existing = Item.findById(id);
             if (existing == null) {
                 return Response.status(404)
                         .entity(new ErrorResponse("NOT_FOUND", "Item not found with id: " + id, 404))
                         .build();
             }
 
-            // Reset the computed status before merging so the stored value (if any) wins
-            // over the previously-derived display string when the payload omits it.
-            existing.setStatus(null);
             mapper.readerForUpdating(existing).readValue(incoming);
 
             Optional<Response> validation = ContainerTypeValidator.validate(
@@ -218,6 +221,10 @@ public class ItemResource {
             itemDao.updateItem(existing);
             return Response.ok(existing).build();
 
+        } catch (java.io.IOException e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(new ErrorResponse("BAD_REQUEST", "Invalid item payload: " + e.getMessage(), 400))
+                    .build();
         } catch (Exception e) {
             return Response.status(500)
                     .entity(new ErrorResponse("INTERNAL_ERROR", "Failed to update item: " + e.getMessage(), 500))

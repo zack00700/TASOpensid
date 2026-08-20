@@ -25,16 +25,23 @@ const loading = ref(true);
 const error = ref<string | null>(null);
 const htmlContent = ref<string>('');
 
+// Monotonic id: if invoiceId changes fast (navigating between previews), a slow
+// response for an old id must not overwrite the newer one (M16).
+let loadSeq = 0;
 async function loadHtml() {
   if (!props.invoiceId) return;
+  const seq = ++loadSeq;
   loading.value = true;
   error.value = null;
   try {
-    htmlContent.value = await fetchInvoiceHtml(props.invoiceId);
+    const html = await fetchInvoiceHtml(props.invoiceId);
+    if (seq !== loadSeq) return; // superseded by a newer load
+    htmlContent.value = html;
   } catch (e: any) {
+    if (seq !== loadSeq) return;
     error.value = t('invoicePreview.errorLoading');
   } finally {
-    loading.value = false;
+    if (seq === loadSeq) loading.value = false;
   }
 }
 
@@ -42,7 +49,13 @@ watch(() => props.invoiceId, loadHtml);
 onMounted(loadHtml);
 
 function print() {
-  frame.value?.contentWindow?.print();
+  const win = frame.value?.contentWindow;
+  if (!win) return;
+  // Chromium-based browsers will otherwise print the parent document
+  // (modal overlay + chrome) instead of the iframe content. Focusing the
+  // iframe's window first scopes the print() call to that document.
+  win.focus();
+  win.print();
 }
 
 function openInNewTab() {

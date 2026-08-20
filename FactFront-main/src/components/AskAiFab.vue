@@ -187,13 +187,18 @@
 <script setup lang="ts">
 import { ref, computed, nextTick, onMounted, onUnmounted } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useAuthStore } from '../stores/authStore';
+import askAiService from '../services/askAiService';
 
 const { t } = useI18n();
 
 // ─── Availability ───────────────────────────────────────────
 // Hidden until /ask-ai/status confirms the backend has an LLM key configured.
 const aiEnabled = ref(false);
+
+onMounted(async () => {
+  const status = await askAiService.getAskAiStatus();
+  aiEnabled.value = !!status.enabled;
+});
 
 // ─── Types ──────────────────────────────────────────────────
 interface Dataset { name?: string; data?: number[] }
@@ -203,9 +208,6 @@ interface AskAiSpec {
   chart?: { type?: string; labels?: string[]; datasets?: Dataset[] } | null;
   table?: { columns?: string[]; rows?: (string | number)[][] } | null;
 }
-
-// ─── Constants ──────────────────────────────────────────────
-const API_BASE = (import.meta as any).env?.VITE_API_URL || 'http://localhost:8080/api';
 
 const SUGGESTIONS = computed(() => [
   t('askAiFab.suggestion.monthlyTrend'),
@@ -226,22 +228,6 @@ const textareaRef  = ref<HTMLTextAreaElement | null>(null);
 const chartEl      = ref<HTMLElement | null>(null);
 const reportRef    = ref<HTMLElement | null>(null);
 let echartsInst: any = null;
-
-const authStore = useAuthStore();
-
-onMounted(async () => {
-  try {
-    const headers: Record<string, string> = {};
-    if (authStore.token) headers.Authorization = `Bearer ${authStore.token}`;
-    const res = await fetch(`${API_BASE}/ask-ai/status`, { headers });
-    if (res.ok) {
-      const data = await res.json();
-      aiEnabled.value = !!data?.enabled;
-    }
-  } catch {
-    aiEnabled.value = false;
-  }
-});
 
 // ─── Modal ──────────────────────────────────────────────────
 function openModal() {
@@ -269,26 +255,7 @@ async function submit() {
   loading.value = true;
   errorMsg.value = '';
   try {
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-    if (authStore.token) headers.Authorization = `Bearer ${authStore.token}`;
-    const res = await fetch(`${API_BASE}/ask-ai`, {
-      method: 'POST', headers,
-      body: JSON.stringify({ question: question.value }),
-    });
-    if (!res.ok) {
-      // Surface a clean message when the AI feature is not configured server-side.
-      if (res.status === 503) {
-        try {
-          const body = await res.json();
-          if (body?.error === 'AI_NOT_CONFIGURED') {
-            aiEnabled.value = false;
-            throw new Error(t('askAiFab.error.notConfigured'));
-          }
-        } catch { /* fall through to generic */ }
-      }
-      throw new Error(await res.text());
-    }
-    const spec: AskAiSpec = await res.json();
+    const spec = await askAiService.askAi(question.value);
     lastQuestion.value = question.value;
     // Close modal inline (can't call closeModal() — it guards on loading=true)
     showModal.value = false;
@@ -298,7 +265,16 @@ async function submit() {
     await nextTick();
     await loadChart(spec);
   } catch (e: any) {
-    errorMsg.value = e.message || t('askAiFab.error.requestFailed');
+    // Surface a clean message when the AI feature is not configured server-side
+    // and self-hide the FAB so the user is not invited to retry.
+    const status = e?.response?.status;
+    const code = e?.response?.data?.error;
+    if (status === 503 && code === 'AI_NOT_CONFIGURED') {
+      aiEnabled.value = false;
+      errorMsg.value = t('askAiFab.error.notConfigured');
+    } else {
+      errorMsg.value = e?.response?.data?.message ?? e.message ?? t('askAiFab.error.requestFailed');
+    }
   } finally {
     loading.value = false;
   }

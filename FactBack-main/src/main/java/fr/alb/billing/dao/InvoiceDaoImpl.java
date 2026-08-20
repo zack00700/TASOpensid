@@ -39,8 +39,10 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.jboss.logging.Logger;
 
+import com.mongodb.ErrorCategory;
 import com.mongodb.MongoException;
 import com.mongodb.MongoTimeoutException;
+import com.mongodb.MongoWriteException;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
@@ -160,11 +162,6 @@ public class InvoiceDaoImpl implements InvoiceDao {
                 return existingDraft;
             }
 
-            // Get the list of active contracts
-            List<Contract> activeContracts = contractDao.findActiveContracts();
-
-            LOGGER.debugf("--------- Active contracts found: %d", activeContracts.size());
-
             // Bulk fetch all items in a single query (avoids N+1)
             List<Item> items = Item.find("_id in ?1", itemsId).list();
             Map<String, Item> itemMap = items.stream()
@@ -189,53 +186,28 @@ public class InvoiceDaoImpl implements InvoiceDao {
             if (billOfLadingId != null) {
                 invoice.billOfLadingId = billOfLadingId;
             }
-            BigDecimal totalAmount = BigDecimal.ZERO;
-
-            // Bulk fetch all events for all items in 3 queries (avoids N+1)
-            Map<String, List<Event>> eventsPerItem = invoiceCalculationService.getItemEventsMap(items);
-
-            // Map to track which events have been billed to avoid double billing
-            Map<String, Set<String>> billedEvents = new HashMap<>();
-            int lineCount = 0;
-
-            for (String itemId : itemsId) {
-                Item item = itemMap.get(itemId);
-                if (item == null) {
-                    LOGGER.debugf("Item not found: %s", itemId);
-                    continue;
-                }
-
-                List<Event> events = eventsPerItem.getOrDefault(itemId, List.of());
-                for (Event event : events) {
-                    for (Contract contract : activeContracts) {
-                        String eventKey = itemId + "|" + event.getType() + "|" + event.getTimeStamp();
-                        if (!billedEvents.computeIfAbsent(itemId, k -> new HashSet<>()).contains(eventKey)) {
-                            ChargeResult chargeResult = invoiceCalculationService.calculateCharge(contract, item, event);
-                            BigDecimal amount = chargeResult.amount();
-                            if (amount.compareTo(BigDecimal.ZERO) > 0) {
-                                lineCount++;
-                                try {
-                                    ChargeRecord chargeRecord = ChargeRecord.from(chargeResult, itemId, contract.name, "SYSTEM");
-                                    chargeRecord.persist();
-                                } catch (Exception e) {
-                                    LOGGER.warnf("Failed to persist ChargeRecord for item %s: %s", itemId, e.getMessage());
-                                }
-                            }
-                            totalAmount = totalAmount.add(amount);
-                            billedEvents.get(itemId).add(eventKey);
-
-                            LOGGER.debugf("Billed event: Item %s, Event %s at %s - Amount: %s %s",
-                                itemId, event.getType(), event.getTimeStamp(),
-                                amount,
-                                contract.rates.isEmpty() ? "" : contract.rates.get(0).getCurrency());
-                        }
-                    }
-                }
-            }
-
-            if (lineCount == 0) {
+            // Single source of truth: the SAME pipeline used for the HTML preview
+            // and finalization builds the lines, so the draft total == preview ==
+            // final by construction. This resolves one contract per item (customer
+            // scoped, addendum-overlaid) instead of summing every active contract.
+            fr.alb.billing.service.InvoiceLinePipeline.DraftResult draft =
+                    invoiceLinePipeline.buildForDraft(invoice);
+            if (draft.lines().isEmpty()) {
                 LOGGER.debugf("[Invoice] Customer=%s — No lines generated, draft invoice will NOT be created", customer);
                 return java.util.Optional.empty();
+            }
+
+            BigDecimal totalAmount = draft.lines().stream()
+                    .map(fr.alb.dto.InvoiceLineDto::amount)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+            // Persist one PENDING ChargeRecord per line for the audit trail.
+            for (fr.alb.dto.InvoiceLineDto line : draft.lines()) {
+                try {
+                    ChargeRecord.fromLine(line, "SYSTEM").persist();
+                } catch (Exception e) {
+                    LOGGER.warnf("Failed to persist ChargeRecord for item %s: %s", line.itemId(), e.getMessage());
+                }
             }
 
             // Set the total amount and save the invoice
@@ -280,7 +252,22 @@ public class InvoiceDaoImpl implements InvoiceDao {
                 LOGGER.warnf("makeInvoice: no active InvoiceTemplate found, invoice will fall back to default Qute template");
             }
 
-            invoice.persist();
+            try {
+                invoice.persist();
+            } catch (RuntimeException e) {
+                if (isDuplicateKey(e)) {
+                    // A concurrent makeInvoice for the same items+customer already
+                    // created the draft; the unique idempotencyKey index rejected
+                    // this one. The initial find() check only catches sequential
+                    // retries — this handles the concurrent race. Return the winner.
+                    Optional<Invoice> winner = Invoice.find("idempotencyKey", idempotencyKey).firstResultOptional();
+                    if (winner.isPresent()) {
+                        LOGGER.infof("makeInvoice: concurrent draft won for idempotencyKey=%s — returning it", idempotencyKey);
+                        return winner;
+                    }
+                }
+                throw e;
+            }
 
            // Update each item using the already-fetched itemMap (no extra queries)
            List<String> failedItems = new ArrayList<>();
@@ -688,6 +675,13 @@ public class InvoiceDaoImpl implements InvoiceDao {
         try {
             while (cursor.hasNext()) {
                 Document p = cursor.next();
+
+                // Only effective payments count toward paidAmount. A reversed,
+                // cancelled or failed payment must NOT be reported as paid.
+                if (isNonEffectivePaymentStatus(p.getString("status"))) {
+                    continue;
+                }
+
                 Object pdRaw = p.get("paymentDate");
                 Instant pd = (pdRaw instanceof java.util.Date)
                     ? ((java.util.Date) pdRaw).toInstant()
@@ -725,6 +719,42 @@ public class InvoiceDaoImpl implements InvoiceDao {
             d.put("lastPaymentDate", last == null ? null : last.toString()); // ISO-8601
         }
         return items;
+    }
+
+    /**
+     * True when a payment status means the payment is not effective and must be
+     * excluded from paidAmount (reversed, cancelled or failed). Matches both the
+     * enum name and its display value, case-insensitively; a null/unknown status
+     * is treated as effective (not dropped).
+     */
+    /**
+     * True when the exception (or a cause) is a MongoDB duplicate-key error
+     * (unique-index violation, code 11000) — used to turn a concurrent-insert
+     * race on a unique index into an idempotent recovery.
+     */
+    private static boolean isDuplicateKey(Throwable e) {
+        for (Throwable t = e; t != null; t = t.getCause()) {
+            if (t instanceof MongoWriteException mwe
+                    && mwe.getError().getCategory() == ErrorCategory.DUPLICATE_KEY) {
+                return true;
+            }
+            String msg = t.getMessage();
+            if (msg != null && msg.contains("E11000")) {
+                return true;
+            }
+            if (t.getCause() == t) {
+                break;
+            }
+        }
+        return false;
+    }
+
+    private static boolean isNonEffectivePaymentStatus(String status) {
+        if (status == null) return false;
+        String s = status.trim();
+        return s.equalsIgnoreCase("REVERSED")
+                || s.equalsIgnoreCase("CANCELLED")
+                || s.equalsIgnoreCase("FAILED");
     }
 
     private static BigDecimal toBigDecimal(Object o) {

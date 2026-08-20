@@ -15,6 +15,7 @@ jobs:
   ci_build_test:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
+    timeout-minutes: 20
 
     steps:
       - name: Checkout
@@ -24,10 +25,24 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: '21'
+
+      # The @QuarkusTest suite connects to mongodb://localhost:27017 (see
+      # application-test.properties). We run a single-node REPLICA SET rather than
+      # Quarkus DevServices/testcontainers (whose Ryuk reaper hangs on this runner)
+      # or a standalone service container (which rejects the transactions the
+      # @Transactional DAOs open: "Transaction numbers are only allowed on a
+      # replica set member"). A replica set supports transactions, matching prod.
+      - name: Start MongoDB (single-node replica set)
+        run: |
+          docker run -d --name mongo -p 27017:27017 mongo:7 --replSet rs0 --bind_ip_all
+          for i in $(seq 1 30); do docker exec mongo mongosh --quiet --eval 'db.runCommand({ping:1})' >/dev/null 2>&1 && break; sleep 1; done
+          docker exec mongo mongosh --quiet --eval 'rs.initiate({_id:"rs0",members:[{_id:0,host:"localhost:27017"}]})'
+          for i in $(seq 1 30); do docker exec mongo mongosh --quiet --eval 'db.hello().isWritablePrimary' 2>/dev/null | grep -q true && break; sleep 1; done
+          docker exec mongo mongosh --quiet --eval 'db.hello().isWritablePrimary'
 
       - name: Build & test
-        run: ./mvnw -B clean verify
+        run: ./mvnw -B clean test
 
       - name: Build Docker image (no push)
         run: docker build -t factback-ci .

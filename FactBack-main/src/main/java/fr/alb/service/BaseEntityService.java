@@ -10,6 +10,32 @@ import java.time.Instant;
 public abstract class BaseEntityService<T extends EntityBase> {
 
     /**
+     * Prepares a freshly-deserialised entity for create by stamping the
+     * audit fields (createdAt / updatedAt / version). Idempotent: any field
+     * already populated by the caller is preserved.
+     *
+     * @param entity the entity about to be persisted
+     * @return the same entity, with audit fields populated
+     */
+    protected T prepareForCreate(T entity) {
+        Instant now = Instant.now();
+        if (entity.createdAt == null) entity.createdAt = now;
+        if (entity.updatedAt == null) entity.updatedAt = now;
+        if (entity.version == null) entity.version = 1L;
+        return entity;
+    }
+
+    /**
+     * Same as {@link #prepareForCreate(EntityBase)} with user tracking.
+     */
+    protected T prepareForCreate(T entity, String userId) {
+        prepareForCreate(entity);
+        if (entity.createdBy == null) entity.createdBy = userId;
+        if (entity.updatedBy == null) entity.updatedBy = userId;
+        return entity;
+    }
+
+    /**
      * Prepares an entity for update by:
      * - Setting the ID from the current entity
      * - Incrementing the version number for optimistic locking

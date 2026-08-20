@@ -40,6 +40,7 @@ public class FreeDayCalculator {
         LocalDate endDay = endInstant.atZone(zoneId).toLocalDate();
 
         int dayNumber = 0;
+        int freeDaysConsumed = 0;
         LocalDate current = startDay;
 
         while (!current.isAfter(endDay)) {
@@ -49,37 +50,33 @@ public class FreeDayCalculator {
             boolean isHoliday = holidayDates != null && holidayDates.contains(dateStr);
             boolean isWeekend = isWeekend(current);
 
-            // A day is free if:
-            //   - it is within the freeDays count, AND
-            //   - holidays are included OR this day is not a holiday, AND
-            //   - weekends are included OR this day is not a weekend
-            boolean consumesFreeDay = dayNumber <= rule.freeDays
-                    && (rule.includeHolidays || !isHoliday)
-                    && (rule.includeWeekends || !isWeekend);
+            // The includeWeekends/includeHolidays flags govern free-day CONSUMPTION
+            // only: an excluded weekend/holiday does not spend a free day (so it
+            // extends the free window), but it is not automatically free once the
+            // allowance is already exhausted.
+            boolean excludedFromConsumption =
+                    (isWeekend && !rule.includeWeekends) || (isHoliday && !rule.includeHolidays);
 
-            // A day is free (no charge) if it consumes a free slot, or it is excluded from
-            // free-day counting AND the rule does not include it in charges either.
-            // Simpler model: a day is free if dayNumber <= freeDays accounting for inclusions.
             boolean isFreeDay;
             BigDecimal chargeAmount;
             String rateBandLabel;
 
-            if (consumesFreeDay) {
+            if (freeDaysConsumed < rule.freeDays) {
+                // Still inside the free-time window: the day is free and never charged.
+                // Previously a weekend/holiday inside this window fell through to the
+                // charge branch and was billed — the C7 over-billing defect.
                 isFreeDay = true;
                 chargeAmount = BigDecimal.ZERO;
                 rateBandLabel = "Free Day";
+                // Only included (consuming) days decrement the allowance; an excluded
+                // weekend/holiday is free here but leaves the allowance untouched.
+                if (!excludedFromConsumption) {
+                    freeDaysConsumed++;
+                }
             } else {
-                // Count how many actual chargeable days have passed before this one
-                // to find the position in the tier structure.
-                // chargeableDayNum = count of non-free days up to and including this day.
-                // We compute it from what we have already logged.
+                // Free allowance exhausted -> charge this day at its tier. The tier
+                // position is the count of chargeable (non-free) days so far + 1.
                 int chargeableDayNum = countChargeableDaysUpTo(log) + 1;
-
-                // Check if excluded by holiday/weekend rules (but free days exhausted):
-                // Per the spec, once free days are exhausted, holidays/weekends still count
-                // toward charges unless the rule explicitly skips them. The spec says
-                // isFreeDay = dayNumber <= freeDays AND ..., so days beyond freeDays with
-                // holiday/weekend flags are still chargeable.
                 isFreeDay = false;
                 chargeAmount = computeTierCharge(rule.tiers, chargeableDayNum);
                 rateBandLabel = resolveTierLabel(rule.tiers, chargeableDayNum);

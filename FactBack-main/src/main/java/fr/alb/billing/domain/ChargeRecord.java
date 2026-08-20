@@ -66,6 +66,25 @@ public class ChargeRecord extends PanacheMongoEntityBase {
         return list("status = ?1 and deleted = ?2", "PENDING", false);
     }
 
+    /** Factory: create a PENDING audit record from a finalized/draft invoice line. */
+    public static ChargeRecord fromLine(fr.alb.dto.InvoiceLineDto line, String calculatedBy) {
+        ChargeRecord rec = new ChargeRecord();
+        rec.itemId         = line.itemId();
+        rec.contractId     = line.contractId();
+        rec.rateId         = line.contractRateId();
+        rec.amount         = line.amount();
+        rec.quantity       = line.quantity();
+        rec.uom            = line.uom();
+        rec.currency       = line.currency();
+        rec.calculatorUsed = "InvoiceLinePipeline";
+        rec.explanation    = line.description();
+        rec.status         = "PENDING";
+        rec.calculatedAt   = Instant.now();
+        rec.calculatedBy   = calculatedBy != null ? calculatedBy : "SYSTEM";
+        rec.deleted        = false;
+        return rec;
+    }
+
     /** Factory: create from a ChargeResult */
     public static ChargeRecord from(ChargeResult result, String itemId, String contractName, String calculatedBy) {
         ChargeRecord rec = new ChargeRecord();

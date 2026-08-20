@@ -249,6 +249,17 @@ public class Item extends EntityBase {
         this.status = status;
     }
 
+    /**
+     * Returns true when an explicit (non-blank) status value is currently held
+     * on the entity, without triggering the lazy compute fallback in
+     * {@link #getStatus()}. Use this when you need to distinguish a stored
+     * status from a derived one (e.g. to skip {@code computeStatus()} on
+     * read so that a value persisted via PUT is not overwritten).
+     */
+    public boolean hasStoredStatus() {
+        return status != null && !status.isBlank();
+    }
+
     public String computeStatus() {
         // Makes one DB query (Lifecycle.findById) per item — callers processing
         // a list of items should use computeStatus(Map) to avoid N+1 queries.

@@ -38,12 +38,9 @@ public class ThirdPartyResource {
     @POST
     @RolesAllowed("ROLE_ADMIN")
     public Response create(ThirdParty tp) throws JsonProcessingException {
-        // Stamp the audit fields on create; otherwise the UI ends up rendering
-        // `new Date(null)` for createdAt/updatedAt, which resolves to 01/01/1970.
-        Instant now = Instant.now();
-        if (tp.createdAt == null) tp.createdAt = now;
-        if (tp.updatedAt == null) tp.updatedAt = now;
-        if (tp.version == null) tp.version = 1L;
+        // Stamp createdAt / updatedAt / version through the service, otherwise the
+        // UI renders the missing date through new Date(null) = 01/01/1970 (TC-03).
+        thirdPartyService.create(tp);
         tp.persist();
         HistoryEntry h = new HistoryEntry();
         h.thirdPartyId = tp.getId();

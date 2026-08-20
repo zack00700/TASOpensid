@@ -172,6 +172,7 @@ import {
   ShieldCheck,
   Container,
   Layers,
+  Percent,
 } from 'lucide-vue-next';
 
 const { t } = useI18n();
@@ -263,6 +264,7 @@ const sections = ref<MenuSection[]>([
     items: [
       { name: 'Event Config', i18nKey: 'nav.eventConfig', icon: SettingsIcon, path: '/events-config' },
       { name: 'ISO Codes', i18nKey: 'nav.isoCodes', icon: Container, path: '/iso-codes' },
+      { name: 'Taxes', i18nKey: 'nav.taxes', icon: Percent, path: '/taxes' },
       { name: 'Container Archetypes', i18nKey: 'nav.containerArchetypes', icon: Layers, path: '/archetypes' },
       { name: 'Vessels', i18nKey: 'nav.vessels', icon: Ship, path: '/vessel-registry' },
       { name: 'Third Parties', i18nKey: 'nav.thirdParties', icon: Users, path: '/third-parties' },

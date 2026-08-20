@@ -342,8 +342,15 @@ public class InvoiceCalculationService {
             item != null && item.getCategory() != null ? item.getCategory().getValue() : null,
             item != null && item.getFreightKind() != null ? item.getFreightKind().getValue() : null
         );
-        if (selectedRate == null && !contract.rates.isEmpty()) {
-            selectedRate = contract.rates.get(0); // fallback to first rate
+        if (selectedRate == null) {
+            // No rate eligible for this item at the invoice date. Do NOT fall back
+            // to rates.get(0): that billed expired or wrong-currency tariffs. An
+            // item with no applicable rate is simply not billable here.
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debugf("[InvoiceCalc] No eligible rate for contract %s item %s at %s — no charge",
+                        contract.getId(), item != null ? item.getId() : "null", invoiceDate);
+            }
+            return ChargeResult.zero("EUR");
         }
 
         BillingContext ctx = new BillingContext(

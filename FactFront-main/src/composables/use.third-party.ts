@@ -3,20 +3,48 @@ import type { AxiosInstance } from "axios";
 import { ThirdParty, JsonPatchOperation } from "../types/third-party";
 
 /**
- * Ensure a single shared instance across components so that updates
- * performed in one component propagate to all others.
+ * The third-party LIST is shared across components so a create/update in one
+ * place (autocomplete, modal, form) is immediately visible everywhere.
+ *
+ * Everything else — the edit form (formData), its validation errors, the pending
+ * JSON-patch, originalData and currentViewId — is created PER COMPONENT. The
+ * previous implementation shared a single module-level instance, which meant:
+ *   - two open forms (e.g. the list view + a create modal) clobbered each
+ *     other's formData;
+ *   - the watch(formData) and onMounted were registered in the FIRST component
+ *     that used the composable, so once that component unmounted Vue tore the
+ *     watcher down and pendingPatch stopped updating for every other consumer,
+ *     making their PATCH requests go out empty.
+ * Scoping per-component fixes both (M19).
  */
-let sharedState: ReturnType<typeof createThirdPartyStore> | null = null;
+const thirdParties = ref<ThirdParty[]>([]);
+let listLoaded = false;
 
-export function useThirdParty() {
-    if (!sharedState) {
-        const $axios = inject<AxiosInstance>('$axios') as AxiosInstance;
-        sharedState = createThirdPartyStore($axios);
+async function loadThirdParties($axios: AxiosInstance): Promise<void> {
+    try {
+        const response = await $axios.get('/third-party');
+        thirdParties.value = response.data;
+        listLoaded = true;
+    } catch (exception) {
+        console.error('Failed to fetch third parties:', exception);
     }
-    return sharedState;
 }
 
-function createThirdPartyStore($axios: AxiosInstance) {
+function buildPatch(original: ThirdParty, updated: Omit<ThirdParty, 'id'>): JsonPatchOperation[] {
+    const ops: JsonPatchOperation[] = [];
+    Object.keys(updated).forEach((key) => {
+        const k = key as keyof ThirdParty;
+        if (updated[k as keyof typeof updated] !== original[k]) {
+            ops.push({ op: 'replace', path: `/${k}`, value: updated[k as keyof typeof updated] });
+        }
+    });
+    return ops;
+}
+
+export function useThirdParty() {
+    const $axios = inject<AxiosInstance>('$axios') as AxiosInstance;
+
+    // ---- Per-component form state ----
     const formData = ref<Omit<ThirdParty, 'id' | 'createdAt' | 'updatedAt'>>({
         version: 0,
         fullName: '',
@@ -35,7 +63,6 @@ function createThirdPartyStore($axios: AxiosInstance) {
     });
 
     const errors = ref<Record<string, string>>({});
-    const thirdParties = ref<ThirdParty[]>([]);
     const pendingPatch = ref<JsonPatchOperation[]>([]);
     const originalData = ref<ThirdParty | null>(null);
     const currentViewId = ref<string | null>(null);
@@ -56,11 +83,18 @@ function createThirdPartyStore($axios: AxiosInstance) {
         if (!formData.value.contactNumber) {
             errors.value.contactNumber = "Contact number is required";
             isValid = false;
-        } else if (!/^[+\d][\d\s().-]{5,19}$/.test(formData.value.contactNumber.trim())) {
-            // Accept E.164-ish phone numbers: optional leading +, digits and common
-            // separators ( -, ., (, ), space ), 6–20 chars total.
-            errors.value.contactNumber = "Contact number must contain digits only (with optional + and separators)";
-            isValid = false;
+        } else {
+            // Strip everything that is allowed (spaces, dashes, parens, dots,
+            // leading +) — what's left must be at least 6 digits, and nothing
+            // else (no letters). Matches the TC-03 requirement "contact
+            // number doit être numérique" while still tolerating common
+            // phone-number formatting.
+            const stripped = formData.value.contactNumber.replace(/[\s().\-+]/g, '');
+            if (!/^\d{6,}$/.test(stripped)) {
+                errors.value.contactNumber =
+                    "Contact number must be numeric (digits only, optional spaces/dashes/parentheses)";
+                isValid = false;
+            }
         }
 
         if (!formData.value.email) {
@@ -113,6 +147,10 @@ function createThirdPartyStore($axios: AxiosInstance) {
         return isValid;
     };
 
+    async function fetchThirdParties() {
+        await loadThirdParties($axios);
+    }
+
     async function addThirdParty() {
         try {
             await $axios.post('/third-party', formData.value)
@@ -129,17 +167,6 @@ function createThirdPartyStore($axios: AxiosInstance) {
         } catch (exception) {
             console.error(exception)
         }
-    }
-
-    function buildPatch(original: ThirdParty, updated: Omit<ThirdParty, 'id'>): JsonPatchOperation[] {
-        const ops: JsonPatchOperation[] = [];
-        Object.keys(updated).forEach((key) => {
-            const k = key as keyof ThirdParty;
-            if (updated[k as keyof typeof updated] !== original[k]) {
-                ops.push({ op: 'replace', path: `/${k}`, value: updated[k as keyof typeof updated] });
-            }
-        });
-        return ops;
     }
 
     async function patchThirdParty(id: string, version: number) {
@@ -198,6 +225,9 @@ function createThirdPartyStore($axios: AxiosInstance) {
         return created;
     }
 
+    // Per-component watcher — bound to THIS component's scope, so pendingPatch
+    // keeps tracking edits for every consumer (see the class comment: the old
+    // module-level watcher died when the first component unmounted).
     watch(
         formData,
         (newVal) => {
@@ -208,17 +238,11 @@ function createThirdPartyStore($axios: AxiosInstance) {
         { deep: true }
     );
 
-    async function fetchThirdParties() {
-        try {
-            const response = await $axios.get('/third-party');
-            thirdParties.value = response.data;
-        } catch (exception) {
-            console.error('Failed to fetch third parties:', exception);
-        }
-    }
-
     onMounted(() => {
-        fetchThirdParties();
+        // Load the shared list once; explicit fetchThirdParties() still refreshes it.
+        if (!listLoaded) {
+            loadThirdParties($axios);
+        }
     });
 
     return {

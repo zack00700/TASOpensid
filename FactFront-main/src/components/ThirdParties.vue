@@ -48,14 +48,16 @@ const handleFilter = (filters: any[]) => {
   // Implement filter logic here
 };
 
-// Defensive date formatting: `new Date(null|undefined|"")` resolves to the Unix
-// epoch (01/01/1970), which was leaking into the list view for parties without
-// a createdAt/updatedAt yet. Falls back to "—" for any unparseable input.
-function formatDate(raw: string | number | null | undefined): string {
-  if (raw === null || raw === undefined || raw === '') return '—';
-  const d = new Date(raw);
-  return Number.isNaN(d.getTime()) ? '—' : d.toLocaleDateString();
-}
+// `new Date(undefined).toLocaleDateString()` returns "1/1/1970" (epoch).
+// Guard so freshly-created rows whose createdAt/updatedAt haven't come
+// back from the server yet show an em-dash instead of an inaccurate
+// 1970 date (TC-03 recette 17/05/2026).
+const formatDate = (iso?: string | null) => {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return '—';
+  return d.toLocaleDateString();
+};
 
 const getStatusBadgeClasses = (status: string) => {
   const baseClasses = "px-2 py-1 text-xs font-medium rounded-full";
@@ -93,7 +95,12 @@ const handleAdd = () => {
 const handleEdit = (party: ThirdParty) => {
   editing.value = party;
   showForm.value = true;
-  formViewOnly.value = true;
+  // The edit pencil opens the form straight in edit mode. The form
+  // separately offers a "view-only" entry path (see handleView below),
+  // but clicking the edit icon must let the user actually modify
+  // fields — without this fix the form was opening with every input
+  // disabled (TC-03 recette 17/05/2026 "la modif est KO").
+  formViewOnly.value = false;
 };
 
 const handleDelete = (party: ThirdParty) => {

@@ -44,20 +44,21 @@ export function useEventConfig() {
 
     async function addEventConfig() {
         try {
-            const response = await $axios.post('/event', formData.value);
-            await getEventConfig();
-            return response.data;
+            await $axios.post('/event', formData.value)
         } catch (exception) {
-            console.error(exception);
-            throw exception;
+            console.error(exception)
         }
     }
 
     async function updateEventConfig(id: string, data: Omit<EventConfig, "id">) {
         try {
-            const response = await $axios.put(`/event/${id}`, { ...data, id });
-            await getEventConfig();
-            return response.data;
+            const response = await $axios.put(`/event/${id}`, data);
+            const updated = response.data as EventConfig;
+            if (eventConfigs.value) {
+                const idx = eventConfigs.value.findIndex(e => e.id === id);
+                if (idx !== -1) eventConfigs.value[idx] = updated;
+            }
+            return updated;
         } catch (exception) {
             console.error(exception);
             throw exception;
@@ -67,7 +68,9 @@ export function useEventConfig() {
     async function deleteEventConfig(id: string) {
         try {
             await $axios.delete(`/event/${id}`);
-            await getEventConfig();
+            if (eventConfigs.value) {
+                eventConfigs.value = eventConfigs.value.filter(e => e.id !== id);
+            }
         } catch (exception) {
             console.error(exception);
             throw exception;

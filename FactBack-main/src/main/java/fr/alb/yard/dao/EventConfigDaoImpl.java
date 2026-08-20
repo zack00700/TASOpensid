@@ -28,35 +28,6 @@ public class EventConfigDaoImpl implements EventConfigDao {
 	}
 
 	@Override
-	@Transactional
-	@CacheInvalidateAll(cacheName = "event-cache")
-	public boolean updateEventConfig(EventConfig evt) {
-		if (evt == null || evt.getId() == null || evt.getId().isBlank()) {
-			return false;
-		}
-		EventConfig existing = EventConfig.findById(evt.getId());
-		if (existing == null) {
-			return false;
-		}
-		existing.setEventName(evt.getEventName());
-		existing.setEventType(evt.getEventType());
-		existing.setBilledEvent(evt.isBilledEvent());
-		if (evt.getScope() != null) {
-			existing.setScope(evt.getScope());
-		}
-		existing.update();
-		return true;
-	}
-
-	@Override
-	@Transactional
-	@CacheInvalidateAll(cacheName = "event-cache")
-	public boolean deleteEventConfig(String id) {
-		if (id == null || id.isBlank()) return false;
-		return EventConfig.deleteById(id);
-	}
-
-	@Override
         public List<EventConfig> getEventConfig() {
                 List<EventConfig> eventConfigList = EventConfig.listAll();
 
@@ -77,6 +48,21 @@ public class EventConfigDaoImpl implements EventConfigDao {
                         return getEventConfig();
                 }
                 return EventConfig.find("{'eventName': { $regex: ?1, $options: 'i'}}", query).list();
+        }
+
+        @Override
+        @Transactional
+        @CacheInvalidateAll(cacheName = "event-cache")
+        public boolean deleteById(String id) {
+                return EventConfig.deleteById(id);
+        }
+
+        @Override
+        @Transactional
+        @CacheInvalidateAll(cacheName = "event-cache")
+        public EventConfig update(EventConfig evt) {
+                evt.update();
+                return evt;
         }
 
         @Override

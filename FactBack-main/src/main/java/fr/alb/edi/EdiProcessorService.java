@@ -1,5 +1,6 @@
 package fr.alb.edi;
 
+import fr.alb.bol.api.BillOfLadingApi;
 import fr.alb.edi.event.EdiMessageIngested;
 import fr.alb.edi.model.EdiMessage;
 import fr.alb.platform.event.DomainEventPublisher;
@@ -36,6 +37,9 @@ public class EdiProcessorService {
     @Inject
     DomainEventPublisher domainEvents;
 
+    @Inject
+    BillOfLadingApi bolApi;
+
     // -------------------------------------------------------------------------
     // Public API
     // -------------------------------------------------------------------------
@@ -47,19 +51,12 @@ public class EdiProcessorService {
      */
     @Transactional
     public void process(String ediMessageId) {
-        EdiMessage msg = EdiMessage.findById(ediMessageId);
+        EdiMessage msg = EdiMessage.claim(ediMessageId);
         if (msg == null) {
-            LOG.warnf("EdiProcessor: message %s not found", ediMessageId);
+            LOG.infof("EdiProcessor: message %s not claimable (missing, PROCESSED, or in flight) — skipping",
+                    ediMessageId);
             return;
         }
-        if (msg.status == EdiMessage.EdiStatus.PROCESSED) {
-            LOG.infof("EdiProcessor: message %s already PROCESSED — skipping", ediMessageId);
-            return;
-        }
-
-        msg.status = EdiMessage.EdiStatus.PROCESSING;
-        msg.attempts++;
-        msg.update();
 
         try {
             switch (msg.messageType != null ? msg.messageType.toUpperCase() : "") {
@@ -115,6 +112,16 @@ public class EdiProcessorService {
             return;
         }
 
+        String blNumber = result.billOfLading.getBlNumber();
+        String existingBolId = bolApi.findActiveIdByBlNumber(blNumber);
+        if (existingBolId != null) {
+            msg.relatedEntityId = existingBolId;
+            msg.processingNote = "BOL " + blNumber + " already exists — duplicate COPRAR skipped";
+            msg.status = EdiMessage.EdiStatus.PROCESSED;
+            LOG.infof("EdiProcessor [COPRAR] %s: %s", msg.id, msg.processingNote);
+            return;
+        }
+
         result.billOfLading.persist();
 
         List<fr.alb.yard.model.Item> items = result.items;
@@ -122,7 +129,6 @@ public class EdiProcessorService {
             item.persist();
         }
 
-        String blNumber = result.billOfLading.getBlNumber();
         msg.relatedEntityId = result.billOfLading.getId();
         msg.processingNote = "Created BOL " + blNumber + " with " + items.size() + " containers";
         msg.status = EdiMessage.EdiStatus.PROCESSED;

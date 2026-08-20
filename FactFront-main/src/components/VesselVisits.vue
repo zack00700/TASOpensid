@@ -25,12 +25,14 @@ import { useRouter } from "vue-router";
 import { useVesselVisit } from "../composables/use.vessel-visit";
 import { useToast } from "../composables/useToast";
 import RecordVesselEventModal from "./RecordVesselEventModal.vue";
+import HoldsModal from "./HoldsModal.vue";
+import ConfirmDialog from "./ui/ConfirmDialog.vue";
 
 const { t } = useI18n();
 const { showToast } = useToast();
 const router = useRouter();
 
-const { visits, getVesselVisits } = useVesselVisit();
+const { visits, getVesselVisits, advanceVisitPhase } = useVesselVisit();
 const previewVisit = ref<VesselVisit | null>(null);
 const selectedVisit = ref<VesselVisit | null>(null);
 const showModal = ref(false);
@@ -38,6 +40,26 @@ const showForm = ref(false);
 const searchQuery = ref('');
 const isExporting = ref(false);
 const recordEventOpen = ref(false);
+const holdsOpen = ref(false);
+const advanceConfirmOpen = ref(false);
+const advancing = ref(false);
+
+// Forward-lifecycle map. Mirrors VisitPhase.nextNormal() on the backend.
+const NEXT_FORWARD_PHASE: Record<string, string | null> = {
+  Created: 'Active',
+  Active: 'Completed',
+  Completed: null,
+  Canceled: null,
+};
+
+const advanceTargetPhase = computed<string | null>(() => {
+  const cur = selectedVisit.value?.phase ?? 'Created';
+  return NEXT_FORWARD_PHASE[cur] ?? null;
+});
+
+const canAdvanceSelected = computed(() =>
+  !!selectedVisit.value && advanceTargetPhase.value !== null,
+);
 
 const tableHeaders = computed(() => [
   t('vesselVisits.column.vesselName'),
@@ -113,17 +135,34 @@ function handleRecordEvent() {
   recordEventOpen.value = true;
 }
 
-// Placeholder feedback for actions whose business workflow isn't wired up yet.
-// Previously these buttons were silently inert; we surface a clear "coming soon"
-// notice so testers know the click registered (TC-05).
-function notImplemented(action: string) {
+function handleUpdateHolds() {
   if (!selectedVisit.value) return;
-  // eslint-disable-next-line no-alert
-  alert(t('vesselVisits.action.notImplemented', { action }));
+  holdsOpen.value = true;
 }
-function handleAdvanceVisit() { notImplemented(t('vesselVisits.button.advanceVisit')); }
-function handleUpdateHolds()  { notImplemented(t('vesselVisits.button.updateHolds')); }
-function handleExtractEvents() { notImplemented(t('vesselVisits.button.extractEvents')); }
+
+function handleAdvanceVisit() {
+  if (!canAdvanceSelected.value) return;
+  advanceConfirmOpen.value = true;
+}
+
+async function confirmAdvanceVisit() {
+  const visit = selectedVisit.value;
+  const target = advanceTargetPhase.value;
+  if (!visit?.id || !target) return;
+  advancing.value = true;
+  try {
+    await advanceVisitPhase(visit.id, target);
+    await getVesselVisits();
+    selectedVisit.value = visits.value.find((v) => v.id === visit.id) ?? null;
+    advanceConfirmOpen.value = false;
+    showToast(t('vesselVisits.toast.phaseAdvanced', { phase: target }), 'success');
+  } catch (e: any) {
+    const message = e?.response?.data?.message ?? e?.message ?? String(e);
+    showToast(t('vesselVisits.toast.phaseAdvanceFailed', { message }), 'error');
+  } finally {
+    advancing.value = false;
+  }
+}
 
 function formatExportRows(visitList: VesselVisit[]) {
   return visitList.map((v) => ({
@@ -251,8 +290,8 @@ const openPreview = (visit: VesselVisit) => {
           </button>
           <button
             data-test="toolbar-advance-visit"
-            :disabled="!selectedVisit"
-            :aria-disabled="!selectedVisit"
+            :disabled="!canAdvanceSelected"
+            :aria-disabled="!canAdvanceSelected"
             @click="handleAdvanceVisit"
             class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
           >
@@ -301,7 +340,6 @@ const openPreview = (visit: VesselVisit) => {
             data-test="toolbar-extract-events"
             :disabled="!selectedVisit"
             :aria-disabled="!selectedVisit"
-            @click="handleExtractEvents"
             class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Calendar class="mr-2" :size="18" />
@@ -497,5 +535,29 @@ const openPreview = (visit: VesselVisit) => {
       :visit="selectedVisit"
       @close="recordEventOpen = false"
     />
+
+    <HoldsModal
+      :open="holdsOpen"
+      :visit="selectedVisit"
+      @close="holdsOpen = false"
+    />
+
+    <ConfirmDialog
+      :open="advanceConfirmOpen"
+      :title="t('vesselVisits.advance.title')"
+      tone="info"
+      :confirm-label="t('vesselVisits.advance.confirm')"
+      :cancel-label="t('common.cancel')"
+      :loading="advancing"
+      @update:open="(v: boolean) => (advanceConfirmOpen = v)"
+      @confirm="confirmAdvanceVisit"
+    >
+      {{
+        t('vesselVisits.advance.body', {
+          current: selectedVisit?.phase ?? 'Created',
+          target: advanceTargetPhase ?? '',
+        })
+      }}
+    </ConfirmDialog>
   </div>
 </template>

@@ -56,6 +56,7 @@ const axiosMock = {
   get: vi.fn().mockResolvedValue({ data: visitsFixture }),
   post: vi.fn().mockResolvedValue({ data: {} }),
   put: vi.fn().mockResolvedValue({ data: {} }),
+  patch: vi.fn().mockResolvedValue({ data: {} }),
 };
 
 function mountPage() {
@@ -186,6 +187,91 @@ describe('VesselVisits — selection + edit toolbar', () => {
     expect(wrapper.findComponent({ name: 'VesselVisitForm' }).exists()).toBe(false);
     // selection re-resolved by id, highlight stays on the same row (now showing new name)
     expect(wrapper.text()).toContain('MV Alpha (renamed)');
+  });
+});
+
+describe('VesselVisits — Advance Visit toolbar (TC-05.3a)', () => {
+  beforeEach(() => {
+    axiosMock.get.mockReset();
+    axiosMock.patch.mockReset();
+    axiosMock.get.mockResolvedValue({ data: visitsFixture });
+    axiosMock.patch.mockResolvedValue({ data: {} });
+  });
+
+  it('Advance Visit is disabled when no row is selected', async () => {
+    const wrapper = mountPage();
+    await flushPromises();
+    const btn = wrapper.find('[data-test="toolbar-advance-visit"]');
+    expect(btn.attributes('disabled')).toBeDefined();
+  });
+
+  it('Advance Visit becomes enabled when selecting a Created or Active visit', async () => {
+    // Default fixture has phase: 'Active', so the button should enable on selection.
+    const wrapper = mountPage();
+    await flushPromises();
+    await wrapper.findAll('tbody tr')[0].trigger('click');
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find('[data-test="toolbar-advance-visit"]').attributes('disabled')).toBeUndefined();
+  });
+
+  it('Advance Visit stays disabled when the selected visit is Completed (terminal phase)', async () => {
+    axiosMock.get.mockResolvedValue({
+      data: [{ ...makeVisit('done', 'MV Done'), phase: 'Completed' }],
+    });
+    const wrapper = mountPage();
+    await flushPromises();
+    await wrapper.findAll('tbody tr')[0].trigger('click');
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find('[data-test="toolbar-advance-visit"]').attributes('disabled')).toBeDefined();
+  });
+
+  it('Advance Visit stays disabled when the selected visit is Canceled (terminal phase)', async () => {
+    axiosMock.get.mockResolvedValue({
+      data: [{ ...makeVisit('cnx', 'MV Cancel'), phase: 'Canceled' }],
+    });
+    const wrapper = mountPage();
+    await flushPromises();
+    await wrapper.findAll('tbody tr')[0].trigger('click');
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find('[data-test="toolbar-advance-visit"]').attributes('disabled')).toBeDefined();
+  });
+
+  it('clicking Advance Visit opens the ConfirmDialog with the current→target phases', async () => {
+    const wrapper = mountPage();
+    await flushPromises();
+    await wrapper.findAll('tbody tr')[0].trigger('click');
+    await wrapper.vm.$nextTick();
+    await wrapper.find('[data-test="toolbar-advance-visit"]').trigger('click');
+    await wrapper.vm.$nextTick();
+
+    const dialog = wrapper.findComponent({ name: 'ConfirmDialog' });
+    expect(dialog.exists()).toBe(true);
+    expect(dialog.props('open')).toBe(true);
+    // Selected visit is Active → target is Completed
+    expect(JSON.stringify(dialog.vm.$slots)).toBeTruthy();
+  });
+
+  it('confirming the dialog PATCHes the visit phase and refetches', async () => {
+    const wrapper = mountPage();
+    await flushPromises();
+    await wrapper.findAll('tbody tr')[0].trigger('click');
+    await wrapper.vm.$nextTick();
+    await wrapper.find('[data-test="toolbar-advance-visit"]').trigger('click');
+    await wrapper.vm.$nextTick();
+
+    axiosMock.get.mockClear();
+    axiosMock.patch.mockResolvedValueOnce({ data: { id: 'a', phase: 'Completed' } });
+    // Active fixture → next phase is Completed.
+    axiosMock.get.mockResolvedValueOnce({
+      data: [{ ...visitsFixture[0], phase: 'Completed' }, visitsFixture[1]],
+    });
+
+    const dialog = wrapper.findComponent({ name: 'ConfirmDialog' });
+    await dialog.vm.$emit('confirm');
+    await flushPromises();
+
+    expect(axiosMock.patch).toHaveBeenCalledWith('visit/a/phase', { phase: 'Completed' });
+    expect(axiosMock.get).toHaveBeenCalledTimes(1);
   });
 });
 

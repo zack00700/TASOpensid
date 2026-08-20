@@ -103,7 +103,10 @@ public class RateSelectionService {
             boolean uomOk = (wantUom == null) || (ruom == null) || ruom.equals(wantUom);
             boolean curOk = (wantCur == null) || (rcur != null && rcur.equals(wantCur));
 
-            if (r.isDefaultRate()) defaults.add(r);
+            // A default rate is a fallback only WITHIN its own validity window.
+            // Previously it was eligible regardless of date, which billed expired
+            // tariffs; a default rate outside its window must not be selected.
+            if (r.isDefaultRate() && dateOk) defaults.add(r);
 
             if (dateOk && uomOk && curOk) {
                 exact.add(r);

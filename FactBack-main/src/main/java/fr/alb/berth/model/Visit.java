@@ -5,13 +5,15 @@ import fr.alb.model.EntityBase;
 import java.time.LocalDateTime;
 
 import io.quarkus.mongodb.panache.common.MongoEntity;
+import jakarta.validation.constraints.NotBlank;
 
 @MongoEntity(collection= "VESSEL_VISIT")
 public class Visit extends EntityBase {
 	private static final long serialVersionUID = 1L;
-	
+
 	public String vesselName;
     public String vesselId;
+    @NotBlank
     public String visitReference;
     public String phase;
     public String service;

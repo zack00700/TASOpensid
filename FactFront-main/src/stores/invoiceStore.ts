@@ -155,17 +155,27 @@ export const useInvoiceStore = defineStore('invoice', () => {
 
   // ── Actions ────────────────────────────────────────────────────────────────
 
+  // Monotonic request id: a slow fetch whose response arrives after a newer
+  // fetch has started is dropped, so a stale response never overwrites fresher
+  // data (out-of-order race, M16).
+  let fetchSeq = 0
+
   /**
    * Fetch invoices.  Requires the injected axios instance because the GET
    * /invoices list endpoint is not exposed through invoiceService.
    */
   async function fetchInvoices($axios: { get: (url: string, cfg?: unknown) => Promise<{ data: unknown }> }) {
+    const seq = ++fetchSeq
     loading.value = true
     error.value = null
 
     try {
       const params = buildParams()
       const { data } = await $axios.get('/invoices', { params }) as { data: Record<string, unknown> }
+
+      // A newer fetch superseded this one while it was in flight — drop the
+      // stale result instead of clobbering the fresher data.
+      if (seq !== fetchSeq) return
 
       items.value = ((data.items as Record<string, unknown>[] | undefined) || []).map(
         (inv: Record<string, unknown>) => ({
@@ -227,6 +237,9 @@ export const useInvoiceStore = defineStore('invoice', () => {
         message = err.message
       }
 
+      // A newer fetch owns the state now — don't surface this stale error.
+      if (seq !== fetchSeq) return
+
       error.value = message
       items.value = []
       totalCount.value = 0
@@ -236,7 +249,8 @@ export const useInvoiceStore = defineStore('invoice', () => {
       statusAmounts.value = { DRAFT: 0, FINAL: 0 }
       trends.value = { totalAmount: 0, status: { DRAFT: 0, FINAL: 0 }, displayed: 0 }
     } finally {
-      loading.value = false
+      // Only the latest in-flight fetch may flip loading off.
+      if (seq === fetchSeq) loading.value = false
     }
   }
 

@@ -7,6 +7,7 @@ import java.time.Instant;
 
 import fr.alb.type.TaxType;
 import io.quarkus.mongodb.panache.common.MongoEntity;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @MongoEntity(collection = "TAX")
 public class Tax extends EntityBase {
@@ -73,10 +74,16 @@ public class Tax extends EntityBase {
                 this.validTo = validTo;
         }
 
+        // Jackson would otherwise serialise this as "active" (bean-property
+        // naming strips the leading "is"). The frontend reads and sends
+        // "isActive" to match the Mongo/Java field name, so pin the JSON
+        // key explicitly to keep the two ends aligned.
+        @JsonProperty("isActive")
         public boolean isActive() {
                 return isActive;
         }
 
+        @JsonProperty("isActive")
         public void setActive(boolean active) {
                 isActive = active;
         }

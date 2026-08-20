@@ -33,7 +33,9 @@ import org.jboss.logging.Logger;
 public class DomainEventPublisher {
 
     private static final Logger LOG = Logger.getLogger(DomainEventPublisher.class);
-    private static final ObjectMapper MAPPER = new ObjectMapper();
+
+    @Inject
+    ObjectMapper mapper;
 
     @Inject
     Event<DomainEvent> cdiEvent;
@@ -46,7 +48,7 @@ public class DomainEventPublisher {
 
         String payloadJson;
         try {
-            payloadJson = MAPPER.writeValueAsString(event);
+            payloadJson = mapper.writeValueAsString(event);
         } catch (Exception e) {
             LOG.errorf(e, "Failed to serialize DomainEvent of type %s — outbox row will have empty payload",
                     event.eventType());

@@ -12,6 +12,15 @@ import jakarta.enterprise.context.ApplicationScoped;
 public class ThirdPartyService extends BaseEntityService<ThirdParty> {
 
     /**
+     * Stamps the audit fields (createdAt / updatedAt / version) on a freshly
+     * deserialised ThirdParty before it is persisted. Without this the UI
+     * renders `new Date(null) = 01/01/1970` for the creation date (cahier TC-03).
+     */
+    public ThirdParty create(ThirdParty tp) {
+        return prepareForCreate(tp);
+    }
+
+    /**
      * Updates a third party entity with proper version increment and timestamp.
      *
      * @param updated the updated third party data

@@ -17,6 +17,8 @@ import fr.alb.yard.model.Item;
 import fr.alb.billing.service.TemplateRenderer;
 import fr.alb.billing.event.InvoiceFinalized;
 import fr.alb.platform.event.DomainEventPublisher;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
 import org.bson.Document;
 import org.jboss.logging.Logger;
 import io.quarkus.qute.Template;
@@ -178,54 +180,84 @@ public class InvoiceResource {
                         .build();
             }
 
-            var result = invoiceLinePipeline.buildSnapshotForFinal(inv);
-            var snaps = result.lines();
-            if (snaps.isEmpty()) {
+            // Atomically claim the invoice for finalization: only the caller that
+            // flips DRAFT -> FINALIZING proceeds past here. Without this, two
+            // concurrent finalizes both pass the status check above and each
+            // consumes a (legally binding) final number (M12). updateOne is atomic
+            // on replica-set Mongo and on Cosmos.
+            var invoiceCol = Invoice.mongoCollection().withDocumentClass(Document.class);
+            long claimed = invoiceCol.updateOne(
+                    Filters.and(Filters.eq("_id", invoiceId), Filters.eq("status", "DRAFT")),
+                    Updates.set("status", "FINALIZING")).getModifiedCount();
+            if (claimed == 0) {
                 return Response.status(409)
-                        .entity(new ErrorResponse("CONFLICT", "No eligible items/events to invoice", 409))
+                        .entity(new ErrorResponse("CONFLICT",
+                                "Invoice is already being finalized or is not a draft", 409))
                         .build();
             }
-            String currency = snaps.get(0).currency != null ? snaps.get(0).currency : "EUR";
 
-            inv.lines = snaps;
-            inv.currency = currency;
-            inv.subtotalAmount = result.subtotal();
-            inv.inclusiveTaxTotal = result.inclusiveTaxTotal();
-            inv.exclusiveTaxTotal = result.exclusiveTaxTotal();
-            inv.totalTaxAmount = result.totalTax();
-            inv.grandTotalAmount = result.grandTotal();
-            inv.taxBreakdown = result.taxBreakdown();
-            inv.taxCalculationIds = result.taxCalculationIds();
-            inv.amount = result.grandTotal().doubleValue();
-            inv.finalNumber = invoiceNumberService.generateFinalNumber();
-            inv.status = "FINAL";
+            try {
+                var result = invoiceLinePipeline.buildSnapshotForFinal(inv);
+                var snaps = result.lines();
+                if (snaps.isEmpty()) {
+                    // Nothing billable — release the claim so it stays a draft and
+                    // no final number is consumed.
+                    invoiceCol.updateOne(Filters.eq("_id", invoiceId), Updates.set("status", "DRAFT"));
+                    return Response.status(409)
+                            .entity(new ErrorResponse("CONFLICT", "No eligible items/events to invoice", 409))
+                            .build();
+                }
+                String currency = snaps.get(0).currency != null ? snaps.get(0).currency : "EUR";
 
-            // Re-bind to the active 'final' InvoiceTemplate (different design from draft template).
-            // Cosmos rejects $sort on non-indexed fields; backend invariant ensures at most one active per type.
-            InvoiceTemplate finalTemplate = InvoiceTemplate
-                    .<InvoiceTemplate>find("status = ?1 and type = ?2", "active", "final")
-                    .firstResult();
-            if (finalTemplate != null) {
-                inv.templateId = finalTemplate.id;
+                inv.lines = snaps;
+                inv.currency = currency;
+                inv.subtotalAmount = result.subtotal();
+                inv.inclusiveTaxTotal = result.inclusiveTaxTotal();
+                inv.exclusiveTaxTotal = result.exclusiveTaxTotal();
+                inv.totalTaxAmount = result.totalTax();
+                inv.grandTotalAmount = result.grandTotal();
+                inv.taxBreakdown = result.taxBreakdown();
+                inv.taxCalculationIds = result.taxCalculationIds();
+                inv.amount = result.grandTotal().doubleValue();
+                inv.finalNumber = invoiceNumberService.generateFinalNumber();
+                inv.status = "FINAL";
+
+                // Re-bind to the active 'final' InvoiceTemplate (different design from draft template).
+                // Cosmos rejects $sort on non-indexed fields; backend invariant ensures at most one active per type.
+                InvoiceTemplate finalTemplate = InvoiceTemplate
+                        .<InvoiceTemplate>find("status = ?1 and type = ?2", "active", "final")
+                        .firstResult();
+                if (finalTemplate != null) {
+                    inv.templateId = finalTemplate.id;
+                }
+                // If no active 'final' template exists, leave inv.templateId as-is (the draft binding).
+                // getInvoiceHtml's fallback chain will handle rendering.
+
+                inv.update();
+
+                LOG.debugf("[InvoiceFinalize] id=%s items=%d lines=%d total=%.2f scope=%s",
+                        inv.id, result.itemCount(), snaps.size(), result.grandTotal().doubleValue(), result.scopeTag());
+
+                domainEvents.publish(new InvoiceFinalized(
+                        String.valueOf(inv.id),
+                        inv.finalNumber,
+                        inv.customerKey,
+                        inv.customerName,
+                        inv.grandTotalAmount,
+                        inv.currency,
+                        java.time.Instant.now()));
+
+                return Response.ok(inv).build();
+            } catch (Exception e) {
+                // No DB transaction to roll back for us — best-effort release the
+                // claim so a failed finalize doesn't strand the invoice in FINALIZING.
+                try {
+                    invoiceCol.updateOne(Filters.eq("_id", invoiceId), Updates.set("status", "DRAFT"));
+                } catch (Exception ignore) {
+                    LOG.warnf("Failed to release finalization claim for invoice %s", invoiceId);
+                }
+                throw e;
             }
-            // If no active 'final' template exists, leave inv.templateId as-is (the draft binding).
-            // getInvoiceHtml's fallback chain will handle rendering.
-
-            inv.update();
-
-            LOG.debugf("[InvoiceFinalize] id=%s items=%d lines=%d total=%.2f scope=%s",
-                    inv.id, result.itemCount(), snaps.size(), result.grandTotal().doubleValue(), result.scopeTag());
-
-            domainEvents.publish(new InvoiceFinalized(
-                    String.valueOf(inv.id),
-                    inv.finalNumber,
-                    inv.customerKey,
-                    inv.customerName,
-                    inv.grandTotalAmount,
-                    inv.currency,
-                    java.time.Instant.now()));
-
-            return Response.ok(inv).build();
         } catch (Exception e) {
             LOG.errorf(e, "Failed to finalize invoice %s", invoiceId);
             return Response.status(500)
@@ -328,7 +360,7 @@ public class InvoiceResource {
         }
         if (customTemplate != null) {
             try {
-                String customHtml = templateRenderer.render(customTemplate, inv);
+                String customHtml = templateRenderer.render(customTemplate, inv, viewLines);
                 return Response.ok(customHtml)
                         .type("text/html; charset=UTF-8")
                         .header("Cache-Control", "no-store")

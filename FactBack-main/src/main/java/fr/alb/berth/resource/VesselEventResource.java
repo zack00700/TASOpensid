@@ -60,8 +60,10 @@ public class VesselEventResource {
                 .entity(new ErrorResponse("BAD_REQUEST", "eventDate is required", 400)).build();
         }
 
-        Visit visit = Visit.findById(visitId);
-        if (visit == null) {
+        // Existence-only check via count() — avoids decoding the full Visit document,
+        // which would 500 if any LocalDateTime field on the visit was stored as a
+        // String (legacy/AIS-ingested data) instead of BSON DATE_TIME.
+        if (Visit.count("_id", visitId) == 0) {
             return Response.status(404)
                 .entity(new ErrorResponse("NOT_FOUND", "Visit not found: " + visitId, 404)).build();
         }

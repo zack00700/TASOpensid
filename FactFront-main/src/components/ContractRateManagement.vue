@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch } from "vue";
+import { onMounted, ref, computed, watch } from "vue";
 import { checkRateOverlap, sortRatesDefaultFirst } from '../utils/contract';
 import { useI18n } from 'vue-i18n';
 import { v4 as uuidv4 } from "uuid";
@@ -17,10 +17,18 @@ import {
   Clock,
   Copy,
   MoreHorizontal,
-  ArrowUpDown
+  ArrowUpDown,
+  Percent
 } from "lucide-vue-next";
+import { useTax } from "../composables/use.tax";
+import type { Tax } from "../types/tax";
 
 const { t } = useI18n();
+
+interface RateTax {
+  taxId: string;
+  inclusive: boolean;
+}
 
 interface Rate {
   id: string;
@@ -42,6 +50,45 @@ interface Rate {
   // Item filtering
   applicableCategory?: string;
   applicableFreightKind?: string;
+
+  // Tax attachments
+  taxes?: RateTax[];
+}
+
+const { taxes: allTaxes, getAll: loadTaxes } = useTax();
+
+// Visible in the rate-edit modal: active taxes only.
+const activeTaxes = computed<Tax[]>(() => allTaxes.value.filter((tx) => tx.isActive !== false));
+
+function taxName(taxId: string): string {
+  const tx = allTaxes.value.find((t) => t.id === taxId);
+  if (!tx) return taxId;
+  if (tx.type === 'PERCENTAGE') return `${tx.code} — ${tx.name} (${tx.rate} %)`;
+  return `${tx.code} — ${tx.name}`;
+}
+
+function isTaxOnRate(taxId: string): boolean {
+  return (newRate.value.taxes ?? []).some((rt) => rt.taxId === taxId);
+}
+
+function toggleTax(taxId: string, checked: boolean) {
+  const list = newRate.value.taxes ?? [];
+  if (checked && !list.some((rt) => rt.taxId === taxId)) {
+    newRate.value.taxes = [...list, { taxId, inclusive: false }];
+  } else if (!checked) {
+    newRate.value.taxes = list.filter((rt) => rt.taxId !== taxId);
+  }
+}
+
+function toggleInclusive(taxId: string) {
+  const list = newRate.value.taxes ?? [];
+  newRate.value.taxes = list.map((rt) =>
+    rt.taxId === taxId ? { ...rt, inclusive: !rt.inclusive } : rt,
+  );
+}
+
+function isTaxInclusive(taxId: string): boolean {
+  return (newRate.value.taxes ?? []).find((rt) => rt.taxId === taxId)?.inclusive ?? false;
 }
 
 const props = defineProps<{
@@ -93,6 +140,13 @@ const newRate = ref<Rate>({
   priority: 0,
   applicableCategory: "",
   applicableFreightKind: "",
+  taxes: [],
+});
+
+onMounted(() => {
+  // Eagerly fetch the active taxes so they're already in the picker when
+  // the rate-edit modal opens.
+  loadTaxes();
 });
 
 const errors = ref<Record<string, string>>({});
@@ -165,6 +219,7 @@ const handleAddRate = () => {
     priority: rates.value.length,
     applicableCategory: "",
     applicableFreightKind: "",
+    taxes: [],
   };
   editingRate.value = null;
   showAddRate.value = true;
@@ -208,7 +263,9 @@ const handleEditRate = (rate: Rate) => {
     ...rate,
     // Format dates for HTML date inputs
     startDate: formatDateForInput(rate.startDate),
-    endDate: formatDateForInput(rate.endDate)
+    endDate: formatDateForInput(rate.endDate),
+    // Clone the taxes list so edits don't mutate the saved rate in-place.
+    taxes: rate.taxes ? rate.taxes.map((rt) => ({ ...rt })) : [],
   };
   showAddRate.value = true;
 };
@@ -221,7 +278,8 @@ const handleCopyRate = (rate: Rate) => {
     priority: rates.value.length,
     // Format dates for HTML date inputs
     startDate: formatDateForInput(rate.startDate),
-    endDate: formatDateForInput(rate.endDate)
+    endDate: formatDateForInput(rate.endDate),
+    taxes: rate.taxes ? rate.taxes.map((rt) => ({ ...rt })) : [],
   };
   editingRate.value = null;
   showAddRate.value = true;
@@ -664,6 +722,60 @@ const getCardClasses = (rate: Rate) => {
                   placeholder="0.00"
                 />
               </div>
+            </div>
+
+            <!-- Applicable taxes -->
+            <div data-test="rate-taxes-section">
+              <div class="flex items-center justify-between mb-2">
+                <label class="block text-sm font-medium text-gray-700">
+                  <Percent class="inline h-4 w-4 mr-1 -mt-0.5" />
+                  {{ t('contractRateManagement.taxes.title') }}
+                </label>
+                <span v-if="(newRate.taxes ?? []).length" class="text-xs text-gray-500">
+                  {{ t('contractRateManagement.taxes.selected', { n: (newRate.taxes ?? []).length }) }}
+                </span>
+              </div>
+              <p v-if="activeTaxes.length === 0" data-test="rate-taxes-none" class="text-xs text-gray-500 italic">
+                {{ t('contractRateManagement.taxes.noneAvailable') }}
+              </p>
+              <div v-else class="border border-gray-200 rounded-lg divide-y divide-gray-100 max-h-48 overflow-y-auto">
+                <label
+                  v-for="tx in activeTaxes"
+                  :key="tx.id"
+                  :data-test="`rate-tax-row-${tx.id}`"
+                  class="flex items-center justify-between gap-3 px-3 py-2 hover:bg-gray-50 cursor-pointer"
+                >
+                  <span class="flex items-center gap-2 text-sm text-gray-700">
+                    <input
+                      type="checkbox"
+                      :data-test="`rate-tax-toggle-${tx.id}`"
+                      :checked="isTaxOnRate(tx.id!)"
+                      class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      @change="(e: Event) => toggleTax(tx.id!, (e.target as HTMLInputElement).checked)"
+                    />
+                    {{ taxName(tx.id!) }}
+                  </span>
+                  <button
+                    v-if="isTaxOnRate(tx.id!)"
+                    type="button"
+                    :data-test="`rate-tax-inclusive-${tx.id}`"
+                    :class="[
+                      'text-xs px-2 py-0.5 rounded border',
+                      isTaxInclusive(tx.id!)
+                        ? 'bg-blue-50 border-blue-200 text-blue-700'
+                        : 'bg-gray-50 border-gray-200 text-gray-600',
+                    ]"
+                    @click.prevent="toggleInclusive(tx.id!)"
+                  >
+                    {{ isTaxInclusive(tx.id!)
+                      ? t('contractRateManagement.taxes.inclusive')
+                      : t('contractRateManagement.taxes.exclusive') }}
+                  </button>
+                </label>
+              </div>
+              <p class="text-xs text-gray-500 mt-1">
+                {{ t('contractRateManagement.taxes.hint') }}
+              </p>
             </div>
 
             <!-- Quantity Fields (for Quantity, DateByTEU, Tiered and Banded types) -->

@@ -8,6 +8,7 @@ const axiosMock = {
   get: vi.fn(),
   post: vi.fn(),
   put: vi.fn(),
+  patch: vi.fn(),
 };
 
 function makeVisit(overrides: Partial<VesselVisit> = {}): VesselVisit {
@@ -60,9 +61,11 @@ describe('useVesselVisit', () => {
     axiosMock.get.mockReset();
     axiosMock.post.mockReset();
     axiosMock.put.mockReset();
+    axiosMock.patch.mockReset();
     axiosMock.get.mockResolvedValue({ data: [] });
     axiosMock.post.mockResolvedValue({ data: {} });
     axiosMock.put.mockResolvedValue({ data: {} });
+    axiosMock.patch.mockResolvedValue({ data: {} });
   });
 
   it('exposes getVesselVisits, updateVesselVisit, addVesselVisit', () => {
@@ -91,5 +94,48 @@ describe('useVesselVisit', () => {
     await expect(api.updateVesselVisit('v-1')).resolves.toBeUndefined();
     expect(errSpy).toHaveBeenCalled();
     errSpy.mockRestore();
+  });
+
+  describe('advanceVisitPhase', () => {
+    it('PATCHes visit/{id}/phase with the target phase and returns the body', async () => {
+      const api = harness();
+      axiosMock.patch.mockResolvedValueOnce({ data: { id: 'v-42', phase: 'Active' } });
+
+      const result = await api.advanceVisitPhase('v-42', 'Active');
+
+      expect(axiosMock.patch).toHaveBeenCalledWith('visit/v-42/phase', { phase: 'Active' });
+      expect(result).toEqual({ id: 'v-42', phase: 'Active' });
+    });
+
+    it('rethrows on API failure (no silent swallow — caller surfaces the toast)', async () => {
+      const api = harness();
+      const error = new Error('409 invalid transition');
+      axiosMock.patch.mockRejectedValueOnce(error);
+
+      await expect(api.advanceVisitPhase('v-42', 'Completed')).rejects.toThrow('409 invalid transition');
+    });
+  });
+
+  describe('validateForm — visitReference', () => {
+    it('rejects empty visitReference', () => {
+      const api = harness();
+      Object.assign(api.formData.value, makeVisit({ visitReference: '' }));
+      expect(api.validateForm()).toBe(false);
+      expect(api.errors.value.visitReference).toBeTruthy();
+    });
+
+    it('rejects whitespace-only visitReference', () => {
+      const api = harness();
+      Object.assign(api.formData.value, makeVisit({ visitReference: '   ' }));
+      expect(api.validateForm()).toBe(false);
+      expect(api.errors.value.visitReference).toBeTruthy();
+    });
+
+    it('accepts a populated visitReference (all other fields valid)', () => {
+      const api = harness();
+      Object.assign(api.formData.value, makeVisit({ visitReference: 'REF-001' }));
+      expect(api.validateForm()).toBe(true);
+      expect(api.errors.value.visitReference).toBeUndefined();
+    });
   });
 });

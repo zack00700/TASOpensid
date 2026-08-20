@@ -76,12 +76,17 @@ public class InvoiceSequenceService {
         long maxValue = (long) Math.pow(10, maxDigits) - 1;
 
         if (assignedValue > maxValue) {
-            LOGGER.warnf("Sequence %s reached maximum (%d). Resetting to 1.", sequenceId, maxValue);
-            col.updateOne(
-                Filters.eq("sequenceId", sequenceId),
-                Updates.set("nextValue", 2L)
-            );
-            return prefix + String.format("%0" + maxDigits + "d", 1L);
+            // Do NOT roll over. Re-issuing 00001 would duplicate an already-used,
+            // legally binding invoice number (and two concurrent callers past the
+            // max would both receive it). Fail loudly instead so an operator can
+            // widen maximumDigits or provision a new sequence.
+            LOGGER.errorf("Sequence %s exhausted (assigned=%d > max=%d). Refusing to reissue a used number.",
+                sequenceId, assignedValue, maxValue);
+            throw new WebApplicationException(
+                Response.status(Response.Status.CONFLICT)
+                    .entity("{\"message\":\"Invoice sequence " + sequenceId
+                        + " exhausted. Increase maximumDigits or create a new sequence.\"}")
+                    .build());
         }
 
         return prefix + String.format("%0" + maxDigits + "d", assignedValue);

@@ -1,0 +1,242 @@
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    background-color: #f3f5f7;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #222;
+    line-height: 1.45;
+}
+
+.invoice-page {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0 auto;
+    padding: 22mm 18mm;
+    background: #fff;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, .07);
+    position: relative;
+}
+
+.draft-banner {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffc107;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 11pt;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 8mm;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+
+.watermark {
+    position: absolute;
+    top: 38%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-25deg);
+    font-size: 120px;
+    color: rgba(175, 78, 138, 0.18);
+    z-index: 0;
+    pointer-events: none;
+    font-weight: 900;
+    letter-spacing: 6px;
+    white-space: nowrap;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+
+.invoice-content {
+    position: relative;
+    z-index: 1;
+}
+
+.invoice-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10mm;
+    gap: 12mm;
+}
+
+.seller .company-name {
+    font-size: 16pt;
+    font-weight: 700;
+    color: #af4e8a;
+}
+
+.title-block {
+    text-align: right;
+}
+
+.invoice-title {
+    margin: 0;
+    font-size: 22pt;
+    font-weight: 700;
+    color: #af4e8a;
+    letter-spacing: 0.5px;
+}
+
+.invoice-number {
+    margin-top: 2mm;
+    font-size: 13pt;
+    font-weight: 600;
+    color: #666;
+}
+
+.status-badge {
+    display: inline-block;
+    margin-top: 4mm;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 10pt;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+
+.status-draft {
+    background: rgba(255, 193, 7, 0.2);
+    color: #856404;
+    border: 1px solid rgba(255, 193, 7, 0.5);
+}
+
+.status-final {
+    background: rgba(40, 167, 69, 0.2);
+    color: #155724;
+    border: 1px solid rgba(40, 167, 69, 0.5);
+}
+
+.meta {
+    display: flex;
+    gap: 18mm;
+    margin-bottom: 8mm;
+    font-size: 10.5pt;
+}
+
+.meta .label {
+    display: block;
+    color: #666;
+    font-size: 9pt;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-bottom: 1mm;
+}
+
+.meta .value {
+    font-weight: 600;
+}
+
+.parties {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16mm;
+    margin-bottom: 10mm;
+}
+
+.party h3 {
+    margin: 0 0 4px 0;
+    font-size: 9.5pt;
+    color: #666;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.party .party-name {
+    font-size: 12pt;
+    font-weight: 600;
+}
+
+.lines table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10.5pt;
+    margin-bottom: 8mm;
+}
+
+.lines th,
+.lines td {
+    border: 1px solid #ddd;
+    padding: 8px 10px;
+    vertical-align: top;
+}
+
+.lines th {
+    background: #f6f7f9;
+    text-align: left;
+    font-weight: 600;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+
+.lines td.num,
+.lines th.num {
+    text-align: right;
+    white-space: nowrap;
+}
+
+.lines .empty {
+    text-align: center;
+    color: #999;
+    font-style: italic;
+    padding: 16px;
+}
+
+.lines tfoot td {
+    font-weight: 600;
+    background: #fafbfc;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+
+.lines tfoot .grand-total td {
+    background: #af4e8a;
+    color: white;
+    font-size: 12pt;
+    border-color: #af4e8a;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+
+.invoice-footer {
+    margin-top: 12mm;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8mm;
+    font-size: 10pt;
+}
+
+.muted {
+    color: #666;
+}
+
+.small {
+    font-size: 9.5pt;
+}
+
+@media print {
+    @page {
+        size: A4;
+        margin: 18mm;
+    }
+
+    body {
+        background: #fff;
+    }
+
+    .invoice-page {
+        box-shadow: none;
+        margin: 0;
+        padding: 0;
+        min-height: auto;
+    }
+
+    .watermark {
+        color: rgba(175, 78, 138, 0.12);
+    }
+}

@@ -47,21 +47,23 @@ export const useAuthStore = defineStore('auth', () => {
   const useAzureAD = ref(import.meta.env.VITE_AZURE_AD_CLIENT_ID ? true : false);
 
   // Computed
+  // Pure getter: it MUST NOT mutate state. The previous version called
+  // clearAuth() here, which wiped token/user/localStorage during render and
+  // could trigger reactive re-render loops. Expired-token cleanup now happens
+  // in the explicit clearExpiredSession() action (called on app start) and in
+  // the axios 401 interceptor.
   const isAuthenticated = computed(() => {
     if (!token.value) {
       return false;
     }
-
-    // Check if token is expired
     try {
       const payload = parseJWT(token.value);
       if (payload.exp && payload.exp * 1000 < Date.now()) {
-        clearAuth();
-        return false;
+        return false; // expired
       }
       return true;
     } catch (error) {
-      return !!token.value; // Fallback if token is not JWT
+      return !!token.value; // Fallback if token is not a JWT
     }
   });
 
@@ -104,10 +106,9 @@ export const useAuthStore = defineStore('auth', () => {
           }
         }
 
-        // Validate authentication on initialization
-        if (token.value && !isAuthenticated.value) {
-          clearAuth();
-        }
+        // Drop the restored token if it is an expired JWT (explicit action —
+        // the isAuthenticated getter is pure and no longer clears anything).
+        clearExpiredSession();
       }
     } finally {
       loading.value = false;
@@ -353,7 +354,11 @@ export const useAuthStore = defineStore('auth', () => {
    * - Keycloak: ROLE_ADMIN, ROLE_TEMPLATES_ADMIN
    * - Azure AD app roles: Admin, admin, Administrator, BillingAdmin
    * - Legacy: role === 'admin'
-   * - Fallback: any Azure AD authenticated user with at least one role
+   *
+   * Admin is granted ONLY when an explicit admin role is present. A user simply
+   * being authenticated with some non-admin role (e.g. ROLE_READONLY) is NOT an
+   * admin — the previous "any provisioned role implies admin" fallback was an
+   * privilege-escalation hole and has been removed.
    */
   function isAdmin(): boolean {
     const adminRoleNames = [
@@ -363,9 +368,6 @@ export const useAuthStore = defineStore('auth', () => {
     ];
     if (adminRoleNames.some(r => hasRole(r))) return true;
     if (userRole.value === 'admin') return true;
-    // Fallback: Azure AD authenticated users with any role are treated as admin
-    // (this is an internal tool — any provisioned role implies authorization)
-    if (useAzureAD.value && userRoles.value.length > 0) return true;
     return false;
   }
 
@@ -413,6 +415,25 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   /**
+   * If the current token is an expired JWT, clear the session. Call this
+   * explicitly (e.g. on app start) instead of relying on the isAuthenticated
+   * getter, which must stay pure. Returns true when a session was cleared.
+   */
+  function clearExpiredSession(): boolean {
+    if (!token.value) return false;
+    try {
+      const payload = parseJWT(token.value);
+      if (payload.exp && payload.exp * 1000 < Date.now()) {
+        clearAuth();
+        return true;
+      }
+    } catch {
+      // Non-JWT token: leave it to the 401 interceptor.
+    }
+    return false;
+  }
+
+  /**
    * Parse JWT token
    */
   function parseJWT(jwtToken: string): any {
@@ -456,5 +477,6 @@ export const useAuthStore = defineStore('auth', () => {
     getAuthHeaders,
     getAzureAccessToken,
     clearError,
+    clearExpiredSession,
   };
 });

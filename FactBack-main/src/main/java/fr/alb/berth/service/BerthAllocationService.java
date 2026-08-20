@@ -12,6 +12,7 @@ import jakarta.ws.rs.NotFoundException;
 import org.jboss.logging.Logger;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 /**
@@ -34,6 +35,16 @@ public class BerthAllocationService {
      * and {@code scheduledDeparture}. Rejects the request if the slot is
      * already busy on that window or if the slot does not exist / is
      * inactive.
+     *
+     * <p>Concurrency: a post-insert re-check with a deterministic
+     * (createdAt, id) tie-break removes double-bookings between concurrent
+     * racers. One residual window is accepted: if a racer stalls between
+     * stamping createdAt and its insert becoming visible, a later-stamped
+     * racer can pass its re-check without seeing it and both survive.
+     * Probability is negligible for human-driven berth planning; revisit
+     * with a per-slot lease if allocation ever becomes automated/high-rate.
+     * A JVM crash between persist() and a loser's delete() can likewise
+     * leave a stray PLANNED row — same negligible-probability class.
      */
     public BerthAllocation allocate(String berthSlotId,
                                     String vesselVisitId,
@@ -68,11 +79,47 @@ public class BerthAllocationService {
         allocation.scheduledDeparture = scheduledDeparture;
         allocation.notes = notes;
         allocation.status = BerthAllocation.Status.PLANNED;
+        // Truncated to millis: BSON dates are millisecond-precision, so the
+        // in-memory value must match what other racers read back from Mongo —
+        // otherwise same-millisecond racers all see each other as "earlier"
+        // and every one of them self-deletes (zero winners).
+        allocation.createdAt = Instant.now().truncatedTo(ChronoUnit.MILLIS);
         allocation.persist();
+
+        // Insert-then-verify: the optimistic check above cannot see a
+        // concurrent insert (TOCTOU). Re-check after our own insert; on
+        // conflict, a deterministic total order on (createdAt, id) picks the
+        // loser, which removes its own row. Pre-existing rows always have an
+        // earlier createdAt, so they always win against a newcomer.
+        List<BerthAllocation> raceConflicts =
+                findOverlaps(berthSlotId, scheduledArrival, scheduledDeparture, allocation.id);
+        if (!raceConflicts.isEmpty() && losesTieBreak(allocation, raceConflicts)) {
+            allocation.delete();
+            throw new BadRequestException(String.format(
+                    "Berth slot %s is already allocated on the requested window (overlaps %d allocation(s), first: %s)",
+                    berthSlotId, raceConflicts.size(), raceConflicts.get(0).getId()));
+        }
 
         LOG.infof("Allocated berth %s for vessel visit %s (%s → %s), allocation=%s",
                 berthSlotId, vesselVisitId, scheduledArrival, scheduledDeparture, allocation.getId());
         return allocation;
+    }
+
+    /**
+     * True when {@code self} must yield to at least one conflicting
+     * allocation — i.e. some conflict has a strictly smaller (createdAt, id)
+     * tuple. Conflicts with a null createdAt are legacy rows that predate the
+     * stamp and always win. Both racers apply the same rule, so exactly one
+     * survives without any lock.
+     */
+    private static boolean losesTieBreak(BerthAllocation self, List<BerthAllocation> conflicts) {
+        for (BerthAllocation other : conflicts) {
+            int cmp = other.createdAt == null ? -1 : other.createdAt.compareTo(self.createdAt);
+            if (cmp < 0 || (cmp == 0 && other.id.compareTo(self.id) < 0)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

@@ -126,7 +126,8 @@ public class EntraUserService {
 
     /**
      * Patches the mutable profile fields of an Entra user (display name and job title).
-     * Email/userPrincipalName are intentionally not mutable here — those are managed in Entra itself.
+     * Email / userPrincipalName are intentionally not mutable here — those are managed
+     * directly in Entra.
      */
     public EntraUser updateProfile(String userId, String displayName, String jobTitle) {
         ensureEnabled();

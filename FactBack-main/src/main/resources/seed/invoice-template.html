@@ -1,0 +1,124 @@
+<!-- factback:seed:v2 -->
+<div class="invoice-page">
+    {{#if isDraft}}
+        <div class="draft-banner">⚠ DOCUMENT NON DÉFINITIF — BROUILLON DE FACTURE</div>
+        <div class="watermark">BROUILLON</div>
+    {{/if}}
+
+    <div class="invoice-content">
+        <header class="invoice-header">
+            <div class="seller">
+                {{#if facility}}
+                    <div class="company-name">{{facility}}</div>
+                {{/if}}
+            </div>
+            <div class="title-block">
+                <h1 class="invoice-title">{{#if isDraft}}PROJET DE FACTURE{{else}}FACTURE{{/if}}</h1>
+                <div class="invoice-number">
+                    Nº {{#if isDraft}}{{draftNumber}}{{else}}{{invoiceNumber}}{{/if}}
+                </div>
+                <div class="status-badge {{#if isDraft}}status-draft{{else}}status-final{{/if}}">
+                    {{#if isDraft}}BROUILLON{{else}}FACTURÉE{{/if}}
+                </div>
+            </div>
+        </header>
+
+        <section class="meta">
+            {{#if issueDate}}
+                <div>
+                    <span class="label">Date d'émission</span>
+                    <span class="value">{{issueDate}}</span>
+                </div>
+            {{/if}}
+            {{#if currency}}
+                <div>
+                    <span class="label">Devise</span>
+                    <span class="value">{{currency}}</span>
+                </div>
+            {{/if}}
+        </section>
+
+        <section class="parties">
+            {{#if facility}}
+                <div class="party">
+                    <h3>Émetteur</h3>
+                    <div class="party-name">{{facility}}</div>
+                </div>
+            {{/if}}
+            {{#if customerName}}
+                <div class="party">
+                    <h3>Client</h3>
+                    <div class="party-name">{{customerName}}</div>
+                </div>
+            {{/if}}
+        </section>
+
+        <section class="lines">
+            <table>
+                <thead>
+                <tr>
+                    <th>Description</th>
+                    <th class="num">Qté</th>
+                    <th class="num">Unité</th>
+                    <th class="num">Prix unitaire</th>
+                    <th class="num">Montant</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{#if hasLines}}
+                    {{#each lines}}
+                        <tr>
+                            <td>{{description}}</td>
+                            <td class="num">{{quantity}}</td>
+                            <td class="num">{{uom}}</td>
+                            <td class="num">{{unitPriceFormatted}}</td>
+                            <td class="num">{{amountFormatted}}</td>
+                        </tr>
+                    {{/each}}
+                {{else}}
+                    <tr>
+                        <td colspan="5" class="empty">Aucune ligne de facturation pour l'instant.</td>
+                    </tr>
+                {{/if}}
+                </tbody>
+                {{#if hasAmounts}}
+                    <tfoot>
+                    <tr>
+                        <td colspan="4" class="num">Sous-total HT</td>
+                        <td class="num">{{subtotalFormatted}}</td>
+                    </tr>
+                    {{#if hasTaxBreakdown}}
+                        {{#each taxBreakdown}}
+                            <tr>
+                                <td colspan="4" class="num">
+                                    {{#if code}}{{code}} — {{/if}}{{#if name}}{{name}} {{/if}}({{rateDisplay}})
+                                </td>
+                                <td class="num">{{taxAmountFormatted}}</td>
+                            </tr>
+                        {{/each}}
+                    {{else}}
+                        <tr>
+                            <td colspan="4" class="num">TVA</td>
+                            <td class="num">{{totalTaxFormatted}}</td>
+                        </tr>
+                    {{/if}}
+                    <tr class="grand-total">
+                        <td colspan="4" class="num">Total TTC</td>
+                        <td class="num">{{grandTotalFormatted}}</td>
+                    </tr>
+                    </tfoot>
+                {{/if}}
+            </table>
+        </section>
+
+        <footer class="invoice-footer">
+            <div>
+                <strong>Conditions de paiement :</strong><br/>
+                Paiement à effectuer par virement bancaire, chèque ou autre moyen accepté.
+            </div>
+            <div class="muted small">
+                En cas de retard de paiement, des pénalités de 3 % par mois pourront être appliquées conformément aux dispositions légales en vigueur.
+            </div>
+        </footer>
+    </div>
+</div>

@@ -35,6 +35,9 @@ public class TaxService {
         private static final Logger LOG = Logger.getLogger(TaxService.class);
         private static final MathContext MC = new MathContext(12, RoundingMode.HALF_UP);
         private static final RoundingMode ROUNDING = RoundingMode.HALF_UP;
+        /** Tax.rate is stored as a percentage (e.g. 20 for 20 %), so PERCENTAGE
+         *  taxes divide by this before being multiplied against the base. */
+        private static final BigDecimal HUNDRED = new BigDecimal("100");
 
         @Inject
         TaxRepository taxRepository;
@@ -108,6 +111,17 @@ public class TaxService {
         }
 
         public TaxCalculationResult calculateTaxes(TaxCalculationRequest request) {
+                return calculateTaxes(request, true);
+        }
+
+        /**
+         * Full tax calculation. When {@code persist} is {@code false}, no
+         * {@link TaxCalculation} audit row is written and the contract rate
+         * summary is not updated — required for the draft-preview path, where a
+         * GET must have no write side effects. The returned result then carries
+         * no calculationId.
+         */
+        public TaxCalculationResult calculateTaxes(TaxCalculationRequest request, boolean persist) {
                 if (request == null) {
                         throw new IllegalArgumentException("Tax calculation request cannot be null");
                 }
@@ -151,7 +165,7 @@ public class TaxService {
                         BigDecimal baseAmount = netBase;
                         BigDecimal taxAmount;
                         if (tax.tax().getType() == TaxType.PERCENTAGE) {
-                                taxAmount = scale(baseAmount.multiply(safeRate(tax.tax()), MC));
+                                taxAmount = scale(baseAmount.multiply(fractionalRate(tax.tax()), MC));
                         } else {
                                 taxAmount = scale(safeRate(tax.tax()));
                         }
@@ -186,11 +200,16 @@ public class TaxService {
                 result.setReferences(new TaxCalculationResult.References(
                                 request.getContractId(), request.getContractRateId(), request.getInvoiceId()));
 
-                TaxCalculation entity = buildCalculationEntity(request, result, calculationDate);
-                taxCalculationRepository.persist(entity);
-                result.setCalculationId(entity.getId());
-
-                updateRateSummary(request.getContractId(), request.getContractRateId(), result, calculationDate);
+                if (persist) {
+                        // The audit trail is the persisted TaxCalculation entity below. We do
+                        // NOT write a denormalized summary back onto the contract's rate: that
+                        // mutated the @CacheResult-cached Contract instance shared across
+                        // requests and re-persisted it on every tax calc (C3). The
+                        // lastTaxSummary field was never read anywhere.
+                        TaxCalculation entity = buildCalculationEntity(request, result, calculationDate);
+                        taxCalculationRepository.persist(entity);
+                        result.setCalculationId(entity.getId());
+                }
 
                 return result;
         }
@@ -346,7 +365,7 @@ public class TaxService {
                 BigDecimal totalInclusive = BigDecimal.ZERO;
                 if (allPercentage) {
                         BigDecimal totalRate = inclusive.stream()
-                                        .map(t -> safeRate(t.tax()))
+                                        .map(t -> fractionalRate(t.tax()))
                                         .reduce(BigDecimal.ZERO, BigDecimal::add);
                         BigDecimal divisor = BigDecimal.ONE.add(totalRate);
                         if (divisor.compareTo(BigDecimal.ZERO) == 0) {
@@ -355,7 +374,7 @@ public class TaxService {
                                 net = scale(grossBase.divide(divisor, MC));
                         }
                         for (ResolvedTax tax : inclusive) {
-                                BigDecimal taxAmount = scale(net.multiply(safeRate(tax.tax()), MC));
+                                BigDecimal taxAmount = scale(net.multiply(fractionalRate(tax.tax()), MC));
                                 totalInclusive = totalInclusive.add(taxAmount);
                                 items.add(toBreakdownItem(tax.tax(), net, taxAmount));
                         }
@@ -368,7 +387,7 @@ public class TaxService {
                                 BigDecimal taxAmount;
                                 BigDecimal baseBefore;
                                 if (tax.tax().getType() == TaxType.PERCENTAGE) {
-                                        BigDecimal divisor = BigDecimal.ONE.add(safeRate(tax.tax()));
+                                        BigDecimal divisor = BigDecimal.ONE.add(fractionalRate(tax.tax()));
                                         if (divisor.compareTo(BigDecimal.ZERO) == 0) {
                                                 baseBefore = BigDecimal.ZERO;
                                         } else {
@@ -413,6 +432,15 @@ public class TaxService {
                 return tax.getRate() != null ? tax.getRate() : BigDecimal.ZERO;
         }
 
+        /**
+         * Tax.rate is stored as a percentage value for PERCENTAGE taxes
+         * (e.g. 20 for 20 %). All arithmetic that multiplies the rate
+         * against a money amount must divide by 100 first.
+         */
+        private BigDecimal fractionalRate(Tax tax) {
+                return safeRate(tax).divide(HUNDRED, MC);
+        }
+
         private BigDecimal scale(BigDecimal value) {
                 if (value == null) {
                         return BigDecimal.ZERO;
@@ -449,26 +477,6 @@ public class TaxService {
                                         request.getMetadata()));
                 }
                 return entity;
-        }
-
-        private void updateRateSummary(String contractId, String rateId, TaxCalculationResult result, Instant calculationDate) {
-                if (rateId == null) {
-                        return;
-                }
-                RateResolution resolution = resolveContractRate(rateId, contractId);
-                if (resolution == null) {
-                        return;
-                }
-                RateManagement rate = resolution.rate();
-                RateManagement.TaxCalculationSummary summary = new RateManagement.TaxCalculationSummary(
-                                result.getBaseAmount(),
-                                result.getTotalTaxAmount(),
-                                result.getFinalAmount(),
-                                result.getTaxBreakdown(),
-                                calculationDate,
-                                result.getCurrency());
-                rate.setLastTaxSummary(summary);
-                resolution.contract().update();
         }
 
         private record ResolvedTax(Tax tax, boolean inclusive, RateManagement.RateTax source) {

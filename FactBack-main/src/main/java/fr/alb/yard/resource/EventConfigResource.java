@@ -8,6 +8,7 @@ import fr.alb.dto.ErrorResponse;
 import fr.alb.dto.EventDTO;
 import fr.alb.dto.EventMapper;
 import fr.alb.yard.model.EventConfig;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
@@ -83,45 +84,47 @@ public class EventConfigResource {
         @Path("{id}")
         @Consumes(MediaType.APPLICATION_JSON)
         @Produces(MediaType.APPLICATION_JSON)
-        public Response updateEvent(@PathParam("id") String id, EventConfig evt) {
-                if (id == null || id.isBlank()) {
-                        return Response.status(Response.Status.BAD_REQUEST)
-                                .entity(new ErrorResponse("BAD_REQUEST", "id is required", 400)).build();
-                }
-                if (evt == null) {
-                        return Response.status(Response.Status.BAD_REQUEST)
-                                .entity(new ErrorResponse("BAD_REQUEST", "request body required", 400)).build();
-                }
-                evt.setId(id);
+        @RolesAllowed("ROLE_ADMIN")
+        public Response updateEventConfig(@PathParam("id") String id, EventConfig payload) {
                 try {
-                        boolean updated = evtDao.updateEventConfig(evt);
-                        if (!updated) {
-                                return Response.status(Response.Status.NOT_FOUND).build();
-                        }
-                        EventConfig fresh = evtDao.findById(id);
-                        return Response.ok(EventMapper.toDTO(fresh)).build();
-                } catch (Exception e) {
-                        return Response.status(500)
-                                .entity(new ErrorResponse("INTERNAL_ERROR", e.getMessage(), 500)).build();
+                        java.util.UUID.fromString(id);
+                } catch (IllegalArgumentException e) {
+                        return Response.status(Response.Status.BAD_REQUEST)
+                                .entity(new ErrorResponse("BAD_REQUEST", "Malformed id", 400))
+                                .build();
                 }
+                EventConfig existing = evtDao.findById(id);
+                if (existing == null) {
+                        return Response.status(Response.Status.NOT_FOUND).build();
+                }
+                existing.setEventName(payload.getEventName());
+                existing.setEventType(payload.getEventType());
+                existing.setBilledEvent(payload.isBilledEvent());
+                if (payload.getScope() != null) {
+                        existing.setScope(payload.getScope());
+                }
+                evtDao.update(existing);
+                return Response.ok(EventMapper.toDTO(existing)).build();
         }
 
         @DELETE
         @Path("{id}")
-        public Response deleteEvent(@PathParam("id") String id) {
-                if (id == null || id.isBlank()) {
-                        return Response.status(Response.Status.BAD_REQUEST)
-                                .entity(new ErrorResponse("BAD_REQUEST", "id is required", 400)).build();
-                }
+        @RolesAllowed("ROLE_ADMIN")
+        public Response deleteEventConfig(@PathParam("id") String id) {
                 try {
-                        boolean removed = evtDao.deleteEventConfig(id);
-                        if (!removed) {
-                                return Response.status(Response.Status.NOT_FOUND).build();
-                        }
-                        return Response.noContent().build();
-                } catch (Exception e) {
-                        return Response.status(500)
-                                .entity(new ErrorResponse("INTERNAL_ERROR", e.getMessage(), 500)).build();
+                        java.util.UUID.fromString(id);
+                } catch (IllegalArgumentException e) {
+                        return Response.status(Response.Status.BAD_REQUEST)
+                                .entity(new ErrorResponse("BAD_REQUEST", "Malformed id", 400))
+                                .build();
                 }
+                if (evtDao.findById(id) == null) {
+                        return Response.status(Response.Status.NOT_FOUND).build();
+                }
+                boolean removed = evtDao.deleteById(id);
+                if (!removed) {
+                        return Response.status(Response.Status.NOT_FOUND).build();
+                }
+                return Response.noContent().build();
         }
 }

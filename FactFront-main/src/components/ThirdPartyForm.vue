@@ -86,9 +86,13 @@ const accessTypes = computed(() => [
   { value: "Full Access", label: t('thirdPartyForm.access.fullAccess') },
 ]);
 
+// "Yard Management" was retired from the third-party access list per TC-03
+// recette 17/05/2026: the system no longer exposes that module to external
+// parties. Keep the option out of the picker; on existing parties that still
+// carry it (legacy data) we just don't render it, the value persists until
+// the operator re-saves.
 const availableModules = computed(() => [
   { value: "Vessel Scheduling", label: t('thirdPartyForm.module.vesselScheduling') },
-  { value: "Yard Management", label: t('thirdPartyForm.module.yardManagement') },
   { value: "Gate Operations", label: t('thirdPartyForm.module.gateOperations') },
   { value: "Billing", label: t('thirdPartyForm.module.billing') },
   { value: "Customs Interface", label: t('thirdPartyForm.module.customsInterface') },
@@ -174,6 +178,10 @@ const getInputClasses = (fieldName: keyof FormData) => {
             <input
               v-model="formData.contactNumber"
               type="tel"
+              inputmode="tel"
+              pattern="[+0-9 .()\-]+"
+              autocomplete="tel"
+              :placeholder="t('thirdPartyForm.placeholder.contactNumber')"
               :class="getInputClasses('contactNumber')"
               :disabled="!editable"
             />

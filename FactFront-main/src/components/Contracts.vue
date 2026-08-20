@@ -139,10 +139,7 @@ const handleEdit = (contract: any) => {
 };
 
 const handleView = (contract: Contract) => {
-  // Reuse the edit form to show the contract (now opens on step 1 with all fields
-  // pre-populated — see TC-06 fix in ContractForm). The user can either inspect
-  // the data or modify it in place.
-  handleEdit(contract);
+  // Implement view functionality
 };
 
 const handleDelete = (contract: Contract) => {

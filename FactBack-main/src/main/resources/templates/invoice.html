@@ -36,15 +36,32 @@
 
         .watermark {
             position: absolute;
-            top: 40%;
-            left: 20%;
-            font-size: 72px;
-            color: rgba(175, 78, 138, 0.1);
-            transform: rotate(-30deg);
+            top: 38%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-25deg);
+            font-size: 120px;
+            color: rgba(175, 78, 138, 0.18);
             z-index: 0;
             pointer-events: none;
             font-weight: 900;
-            letter-spacing: 4px;
+            letter-spacing: 6px;
+            white-space: nowrap;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .draft-banner {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffc107;
+            border-radius: 4px;
+            padding: 8px 12px;
+            font-size: 11pt;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 8mm;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
 
         .content {
@@ -185,6 +202,12 @@
             border: 1px solid rgba(255, 193, 7, 0.5);
         }
 
+        .status-final {
+            background: rgba(40, 167, 69, 0.2);
+            color: #155724;
+            border: 1px solid rgba(40, 167, 69, 0.5);
+        }
+
         .status-sent {
             background: rgba(0, 123, 255, 0.2);
             color: #0056b3;
@@ -228,18 +251,27 @@
     {/if}
 
     <div class="content">
+        {#if status == 'DRAFT'}
+            <div class="draft-banner">⚠ DOCUMENT NON DÉFINITIF — BROUILLON DE FACTURE</div>
+        {/if}
+
         <img id="logo" src="/assets/logo1.png" alt="Logo"/>
 
-        <h1 class="title">FACTURE {invoiceNumber ?: 'N/A'}</h1>
+        <h1 class="title">{#if status == 'DRAFT'}PROJET DE FACTURE{#else}FACTURE{/if} {invoiceNumber ?: ''}</h1>
 
         {#if status}
             <div style="text-align: center; margin-bottom: 12mm;">
-                <span class="status-badge status-draft">
-                    {#if status == 'DRAFT'}BROUILLON{/if}
-                    {#if status == 'SENT'}ENVOYÉE{/if}
-                    {#if status == 'PAID'}PAYÉE{/if}
-                    {#if status && status != 'DRAFT' && status != 'SENT' && status != 'PAID'}{status}{/if}
-                </span>
+                {#if status == 'DRAFT'}
+                    <span class="status-badge status-draft">BROUILLON</span>
+                {#else if status == 'FINAL'}
+                    <span class="status-badge status-final">FACTURÉE</span>
+                {#else if status == 'SENT'}
+                    <span class="status-badge status-sent">ENVOYÉE</span>
+                {#else if status == 'PAID'}
+                    <span class="status-badge status-paid">PAYÉE</span>
+                {#else}
+                    <span class="status-badge status-final">{status}</span>
+                {/if}
             </div>
         {/if}
 
@@ -249,39 +281,17 @@
                 <div class="small">
                     {#if seller}
                         {#if seller.companyName??}
-                            {#if seller.companyName}
-                                <strong>{seller.companyName}</strong><br/>
-                            {/if}
-                            {#if seller.address}
-                                {seller.address}<br/>
-                            {/if}
-                            {#if seller.postalCode || seller.city}
-                                {seller.postalCode ?: ''} {seller.city ?: ''}<br/>
-                            {/if}
-                            {#if seller.phone}
-                                Téléphone : <span>{seller.phone}</span><br/>
-                            {/if}
-                            {#if seller.email}
-                                E-mail : <span>{seller.email}</span><br/>
-                            {/if}
-                            {#if seller.siret || seller.vatNumber}
-                                SIRET / TVA intracommunautaire : <span>{seller.siret ?: seller.vatNumber ?: ''}</span>
-                            {/if}
+                            {#if seller.companyName}<strong>{seller.companyName}</strong><br/>{/if}
+                            {#if seller.address}{seller.address}<br/>{/if}
+                            {#if seller.postalCode || seller.city}{seller.postalCode ?: ''} {seller.city ?: ''}<br/>{/if}
+                            {#if seller.phone}Téléphone : <span>{seller.phone}</span><br/>{/if}
+                            {#if seller.email}E-mail : <span>{seller.email}</span><br/>{/if}
+                            {#if seller.siret || seller.vatNumber}SIRET / TVA intracommunautaire : <span>{seller.siret ?: seller.vatNumber ?: ''}</span>{/if}
                         {#else}
-                            <strong>{seller}</strong><br/>
-                            Adresse<br/>
-                            Code postal, Ville<br/>
-                            Téléphone : <span>00 00 00 00 00</span><br/>
-                            E-mail : <span>contact@entreprise.fr</span><br/>
-                            SIRET / TVA intracommunautaire : <span>FRXX XXXX XXXX</span>
+                            <strong>{seller}</strong>
                         {/if}
                     {#else}
-                        <strong>Nom de l'entreprise</strong><br/>
-                        Adresse<br/>
-                        Code postal, Ville<br/>
-                        Téléphone : <span>00 00 00 00 00</span><br/>
-                        E-mail : <span>contact@entreprise.fr</span><br/>
-                        SIRET / TVA intracommunautaire : <span>FRXX XXXX XXXX</span>
+                        <span class="muted">—</span>
                     {/if}
                 </div>
             </div>
@@ -290,24 +300,14 @@
                 <div class="small">
                     {#if buyer}
                         {#if buyer.companyName?? || buyer.name??}
-                            {#if buyer.companyName || buyer.name}
-                                <strong>{buyer.companyName ?: buyer.name ?: ''}</strong><br/>
-                            {/if}
-                            {#if buyer.address}
-                                {buyer.address}<br/>
-                            {/if}
-                            {#if buyer.postalCode || buyer.city}
-                                {buyer.postalCode ?: ''} {buyer.city ?: ''}
-                            {/if}
+                            {#if buyer.companyName || buyer.name}<strong>{buyer.companyName ?: buyer.name ?: ''}</strong><br/>{/if}
+                            {#if buyer.address}{buyer.address}<br/>{/if}
+                            {#if buyer.postalCode || buyer.city}{buyer.postalCode ?: ''} {buyer.city ?: ''}{/if}
                         {#else}
-                            <strong>{buyer}</strong><br/>
-                            Adresse<br/>
-                            Code postal, Ville
+                            <strong>{buyer}</strong>
                         {/if}
                     {#else}
-                        <strong>Nom / Société</strong><br/>
-                        Adresse<br/>
-                        Code postal, Ville
+                        <span class="muted">—</span>
                     {/if}
                 </div>
             </div>
@@ -378,7 +378,7 @@
 
         </table>
 
-        {#if grandTotal}
+        {#if (!totals || totals.isEmpty) && grandTotal}
             <div style="text-align: right; font-size: 14pt; font-weight: bold; margin: 8mm 0;">
                 Total : {grandTotal}
             </div>
@@ -394,14 +394,15 @@
         <section class="foot">
             <div>
                 <strong>Conditions de paiement :</strong><br/>
-                Paiement à effectuer par : virement bancaire / chèque / autre<br/>
-                <span class="muted">Coordonnées bancaires :</span><br/>
-                IBAN : <span>[À COMPLÉTER]</span><br/>
-                BIC : <span>[À COMPLÉTER]</span>
+                Paiement à effectuer par virement bancaire, chèque ou autre moyen accepté.
+                {#if seller.iban?? && seller.iban}
+                    <br/><span class="muted">IBAN :</span> <span>{seller.iban}</span>
+                    {#if seller.bic?? && seller.bic}<br/><span class="muted">BIC :</span> <span>{seller.bic}</span>{/if}
+                {/if}
             </div>
             <div class="muted">
                 <strong>Mention légale :</strong><br/>
-                En cas de retard de paiement, des pénalités de <em>3%</em> par mois seront appliquées.
+                En cas de retard de paiement, des pénalités de <em>3 %</em> par mois pourront être appliquées.
             </div>
         </section>
     </div>

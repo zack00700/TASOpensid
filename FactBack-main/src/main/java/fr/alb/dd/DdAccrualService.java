@@ -12,6 +12,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.mongodb.ErrorCategory;
+import com.mongodb.MongoWriteException;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
 
@@ -82,7 +84,19 @@ public class DdAccrualService {
             accrual.status = DdAccrualStatus.STOPPED;
         }
 
-        accrual.persist();
+        try {
+            accrual.persist();
+        } catch (RuntimeException e) {
+            if (isDuplicateKey(e)) {
+                // A concurrent gate-in already created the DEMURRAGE accrual; the
+                // unique (itemId, ddType) index rejected this duplicate. The
+                // count() check above only catches sequential replays — this
+                // handles the concurrent race. Idempotent skip.
+                LOGGER.debugf("onGateIn: concurrent DEMURRAGE accrual already exists for item %s — skipping", item.id);
+                return;
+            }
+            throw e;
+        }
 
         if (clockStart != null) {
             computeAndUpdate(accrual, rule);
@@ -142,7 +156,17 @@ public class DdAccrualService {
         // For detention, the clock starts at gate-out (container leaves the terminal)
         detention.clockStart = item.getGateOutDate();
 
-        detention.persist();
+        try {
+            detention.persist();
+        } catch (RuntimeException e) {
+            if (isDuplicateKey(e)) {
+                // Concurrent gate-out already created the DETENTION accrual; the
+                // unique (itemId, ddType) index rejected this duplicate. Idempotent skip.
+                LOGGER.debugf("onGateOut: concurrent DETENTION accrual already exists for item %s — skipping", item.id);
+                return;
+            }
+            throw e;
+        }
 
         if (detention.clockStart != null) {
             computeAndUpdate(detention, rule);
@@ -191,7 +215,7 @@ public class DdAccrualService {
         }
 
         ZoneId zone = ZoneId.of(getTimezone());
-        List<String> holidays = loadHolidays(zone, accrual.clockStart);
+        List<String> holidays = loadHolidays(zone, accrual.clockStart, accrual.clockStop);
 
         List<DdDayEntry> log = freeDayCalculator.buildDailyLog(
                 rule, accrual.clockStart, accrual.clockStop, holidays, zone);
@@ -303,11 +327,53 @@ public class DdAccrualService {
         return timezone != null ? timezone : "UTC";
     }
 
-    private List<String> loadHolidays(ZoneId zone, Instant clockStart) {
-        int year = clockStart.atZone(zone).getYear();
-        List<HolidayCalendar> cals = HolidayCalendar.find("year", year).list();
+    /**
+     * True when the exception (or its cause) is a MongoDB duplicate-key error
+     * (unique-index violation, code 11000). Used to turn the concurrent-insert
+     * race on the unique (itemId, ddType) index into an idempotent no-op.
+     */
+    private static boolean isDuplicateKey(Throwable e) {
+        for (Throwable t = e; t != null; t = t.getCause()) {
+            if (t instanceof MongoWriteException mwe
+                    && mwe.getError().getCategory() == ErrorCategory.DUPLICATE_KEY) {
+                return true;
+            }
+            String msg = t.getMessage();
+            if (msg != null && msg.contains("E11000")) {
+                return true;
+            }
+            if (t.getCause() == t) {
+                break;
+            }
+        }
+        return false;
+    }
+
+    private List<String> loadHolidays(ZoneId zone, Instant clockStart, Instant clockStop) {
+        Instant end = clockStop != null ? clockStop : Instant.now();
+        List<Integer> years = yearsSpanned(clockStart, end, zone);
+        List<HolidayCalendar> cals = HolidayCalendar.find("year in ?1", years).list();
         return cals.stream()
                 .flatMap(c -> c.holidayDates != null ? c.holidayDates.stream() : Stream.empty())
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Every calendar year the accrual spans, from clockStart to end (inclusive).
+     * Previously only the clockStart year was loaded, so an accrual crossing a
+     * year boundary (e.g. Dec -> Jan) ignored the next year's holidays and
+     * billed them as ordinary chargeable days (M11).
+     */
+    static List<Integer> yearsSpanned(Instant start, Instant end, ZoneId zone) {
+        int startYear = start.atZone(zone).getYear();
+        int endYear = end != null ? end.atZone(zone).getYear() : startYear;
+        if (endYear < startYear) {
+            endYear = startYear; // guard against an inverted clock window
+        }
+        List<Integer> years = new ArrayList<>();
+        for (int y = startYear; y <= endYear; y++) {
+            years.add(y);
+        }
+        return years;
     }
 }

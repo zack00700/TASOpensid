@@ -42,6 +42,14 @@ export interface CalculationMode {
     }
 }
 
+export interface RateTax {
+    /** FK to a Tax.id from /api/taxes. */
+    taxId: string,
+    /** If true, the tax is already included in the rate amount;
+     *  if false, it's added on top at invoicing time. */
+    inclusive: boolean,
+}
+
 export interface RateManagementExtended {
     rateId?: string,
     startQuantity?: number,
@@ -58,7 +66,9 @@ export interface RateManagementExtended {
     glCode?: string,
     minAmount?: number,
     maxAmount?: number,
-    quantityDivisor?: number
+    quantityDivisor?: number,
+    /** Taxes attached to this rate. Empty/undefined means no tax. */
+    taxes?: RateTax[],
 }
 
 export interface Tariff {

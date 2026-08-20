@@ -125,6 +125,11 @@ public class IndexInitializer {
             MongoCollection<Document> col = OutboxEvent.mongoCollection().withDocumentClass(Document.class);
             // OutboxScheduler polls by status = PENDING
             col.createIndex(Indexes.ascending("status"));
+            // claim() filters on status and sorts on createdAt — Cosmos requires an index covering the sort
+            col.createIndex(Indexes.compoundIndex(
+                Indexes.ascending("status"),
+                Indexes.ascending("createdAt")
+            ));
             // TTL index: auto-delete events after 30 days
             // Note: Cosmos DB does not support partialFilterExpression on TTL indexes
             col.createIndex(
@@ -258,6 +263,12 @@ public class IndexInitializer {
             col.createIndex(Indexes.ascending("billingContractId"));
             // Customer PO reference lookup
             col.createIndex(Indexes.ascending("poNumber"));
+            // Idempotency: at most one draft per (items + customer) hash. Unique +
+            // sparse so it enforces uniqueness only for invoices that carry a key
+            // (BOL/legacy invoices without one are unaffected). This makes the
+            // makeInvoice check-then-insert race safe (M12).
+            col.createIndex(Indexes.ascending("idempotencyKey"),
+                new IndexOptions().unique(true).sparse(true));
             LOGGER.debug("IndexInitializer: Invoice indexes OK");
         } catch (MongoTimeoutException e) {
             LOGGER.warn("IndexInitializer: timeout creating Invoice indexes — continuing without them");

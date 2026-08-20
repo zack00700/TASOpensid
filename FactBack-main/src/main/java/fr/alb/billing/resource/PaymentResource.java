@@ -4,8 +4,12 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
 import fr.alb.billing.dao.PaymentDao;
 import fr.alb.dto.ErrorResponse;
+import fr.alb.billing.model.Invoice;
 import fr.alb.billing.model.Payment;
 import fr.alb.billing.model.PaymentAllocation;
 import fr.alb.type.PaymentStatus;
@@ -221,25 +225,70 @@ public class PaymentResource {
 
             BigDecimal allocAmount = new BigDecimal(amountObj.toString());
 
+            // A reversed/cancelled payment can no longer be allocated.
+            if (payment.status == PaymentStatus.REVERSED || payment.status == PaymentStatus.CANCELLED) {
+                return Response.status(409)
+                        .entity(new ErrorResponse("CONFLICT",
+                                "Cannot allocate a " + payment.status.getValue() + " payment", 409))
+                        .build();
+            }
+
+            // Amount must be strictly positive.
+            if (allocAmount.compareTo(BigDecimal.ZERO) <= 0) {
+                return Response.status(400)
+                        .entity(new ErrorResponse("BAD_REQUEST", "amount must be greater than zero", 400))
+                        .build();
+            }
+
+            // The target invoice must exist.
+            Invoice invoice = Invoice.findById(invoiceId.trim());
+            if (invoice == null) {
+                return Response.status(404)
+                        .entity(new ErrorResponse("NOT_FOUND", "Invoice not found: " + invoiceId, 404))
+                        .build();
+            }
+
+            MongoCollection<Payment> paymentCol = Payment.mongoCollection();
+
+            // unallocatedAmount is the running balance. Initialize it for legacy
+            // payments that predate it (the {field: null} filter matches
+            // missing-or-null, and is idempotent under concurrency).
+            if (payment.unallocatedAmount == null) {
+                BigDecimal existingSum = payment.allocations == null ? BigDecimal.ZERO
+                        : payment.allocations.stream()
+                            .map(a -> a.getAllocatedAmount() != null ? a.getAllocatedAmount() : BigDecimal.ZERO)
+                            .reduce(BigDecimal.ZERO, BigDecimal::add);
+                BigDecimal paymentAmount = payment.amount != null ? payment.amount : BigDecimal.ZERO;
+                paymentCol.updateOne(
+                        Filters.and(Filters.eq("_id", id), Filters.eq("unallocatedAmount", null)),
+                        Updates.set("unallocatedAmount", paymentAmount.subtract(existingSum)));
+            }
+
             PaymentAllocation allocation = new PaymentAllocation();
             allocation.setInvoiceId(invoiceId.trim());
             allocation.setInvoiceNumber(invoiceNumber != null ? invoiceNumber.trim() : null);
             allocation.setAllocatedAmount(allocAmount);
 
-            if (payment.allocations == null) {
-                payment.allocations = new java.util.ArrayList<>();
+            // Atomically reserve the balance AND record the allocation in one
+            // guarded update: it only applies when unallocatedAmount >= allocAmount,
+            // so two concurrent allocations can never over-allocate the payment
+            // (M12 — the previous read-sum-then-write check let both pass). $push
+            // encodes the allocation with the same POJO codec used for reads.
+            long applied = paymentCol.updateOne(
+                    Filters.and(Filters.eq("_id", id), Filters.gte("unallocatedAmount", allocAmount)),
+                    Updates.combine(
+                            Updates.push("allocations", allocation),
+                            Updates.inc("unallocatedAmount", allocAmount.negate()))
+            ).getModifiedCount();
+            if (applied == 0) {
+                return Response.status(409)
+                        .entity(new ErrorResponse("CONFLICT",
+                                "Allocation exceeds the unallocated payment balance", 409))
+                        .build();
             }
-            payment.allocations.add(allocation);
 
-            BigDecimal totalAllocated = payment.allocations.stream()
-                    .map(a -> a.getAllocatedAmount() != null ? a.getAllocatedAmount() : BigDecimal.ZERO)
-                    .reduce(BigDecimal.ZERO, BigDecimal::add);
-            payment.unallocatedAmount = payment.amount != null
-                    ? payment.amount.subtract(totalAllocated)
-                    : totalAllocated.negate();
-
-            paymentDao.updatePayment(payment);
-            return Response.ok(payment).build();
+            Payment updated = paymentDao.findPayment(id);
+            return Response.ok(updated).build();
         } catch (NumberFormatException e) {
             return Response.status(400)
                     .entity(new ErrorResponse("BAD_REQUEST", "amount must be a valid number", 400))

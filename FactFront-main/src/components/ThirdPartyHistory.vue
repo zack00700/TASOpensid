@@ -31,6 +31,8 @@ interface HistoryEntry {
 }
 
 const history = ref<HistoryEntry[]>([]);
+const loaded = ref(false);
+const loadError = ref<string | null>(null);
 
 const mode = ref<'accordion' | 'timeline'>('accordion');
 
@@ -105,10 +107,15 @@ function computeDiff(idx: number): DiffEntry[] {
 
 async function fetchHistory() {
   try {
-    const response = await $axios.get(`/third-party/${props.id}/history`);
-    history.value = response.data.sort((a: any, b: any) => a.version - b.version);
-  } catch (e) {
+    const response = await ($axios as any).get(`/third-party/${props.id}/history`);
+    history.value = (response.data ?? []).sort((a: any, b: any) => a.version - b.version);
+    loadError.value = null;
+  } catch (e: any) {
     console.error(e);
+    loadError.value = e?.response?.data?.message ?? e?.message ?? String(e);
+    history.value = [];
+  } finally {
+    loaded.value = true;
   }
 }
 
@@ -136,6 +143,33 @@ const sanitize = (html: string) => DOMPurify.sanitize(html ?? '');
         {{ t('thirdPartyHistory.mode.timeline') }}
       </button>
     </div>
+
+    <!-- Empty-state covers the "n'affiche rien" recette case: fetch errored,
+         fetch returned nothing, or only the initial version exists (no diff
+         to compute). The old code rendered the v-for silently in all three
+         situations and the user just saw a blank panel. -->
+    <p
+      v-if="loaded && loadError"
+      data-test="third-party-history-error"
+      class="text-sm text-red-600"
+    >
+      {{ t('thirdPartyHistory.error.load', { message: loadError }) }}
+    </p>
+    <p
+      v-else-if="loaded && history.length === 0"
+      data-test="third-party-history-empty"
+      class="text-sm text-gray-500 italic"
+    >
+      {{ t('thirdPartyHistory.empty') }}
+    </p>
+    <p
+      v-else-if="loaded && history.length === 1"
+      data-test="third-party-history-no-changes"
+      class="text-sm text-gray-500 italic"
+    >
+      {{ t('thirdPartyHistory.noChangesSinceCreation') }}
+    </p>
+
     <div v-for="(entry, idx) in history" :key="entry.id">
       <template v-if="idx > 0">
         <details

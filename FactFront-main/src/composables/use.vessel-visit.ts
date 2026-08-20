@@ -49,6 +49,11 @@ export function useVesselVisit() {
             isValid = false;
         }
 
+        if (!formData.value.visitReference?.trim()) {
+            errors.value.visitReference = "Visit reference is required";
+            isValid = false;
+        }
+
         if (!formData.value.service) {
             errors.value.service = "Service is required";
             isValid = false;
@@ -88,6 +93,14 @@ export function useVesselVisit() {
         }
     }
 
+    async function advanceVisitPhase(id: string, targetPhase: string) {
+        // Returns the new phase on success, or throws so the caller can surface
+        // the backend's 4xx (e.g. 409 INVALID_TRANSITION) to the user instead
+        // of silently swallowing.
+        const response = await $axios.patch(`visit/${id}/phase`, { phase: targetPhase });
+        return response.data as { id: string; phase: string };
+    }
+
     async function getVesselVisits() {
         try {
             const response = await $axios.get('visit');
@@ -108,6 +121,7 @@ export function useVesselVisit() {
         validateForm,
         addVesselVisit,
         updateVesselVisit,
+        advanceVisitPhase,
         getVesselVisits,
     };
 }

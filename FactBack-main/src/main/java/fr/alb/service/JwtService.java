@@ -1,7 +1,5 @@
 package fr.alb.service;
 
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -66,23 +64,12 @@ public class JwtService {
             return;
         }
 
-        // Fallback to file in classpath (for local development)
-        try (InputStream is = getClass().getResourceAsStream("/privateKey.pem")) {
-            if (is == null) {
-                throw new RuntimeException("Clé privée non trouvée. Veuillez définir la variable d'environnement JWT_PRIVATE_KEY ou placer privateKey.pem dans src/main/resources/");
-            }
-            LOG.info("Loading JWT private key from classpath file");
-            String privateKeyPEM = new String(is.readAllBytes(), StandardCharsets.UTF_8)
-                    .replace("-----BEGIN PRIVATE KEY-----", "")
-                    .replace("-----END PRIVATE KEY-----", "")
-                    .replaceAll("\\s", "");
-
-            byte[] privateKeyBytes = Base64.getDecoder().decode(privateKeyPEM);
-            PKCS8EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
-            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-            this.privateKey = keyFactory.generatePrivate(privateKeySpec);
-            LOG.info("Clé privée JWT chargée avec succès depuis le fichier");
-        }
+        // No classpath fallback: a private key committed to the repo/JAR is a
+        // compromised secret. The key must be supplied at runtime via the
+        // app.jwt.private-key (JWT_PRIVATE_KEY) environment variable only.
+        throw new RuntimeException(
+                "JWT private key not configured. Set the JWT_PRIVATE_KEY environment variable. "
+                        + "Committing privateKey.pem to the source tree is not supported.");
     }
 
     public String generateToken(User user) {

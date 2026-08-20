@@ -101,8 +101,8 @@ public class BillOfLadingResource {
         }
 
         // Normalize transport: when the form sets only the legacy `transportType` string
-        // (TRUCK/TRAIN/VESSEL) without a `transport` block, build a minimal TransportInfo
-        // so the document is consistent with non-vessel modes.
+        // (TRUCK / TRAIN / VESSEL) without a `transport` block, build a minimal
+        // TransportInfo so the document is consistent for non-vessel modes.
         if (bill.getTransport() == null && bill.getTransportType() != null && !bill.getTransportType().isBlank()) {
             try {
                 TransportType t = TransportType.valueOf(bill.getTransportType().trim().toUpperCase());
@@ -110,7 +110,7 @@ public class BillOfLadingResource {
                 info.type = t;
                 bill.setTransport(info);
             } catch (IllegalArgumentException ignored) {
-                // Unknown legacy value — leave transport null rather than failing the create
+                // Unknown legacy value — leave transport null rather than failing the create.
             }
         }
 

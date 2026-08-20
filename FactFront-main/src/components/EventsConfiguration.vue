@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import { useI18n } from "vue-i18n";
+import { v4 as uuidv4 } from "uuid";
 import {
   Plus,
   Pencil,
@@ -16,13 +17,13 @@ import {
 } from "lucide-vue-next";
 
 import { useEventConfig } from "../composables/use.event-config.ts";
+import type { EventConfig } from "../types/event-config";
 
 const { t } = useI18n();
 
 const {
   errors,
   formData,
-  isValid,
   validateForm,
   addEventConfig,
   updateEventConfig,
@@ -101,19 +102,14 @@ const handleDelete = (event: EventConfig) => {
 };
 
 const confirmDelete = async () => {
-  if (!eventToDelete.value?.id) {
-    showDeleteConfirm.value = false;
-    eventToDelete.value = null;
-    return;
-  }
+  if (!eventToDelete.value) return;
   try {
     await deleteEventConfig(eventToDelete.value.id);
   } catch (e) {
-    console.error("Failed to delete event config", e);
-  } finally {
-    showDeleteConfirm.value = false;
-    eventToDelete.value = null;
+    return;
   }
+  showDeleteConfirm.value = false;
+  eventToDelete.value = null;
 };
 
 const handleSubmit = async () => {
@@ -121,17 +117,23 @@ const handleSubmit = async () => {
     return;
   }
 
-  try {
-    if (editingEvent.value?.id) {
+  if (editingEvent.value) {
+    try {
       await updateEventConfig(editingEvent.value.id, formData.value);
-    } else {
-      await addEventConfig();
+    } catch (e) {
+      return;
     }
-    showForm.value = false;
-    editingEvent.value = null;
-  } catch (e) {
-    console.error("Failed to save event config", e);
+  } else {
+    eventConfigs.value.push({
+      ...formData.value,
+      id: uuidv4(),
+    });
+
+    addEventConfig();
   }
+
+  showForm.value = false;
+  editingEvent.value = null;
 };
 
 const getInputClasses = (fieldName: keyof typeof formData.value) => {
@@ -175,7 +177,7 @@ const getInputClasses = (fieldName: keyof typeof formData.value) => {
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
-            <tr v-for="event in eventConfigs" :key="event.id" class="hover:bg-gray-50">
+            <tr v-for="event in eventConfigs" :key="event.id" :data-test="`event-row-${event.id}`" class="hover:bg-gray-50">
               <td class="px-4 py-3 whitespace-nowrap">
                 <div class="text-sm font-medium text-gray-900">
                   {{ event.eventName }}
@@ -201,6 +203,7 @@ const getInputClasses = (fieldName: keyof typeof formData.value) => {
               <td class="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
                 <button
                   @click="handleEdit(event)"
+                  :data-test="`event-edit-${event.id}`"
                   class="text-blue-600 hover:text-blue-900 mr-3"
                   :aria-label="t('common.edit')"
                 >
@@ -208,6 +211,7 @@ const getInputClasses = (fieldName: keyof typeof formData.value) => {
                 </button>
                 <button
                   @click="handleDelete(event)"
+                  :data-test="`event-delete-${event.id}`"
                   class="text-red-600 hover:text-red-900"
                   :aria-label="t('common.delete')"
                 >
@@ -242,6 +246,7 @@ const getInputClasses = (fieldName: keyof typeof formData.value) => {
             </label>
             <input
               v-model="formData.eventName"
+              data-test="event-form-name"
               type="text"
               :placeholder="t('eventsConfiguration.placeholder.eventName')"
               :class="getInputClasses('name')"
@@ -305,12 +310,14 @@ const getInputClasses = (fieldName: keyof typeof formData.value) => {
             </label>
             <select
               v-model="formData.scope"
+              data-test="event-form-scope"
               class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             >
               <option value="ITEM">{{ t('eventConfig.scope.ITEM') }}</option>
               <option value="VESSEL">{{ t('eventConfig.scope.VESSEL') }}</option>
               <option value="BOTH">{{ t('eventConfig.scope.BOTH') }}</option>
             </select>
+            <p class="mt-1 text-xs text-gray-500">{{ t('eventConfig.field.scopeHelp') }}</p>
           </div>
         </div>
 
@@ -325,6 +332,7 @@ const getInputClasses = (fieldName: keyof typeof formData.value) => {
           </button>
           <button
             type="submit"
+            data-test="event-form-save"
             class="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
           >
             <Save class="h-4 w-4 mr-2" />
@@ -345,7 +353,7 @@ const getInputClasses = (fieldName: keyof typeof formData.value) => {
             <AlertCircle class="mx-auto h-12 w-12 text-red-500" />
             <h3 class="mt-4 text-lg font-medium text-gray-900">{{ t('eventsConfiguration.delete.title') }}</h3>
             <p class="mt-2 text-sm text-gray-500">
-              {{ t('eventsConfiguration.delete.confirm', { name: eventToDelete?.name }) }}
+              {{ t('eventsConfiguration.delete.confirm', { name: eventToDelete?.eventName }) }}
             </p>
           </div>
           <div class="mt-6 flex justify-end space-x-3">
@@ -357,6 +365,7 @@ const getInputClasses = (fieldName: keyof typeof formData.value) => {
             </button>
             <button
               @click="confirmDelete"
+              data-test="event-delete-confirm"
               class="px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700"
             >
               {{ t('common.delete') }}

@@ -183,13 +183,16 @@ function selectStatusFilter(status: 'DRAFT' | 'FINAL') {
   state.filters.status = [status];
   state.page = 1;
   updateUrl();
-  fetchInvoices();
+  // Mutating the filters already triggers the deep watcher -> scheduleFetch;
+  // schedule here too so the two collapse (clearTimeout) into ONE request
+  // instead of firing an immediate fetch AND a debounced one (M16 double-fetch).
+  scheduleFetch();
 }
 
 function showAll() {
   clearFilters();
   updateUrl();
-  fetchInvoices();
+  scheduleFetch();
 }
 
 let timer: number | undefined;

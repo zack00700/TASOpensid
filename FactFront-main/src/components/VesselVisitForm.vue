@@ -6,29 +6,38 @@ import { VesselVisit } from "../types/vessel-visit";
 
 import { useVesselVisit } from "../composables/use.vessel-visit";
 import { useVesselVisitAis } from "../composables/use.vessel.visit.ais";
-import { useVessel } from "../composables/use.vessel";
 import ThirdPartyAutocomplete from "./ui/ThirdPartyAutocomplete.vue";
-import TypeaheadInput from "./ui/TypeaheadInput.vue";
-import { computed } from "vue";
+import DatetimeInput from "./ui/DatetimeInput.vue";
+import VesselAutocomplete from "./ui/VesselAutocomplete.vue";
+import { useVessel } from "../composables/use.vessel";
 
 const { t, locale } = useI18n();
 
 const { formData, validateForm, errors, addVesselVisit, updateVesselVisit } = useVesselVisit();
-const { suggestion, loadFor } = useVesselVisitAis();
-// Registry of known vessels — fed to the vessel-name typeahead so users can pick
-// from existing entries instead of typing a free-text name (TC-05).
 const { vessels } = useVessel();
-const vesselNameSuggestions = computed<string[]>(() =>
-  (vessels.value ?? []).map((v) => v.name).filter((n): n is string => !!n)
+
+// `vesselId` is auto-filled and locked when the typed vessel name matches a
+// known vessel (catalog match). Typing free text releases the lock so the
+// operator can enter a manual id.
+const vesselLocked = ref(false);
+watch(
+  [() => formData.value.vesselName, vessels],
+  ([name, list]) => {
+    const trimmed = (name ?? '').trim();
+    const match = trimmed ? list?.find((v) => v.name === trimmed) : undefined;
+    if (match) {
+      vesselLocked.value = true;
+      const fkValue = match.imoNumber ?? match.id ?? '';
+      if (formData.value.vesselId !== fkValue) {
+        formData.value.vesselId = fkValue;
+      }
+    } else {
+      vesselLocked.value = false;
+    }
+  },
+  { immediate: true },
 );
-const onVesselNameSelected = (name: string) => {
-  const match = (vessels.value ?? []).find((v) => v.name === name);
-  if (match) {
-    formData.value.vesselName = match.name;
-    // Auto-link to the registry's vessel id so the back can reconcile both sides.
-    if (match.id) (formData.value as any).vesselId = match.id;
-  }
-};
+const { suggestion, loadFor } = useVesselVisitAis();
 const appliedEta = ref(false);
 const appliedAta = ref(false);
 
@@ -134,17 +143,32 @@ const applyAta = () => {
       <!-- Vessel Information -->
       <div>
         <h3 class="text-lg font-medium text-gray-900 mb-4">{{ t('vesselVisitForm.section.vesselInformation') }}</h3>
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-gray-700">
+            {{ t('vesselVisitForm.field.visitReference') }} <span class="text-red-500">*</span>
+          </label>
+          <input
+            v-model="formData.visitReference"
+            type="text"
+            data-test="visit-reference"
+            :placeholder="t('vesselVisitForm.placeholder.visitReference')"
+            :class="getInputClasses('visitReference')"
+          />
+          <p v-if="errors.visitReference" class="mt-1 text-sm text-red-600">
+            {{ errors.visitReference }}
+          </p>
+        </div>
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <div>
             <label class="block text-sm font-medium text-gray-700">
               {{ t('vesselVisitForm.field.vesselName') }} <span class="text-red-500">*</span>
             </label>
-            <TypeaheadInput
-              :model-value="formData.vesselName ?? ''"
-              :suggestions="vesselNameSuggestions"
-              @update:model-value="formData.vesselName = $event"
-              @select="onVesselNameSelected"
+            <VesselAutocomplete
+              :model-value="formData.vesselName"
+              data-test="visit-vessel-name"
               :input-class="getInputClasses('vesselName')"
+              :placeholder="t('vesselVisitForm.placeholder.vesselName')"
+              @update:model-value="(v: string) => (formData.vesselName = v)"
             />
             <p v-if="errors.vesselName" class="mt-1 text-sm text-red-600">
               {{ errors.vesselName }}
@@ -158,8 +182,16 @@ const applyAta = () => {
             <input
               v-model="formData.vesselId"
               type="text"
-              :class="getInputClasses('vesselId')"
+              data-test="visit-vessel-id"
+              :readonly="vesselLocked"
+              :class="[
+                getInputClasses('vesselId'),
+                vesselLocked && 'bg-gray-100 cursor-not-allowed',
+              ]"
             />
+            <p v-if="vesselLocked" class="mt-1 text-xs text-gray-500">
+              {{ t('vesselVisitForm.hint.vesselIdAutofilled') }}
+            </p>
             <p v-if="errors.vesselId" class="mt-1 text-sm text-red-600">
               {{ errors.vesselId }}
             </p>
@@ -269,9 +301,9 @@ const applyAta = () => {
             <label class="block text-sm font-medium text-gray-700">
               {{ t('vesselVisitForm.field.eta') }} <span class="text-red-500">*</span>
             </label>
-            <input
+            <DatetimeInput
               v-model="formData.eta"
-              type="datetime-local"
+              data-test="visit-eta"
               :class="getInputClasses('eta')"
             />
             <p v-if="errors.eta" class="mt-1 text-sm text-red-600">
@@ -283,9 +315,9 @@ const applyAta = () => {
             <label class="block text-sm font-medium text-gray-700">
               {{ t('vesselVisitForm.field.etd') }} <span class="text-red-500">*</span>
             </label>
-            <input
+            <DatetimeInput
               v-model="formData.etd"
-              type="datetime-local"
+              data-test="visit-etd"
               :min="formData.eta"
               :class="getInputClasses('etd')"
             />
@@ -312,36 +344,36 @@ const applyAta = () => {
               >{{ t('vesselVisitForm.aisSuggestion.apply') }}</button>
             </div>
             <label class="block text-sm font-medium text-gray-700"> {{ t('vesselVisitForm.field.ata') }} </label>
-            <input
+            <DatetimeInput
               v-model="formData.ata"
-              type="datetime-local"
+              data-test="visit-ata"
               :class="getInputClasses('ata')"
             />
           </div>
 
           <div>
             <label class="block text-sm font-medium text-gray-700"> {{ t('vesselVisitForm.field.atd') }} </label>
-            <input
+            <DatetimeInput
               v-model="formData.atd"
-              type="datetime-local"
+              data-test="visit-atd"
               :class="getInputClasses('atd')"
             />
           </div>
 
           <div>
             <label class="block text-sm font-medium text-gray-700"> {{ t('vesselVisitForm.field.beginReceive') }} </label>
-            <input
+            <DatetimeInput
               v-model="formData.beginReceive"
-              type="datetime-local"
+              data-test="visit-begin-receive"
               :class="getInputClasses('beginReceive')"
             />
           </div>
 
           <div>
             <label class="block text-sm font-medium text-gray-700"> {{ t('vesselVisitForm.field.emptyPickup') }} </label>
-            <input
+            <DatetimeInput
               v-model="formData.emptyPickup"
-              type="datetime-local"
+              data-test="visit-empty-pickup"
               :class="getInputClasses('emptyPickup')"
             />
           </div>
@@ -356,9 +388,9 @@ const applyAta = () => {
             <label class="block text-sm font-medium text-gray-700">
               {{ t('vesselVisitForm.field.dryCargoCutOff') }}
             </label>
-            <input
+            <DatetimeInput
               v-model="formData.dryCutoff"
-              type="datetime-local"
+              data-test="visit-dry-cutoff"
               :class="getInputClasses('dryCutoff')"
             />
           </div>
@@ -367,9 +399,9 @@ const applyAta = () => {
             <label class="block text-sm font-medium text-gray-700">
               {{ t('vesselVisitForm.field.reeferCutOff') }}
             </label>
-            <input
+            <DatetimeInput
               v-model="formData.reeferCutoff"
-              type="datetime-local"
+              data-test="visit-reefer-cutoff"
               :class="getInputClasses('reeferCutoff')"
             />
           </div>
@@ -378,9 +410,9 @@ const applyAta = () => {
             <label class="block text-sm font-medium text-gray-700">
               {{ t('vesselVisitForm.field.hazardousCutOff') }}
             </label>
-            <input
+            <DatetimeInput
               v-model="formData.hazCutoff"
-              type="datetime-local"
+              data-test="visit-haz-cutoff"
               :class="getInputClasses('hazCutoff')"
             />
           </div>

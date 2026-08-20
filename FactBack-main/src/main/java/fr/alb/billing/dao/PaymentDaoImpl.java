@@ -1,5 +1,6 @@
 package fr.alb.billing.dao;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import fr.alb.billing.model.Payment;
@@ -26,6 +27,15 @@ public class PaymentDaoImpl implements PanacheMongoRepository<Payment>, PaymentD
         }
         if (payment.paymentMethod == null) {
             throw new IllegalArgumentException("Payment paymentMethod cannot be null");
+        }
+        // Seed the running unallocated balance so it is meaningful before the
+        // first allocation and the atomic allocate guard has a value to compare.
+        if (payment.unallocatedAmount == null) {
+            BigDecimal allocated = payment.allocations == null ? BigDecimal.ZERO
+                    : payment.allocations.stream()
+                        .map(a -> a.getAllocatedAmount() != null ? a.getAllocatedAmount() : BigDecimal.ZERO)
+                        .reduce(BigDecimal.ZERO, BigDecimal::add);
+            payment.unallocatedAmount = payment.amount.subtract(allocated);
         }
         persist(payment);
     }

@@ -43,5 +43,41 @@ describe('ThirdPartyHistory', () => {
     await wrapper.vm.$nextTick();
     expect(wrapper.html()).toContain('nested.level');
   });
+
+  it('shows an empty-state when the API returns no versions (TC-03 "timeline n\'affiche rien")', async () => {
+    const wrapper = mount(ThirdPartyHistory, {
+      props: { id: 'x' },
+      global: { plugins: [i18n], provide: { $axios: { get: () => ({ data: [] }) } } },
+    });
+    await new Promise((r) => setTimeout(r));
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find('[data-test="third-party-history-empty"]').exists()).toBe(true);
+  });
+
+  it('shows a "no changes since creation" hint when only the initial version exists', async () => {
+    const wrapper = mount(ThirdPartyHistory, {
+      props: { id: 'x' },
+      global: { plugins: [i18n], provide: { $axios: { get: () => ({ data: [historyData[0]] }) } } },
+    });
+    await new Promise((r) => setTimeout(r));
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find('[data-test="third-party-history-no-changes"]').exists()).toBe(true);
+  });
+
+  it('surfaces a load error', async () => {
+    const wrapper = mount(ThirdPartyHistory, {
+      props: { id: 'x' },
+      global: {
+        plugins: [i18n],
+        provide: {
+          $axios: { get: () => Promise.reject(new Error('boom')) },
+        },
+      },
+    });
+    await new Promise((r) => setTimeout(r));
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find('[data-test="third-party-history-error"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="third-party-history-error"]').text()).toContain('boom');
+  });
 });
 
