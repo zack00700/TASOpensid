@@ -107,7 +107,7 @@ const itemColumns: ColumnDefinition[] = [
   { key: 'reeferTemp', label: t('items.column.reeferTemp'), hiddenByDefault: true },
 ];
 const itemCols = useColumnPreferences('items', itemColumns);
-const dataTableColumns: Column<any>[] = [
+const dataTableColumns = computed<Column<any>[]>(() => [
   { key: 'identity',   label: t('items.column.container'),  sticky: 'left', width: 'min-w-[280px]' },
   { key: 'statut',     label: t('items.column.status'),     width: 'w-28' },
   { key: 'customs',    label: t('items.column.customs'),    width: 'w-32' },
@@ -121,7 +121,7 @@ const dataTableColumns: Column<any>[] = [
   { key: 'voyageOut',  label: t('items.column.voyageOut'),  width: 'w-28' },
   { key: 'hazmat',     label: t('items.column.hazmat'),     width: 'w-32' },
   { key: 'reeferTemp', label: t('items.column.reeferTemp'), align: 'right', width: 'w-24' },
-];
+]);
 const selectedItemIds = ref<string[]>([]);
 const customerToBill = ref("");
 

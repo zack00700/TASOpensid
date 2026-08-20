@@ -197,7 +197,7 @@ function formatDate(value: string | number | Date | undefined): string {
   return d.toLocaleDateString();
 }
 
-const dataTableColumns: Column<any>[] = [
+const dataTableColumns = computed<Column<any>[]>(() => [
   { key: 'connaissement',  label: t('billOfLading.column.connaissement'),                       mobile: 'title' },
   { key: 'vessel',         label: t('billOfLading.column.vessel'),                              mobile: 'meta' },
   { key: 'eta',            label: t('billOfLading.column.eta'),
@@ -211,7 +211,7 @@ const dataTableColumns: Column<any>[] = [
     format: (v) => v ? formatDate(v as string) : '—',                                           mobile: 'hidden' },
   { key: 'voyage',         label: t('billOfLading.column.voyage'),                              mobile: 'hidden' },
   { key: 'totalWeight',    label: t('billOfLading.column.weight'),        align: 'right',       mobile: 'hidden' },
-];
+]);
 const dragCounter = ref(0);
 
 // Export State

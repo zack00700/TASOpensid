@@ -65,17 +65,39 @@ export const useI18nStore = defineStore('i18n', () => {
     }
 
     if (cached && cached.version === serverVersion && serverVersion !== '') {
-      i18n.global.setLocaleMessage(loc, cached.messages)
+      applyRemoteMessages(loc, cached.messages)
       versions.value[loc] = cached.version
       loadedLocales.value.add(loc)
       return
     }
 
-    const messages = await i18nApi.getMessages(loc)
-    i18n.global.setLocaleMessage(loc, messages)
+    let messages: Record<string, string> = {}
+    try {
+      messages = await i18nApi.getMessages(loc)
+    } catch {
+      // Backend injoignable : on garde les traductions embarquées.
+    }
+    applyRemoteMessages(loc, messages)
     versions.value[loc] = serverVersion
-    writeCache(loc, { version: serverVersion, messages })
+    if (Object.keys(messages).length > 0) {
+      writeCache(loc, { version: serverVersion, messages })
+    }
     loadedLocales.value.add(loc)
+  }
+
+  /**
+   * Superpose les traductions du serveur sur celles embarquées dans le bundle,
+   * au lieu de remplacer le jeu complet.
+   *
+   * `setLocaleMessage` écrase : sur une base vide — un Mongo neuf, par exemple —
+   * il effaçait fr.json/es.json et l'interface retombait en anglais alors que
+   * les traductions étaient bien présentes. `mergeLocaleMessage` laisse le
+   * serveur surcharger clé par clé, ce qui garde la page Translations utile
+   * sans jamais faire régresser l'affichage.
+   */
+  function applyRemoteMessages(loc: SupportedLocale, messages: Record<string, string>): void {
+    if (!messages || Object.keys(messages).length === 0) return
+    i18n.global.mergeLocaleMessage(loc, messages)
   }
 
   async function setLocale(loc: SupportedLocale): Promise<void> {

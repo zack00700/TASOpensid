@@ -235,7 +235,7 @@ const invoiceColumns: ColumnDefinition[] = [
 ];
 
 // Full column metadata for <DataTable>
-const dataTableColumns: Column<any>[] = [
+const dataTableColumns = computed<Column<any>[]>(() => [
   { key: 'draftNumber',  label: t('invoices.column.draftNumber'),   sortable: true, mobile: 'subtitle' },
   { key: 'finalNumber',  label: t('invoices.column.finalNumber'),   sortable: true, mobile: 'title' },
   { key: 'status',       label: t('invoices.column.status'),        sortable: true, mobile: 'meta' },
@@ -246,7 +246,7 @@ const dataTableColumns: Column<any>[] = [
   { key: 'paymentStatus', label: t('invoices.column.paymentStatus'), sortable: false, mobile: 'meta' },
   { key: 'outstanding',   label: t('invoices.column.outstanding'),  sortable: false, align: 'right', mobile: 'meta' },
   { key: 'dueDate',       label: t('invoices.column.dueDate'),      sortable: true,  format: (v) => v ? formatDate(v as string) : '—', mobile: 'meta' },
-];
+]);
 const invoiceCols = useColumnPreferences('invoices', invoiceColumns);
 
 useKeyboardShortcut('r', () => {

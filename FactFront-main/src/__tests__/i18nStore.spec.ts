@@ -35,7 +35,12 @@ describe('i18nStore', () => {
     await store.setLocale('fr')
     expect(api.getMessages).toHaveBeenCalledWith('fr')
     expect(store.currentLocale).toBe('fr')
-    expect(i18n.global.getLocaleMessage('fr')).toEqual({ 'common.save': 'Sauvegarder' })
+    const msgs = i18n.global.getLocaleMessage<Record<string, string>>('fr')
+    expect(msgs['common.save']).toBe('Sauvegarder')
+    // Les traductions embarquées (fr.json) survivent à la réponse du serveur :
+    // celui-ci surcharge clé par clé au lieu de remplacer tout le jeu.
+    expect(Object.keys(msgs).length).toBeGreaterThan(1)
+    expect(msgs['common.cancel']).toBeDefined()
     expect(localStorage.getItem('locale')).toBe('fr')
   })
 
@@ -48,7 +53,7 @@ describe('i18nStore', () => {
     const store = useI18nStore()
     await store.setLocale('fr')
     expect(api.getMessages).not.toHaveBeenCalled()
-    expect(i18n.global.getLocaleMessage('fr')).toEqual({ 'common.cancel': 'Annuler' })
+    expect(i18n.global.getLocaleMessage<Record<string, string>>('fr')['common.cancel']).toBe('Annuler')
   })
 
   it('refetches when server version is newer', async () => {
@@ -61,7 +66,19 @@ describe('i18nStore', () => {
     const store = useI18nStore()
     await store.setLocale('fr')
     expect(api.getMessages).toHaveBeenCalled()
-    expect(i18n.global.getLocaleMessage('fr')).toEqual({ 'common.cancel': 'Annuler v2' })
+    expect(i18n.global.getLocaleMessage<Record<string, string>>('fr')['common.cancel']).toBe('Annuler v2')
+  })
+
+  it('keeps bundled translations when the backend returns nothing', async () => {
+    // Regression : sur une base de traductions vide, setLocaleMessage(loc, {})
+    // effaçait fr.json et l'interface retombait en anglais.
+    vi.mocked(api.getVersion).mockResolvedValue('')
+    vi.mocked(api.getMessages).mockResolvedValue({})
+    const store = useI18nStore()
+    await store.setLocale('fr')
+    const msgs = i18n.global.getLocaleMessage<Record<string, string>>('fr')
+    expect(Object.keys(msgs).length).toBeGreaterThan(1000)
+    expect(store.currentLocale).toBe('fr')
   })
 
   it('saveEntry calls API and updates the local message', async () => {
