@@ -5,23 +5,15 @@ import ThirdPartyForm from "./ThirdPartyForm.vue";
 import ThirdPartyHistory from "./ThirdPartyHistory.vue";
 import { Download, Plus, Pencil, Trash2, XCircle, History, X } from "lucide-vue-next";
 import AdvancedFilter from "./AdvancedFilter.vue";
+import { flattenConditions, applyConditions, type AdvancedFilterCondition } from "../utils/advancedFilter";
 import { useThirdParty } from "../composables/use.third-party";
+import type { ThirdParty } from "../types/third-party";
 import PageHeader from "./ui/PageHeader.vue";
 import Button from "./ui/Button.vue";
 import SearchInput from "./ui/SearchInput.vue";
 
 const { t } = useI18n();
 
-interface ThirdParty {
-  id: string;
-  fullName: string;
-  email: string;
-  companyName: string;
-  accessType: string;
-  status: "Active" | "Inactive" | "Pending";
-  createdAt: string;
-  updatedAt: string;
-}
 
 const showForm = ref(false);
 const searchQuery = ref('');
@@ -44,9 +36,27 @@ const tableHeaders = computed(() => [
   t('thirdParties.table.actions'),
 ]);
 
+const advancedConditions = ref<AdvancedFilterCondition[]>([]);
+
 const handleFilter = (filters: any[]) => {
-  // Implement filter logic here
+  advancedConditions.value = flattenConditions(filters);
 };
+
+const searchedThirdParties = computed(() => {
+  const q = searchQuery.value.trim().toLowerCase();
+  if (!q) return thirdParties.value ?? [];
+  const norm = (v: unknown) => (v == null ? '' : String(v)).toLowerCase();
+  return (thirdParties.value ?? []).filter((party) =>
+    norm(party.fullName).includes(q) ||
+    norm(party.email).includes(q) ||
+    norm(party.companyName).includes(q) ||
+    norm(party.accessType).includes(q)
+  );
+});
+
+const filteredThirdParties = computed(() =>
+  applyConditions(searchedThirdParties.value, advancedConditions.value)
+);
 
 // `new Date(undefined).toLocaleDateString()` returns "1/1/1970" (epoch).
 // Guard so freshly-created rows whose createdAt/updatedAt haven't come
@@ -121,7 +131,7 @@ const confirmDelete = () => {
   }
 };
 
-const handleFormSubmit = async (formData: any) => {
+const handleFormSubmit = async () => {
   try {
     await fetchThirdParties();
     showForm.value = false;
@@ -183,7 +193,7 @@ const closeHistory = () => {
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
-            <tr v-for="party in thirdParties" :key="party.id" class="hover:bg-gray-50">
+            <tr v-for="party in filteredThirdParties" :key="party.id" class="hover:bg-gray-50">
               <td class="px-4 py-3 whitespace-nowrap">
                 <div class="text-sm font-medium text-gray-900">{{ party.fullName }}</div>
                 <div class="text-sm text-gray-500">{{ party.email }}</div>
@@ -195,8 +205,8 @@ const closeHistory = () => {
                 {{ party.accessType }}
               </td>
               <td class="px-4 py-3 whitespace-nowrap">
-                <span :class="getStatusBadgeClasses(party.status)">
-                  {{ getStatusLabel(party.status) }}
+                <span :class="getStatusBadgeClasses(party.status ?? '')">
+                  {{ getStatusLabel(party.status ?? '') }}
                 </span>
               </td>
               <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
@@ -245,7 +255,7 @@ const closeHistory = () => {
       @cancel="handleFormCancel"
     />
     <ThirdPartyHistory
-      v-if="editing"
+      v-if="editing?.id"
       :id="editing.id"
       class="mt-4"
     />
@@ -263,7 +273,7 @@ const closeHistory = () => {
               <X class="h-6 w-6" />
             </button>
           </div>
-          <ThirdPartyHistory v-if="historyThirdParty" :id="historyThirdParty.id" />
+          <ThirdPartyHistory v-if="historyThirdParty?.id" :id="historyThirdParty.id" />
         </div>
       </div>
     </Teleport>

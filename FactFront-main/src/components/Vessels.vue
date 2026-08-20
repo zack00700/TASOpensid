@@ -3,7 +3,6 @@ import { ref, computed, onBeforeMount } from "vue";
 import { useI18n } from "vue-i18n";
 import { Vessel } from "../types/vessel";
 import {
-  Filter,
   Download,
   Plus,
   Pencil,
@@ -11,11 +10,11 @@ import {
   Ship,
   Flag,
   Building,
-  X,
   WifiOff,
   RefreshCw,
 } from "lucide-vue-next";
 import AdvancedFilter from "./AdvancedFilter.vue";
+import { flattenConditions, applyConditions, type AdvancedFilterCondition } from "../utils/advancedFilter";
 import VesselForm from "./VesselForm.vue";
 import SearchInput from "./ui/SearchInput.vue";
 
@@ -59,7 +58,7 @@ const selectedIds = ref<Set<string>>(new Set());
 // Filtrage et recherche — every field is normalized to "" so a missing/null
 // operator (or any other column) cannot throw .toLowerCase() and silently
 // blackhole the whole filter.
-const filteredVessels = computed(() => {
+const searchedVessels = computed(() => {
   if (!searchQuery.value.trim()) {
     return vessels.value;
   }
@@ -75,6 +74,10 @@ const filteredVessels = computed(() => {
     norm(vessel.vesselType).includes(query)
   );
 });
+
+const filteredVessels = computed(() =>
+  applyConditions(searchedVessels.value ?? [], advancedConditions.value)
+);
 
 function toggleSelect(id: string | undefined) {
   if (!id) return;
@@ -116,8 +119,10 @@ const tableHeaders = computed(() => [
   t('vessels.column.actions'),
 ]);
 
+const advancedConditions = ref<AdvancedFilterCondition[]>([]);
+
 const handleFilter = (filters: any[]) => {
-  // Implement filter logic here based on your AdvancedFilter component
+  advancedConditions.value = flattenConditions(filters);
 };
 
 const getStatusBadgeClasses = (status: string) => {
@@ -324,7 +329,7 @@ const handleExport = () => {
       </div>
 
       <!-- Advanced Filter -->
-      <AdvancedFilter type="vessels" @filter="handleFilter" />
+      <AdvancedFilter type="vessel-registry" @filter="handleFilter" />
 
       <!-- Empty State -->
       <div v-if="filteredVessels.length === 0" class="text-center py-12">

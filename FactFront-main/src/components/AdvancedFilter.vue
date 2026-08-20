@@ -4,10 +4,7 @@ import { useI18n } from 'vue-i18n';
 
 import { v4 as uuidv4 } from "uuid";
 import {
-  Search,
   Filter,
-  Save,
-  Download,
   Trash2,
   Plus,
   X,
@@ -15,7 +12,6 @@ import {
   ChevronUp,
   BookmarkPlus,
   Bookmark,
-  AlertCircle,
 } from "lucide-vue-next";
 
 const { t } = useI18n();
@@ -25,6 +21,8 @@ interface FilterCondition {
   field: string;
   operator: string;
   value: any;
+  /** Upper bound, bound by the `between` operator's second input. */
+  value2?: any;
   logicalOperator?: "AND" | "OR";
 }
 
@@ -50,7 +48,7 @@ interface FilterField {
 }
 
 const props = defineProps<{
-  type: "contracts" | "items" | "invoices" | "vessels" | "users" | "rates";
+  type: "contracts" | "items" | "invoices" | "vessels" | "vessel-registry" | "users" | "rates" | "bills" | "events";
 }>();
 
 const emit = defineEmits<{
@@ -58,8 +56,14 @@ const emit = defineEmits<{
 }>();
 
 // Filter fields configuration based on type
-const filterFields = computed<Record<string, FilterField>>(() => {
-  switch (props.type) {
+/**
+ * Declared as a function with an explicit return type rather than inline in the
+ * computed: that way each `case` is checked against Record<string, FilterField>
+ * on its own. Inlined, TypeScript unions the branch shapes and marks every key
+ * optional, so the whole map stops satisfying the index signature.
+ */
+function buildFilterFields(type: typeof props.type): Record<string, FilterField> {
+  switch (type) {
     case "contracts":
       return {
         name: {
@@ -219,6 +223,50 @@ const filterFields = computed<Record<string, FilterField>>(() => {
           operators: ["equals", "before", "after", "between"],
         },
       };
+    case "vessel-registry":
+      return {
+        name: {
+          name: "name",
+          label: t('advancedFilter.field.vesselName'),
+          type: "text",
+          operators: ["contains", "equals", "starts_with"],
+        },
+        imoNumber: {
+          name: "imoNumber",
+          label: t('advancedFilter.field.imoNumber'),
+          type: "text",
+          operators: ["contains", "equals"],
+        },
+        callSign: {
+          name: "callSign",
+          label: t('advancedFilter.field.callSign'),
+          type: "text",
+          operators: ["contains", "equals"],
+        },
+        flag: {
+          name: "flag",
+          label: t('advancedFilter.field.flag'),
+          type: "text",
+          operators: ["contains", "equals"],
+        },
+        operator: {
+          name: "operator",
+          label: t('advancedFilter.field.operator'),
+          type: "text",
+          operators: ["contains", "equals"],
+        },
+        status: {
+          name: "status",
+          label: t('advancedFilter.field.status'),
+          type: "select",
+          operators: ["equals", "not_equals"],
+          options: [
+            { label: t('advancedFilter.option.active'), value: "Active" },
+            { label: t('advancedFilter.option.inactive'), value: "Inactive" },
+          ],
+        },
+      };
+
     case "users":
       return {
         fullName: {
@@ -268,6 +316,50 @@ const filterFields = computed<Record<string, FilterField>>(() => {
           operators: ["equals", "before", "after", "between"],
         },
       };
+    case "bills":
+      return {
+        blNumber: {
+          name: "blNumber",
+          label: t('advancedFilter.field.blNumber'),
+          type: "text",
+          operators: ["contains", "equals", "starts_with"],
+        },
+        status: {
+          name: "status",
+          label: t('advancedFilter.field.status'),
+          type: "select",
+          operators: ["equals", "not_equals"],
+          options: [
+            { label: t('advancedFilter.option.draft'), value: "Draft" },
+            { label: t('advancedFilter.option.final'), value: "Final" },
+            { label: t('advancedFilter.option.cancelled'), value: "Cancelled" },
+          ],
+        },
+        shipper: {
+          name: "shipper",
+          label: t('advancedFilter.field.shipper'),
+          type: "text",
+          operators: ["contains", "equals"],
+        },
+        vessel: {
+          name: "vessel",
+          label: t('advancedFilter.field.vesselName'),
+          type: "text",
+          operators: ["contains", "equals"],
+        },
+        transportType: {
+          name: "transportType",
+          label: t('advancedFilter.field.transportType'),
+          type: "select",
+          operators: ["equals", "not_equals"],
+          options: [
+            { label: t('advancedFilter.option.vessel'), value: "Vessel" },
+            { label: t('advancedFilter.option.train'), value: "Train" },
+            { label: t('advancedFilter.option.truck'), value: "Truck" },
+          ],
+        },
+      };
+
     case "rates":
       return {
         rateType: {
@@ -307,7 +399,9 @@ const filterFields = computed<Record<string, FilterField>>(() => {
     default:
       return {};
   }
-});
+}
+
+const filterFields = computed(() => buildFilterFields(props.type));
 
 const isExpanded = ref(false);
 const filterGroups = ref<FilterGroup[]>([
@@ -346,11 +440,12 @@ const addFilterGroup = () => {
 
 const addCondition = (groupId: string) => {
   const group = filterGroups.value.find((g) => g.id === groupId);
-  if (group) {
+  const firstField = Object.keys(filterFields.value)[0];
+  if (group && firstField) {
     group.conditions.push({
       id: uuidv4(),
-      field: Object.keys(filterFields.value)[0],
-      operator: filterFields.value[Object.keys(filterFields.value)[0]].operators[0],
+      field: firstField,
+      operator: filterFields.value[firstField].operators[0],
       value: "",
       logicalOperator: group.conditions.length > 0 ? "AND" : undefined,
     });

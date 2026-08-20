@@ -8,17 +8,15 @@ import {
   Plus,
   Pencil,
   Trash2,
-  CheckCircle,
   XCircle,
   ArrowDownCircle,
   ArrowUpCircle,
   CircleDot,
   Eye,
-  MoreHorizontal,
-  Calendar,
   Settings
 } from 'lucide-vue-next';
 import AdvancedFilter from './AdvancedFilter.vue';
+import { flattenConditions, applyConditions, type AdvancedFilterCondition } from '../utils/advancedFilter';
 import ContractForm from './ContractForm.vue';
 import type { EventConfig } from '../types/event-config';
 import { useKeyboardShortcut } from '../composables/useKeyboardShortcut';
@@ -66,7 +64,7 @@ const $axios = inject<any>('$axios');
 const contracts = ref<Contract[]>([]);
 
 // Computed properties for better data handling
-const filteredContracts = computed(() => {
+const searchedContracts = computed(() => {
   if (!searchQuery.value) return contracts.value;
   const q = searchQuery.value.toLowerCase();
   return contracts.value.filter(contract =>
@@ -77,6 +75,10 @@ const filteredContracts = computed(() => {
     (contract.customerId ?? '').toLowerCase().includes(q)
   );
 });
+
+const filteredContracts = computed(() =>
+  applyConditions(searchedContracts.value ?? [], advancedConditions.value)
+);
 
 const activeContractsCount = computed(() => 
   contracts.value.filter(c => c.status === 'Active').length
@@ -93,7 +95,10 @@ const fetchContracts = async () => {
 
 onMounted(fetchContracts);
 
+const advancedConditions = ref<AdvancedFilterCondition[]>([]);
+
 const handleFilter = (filters: any[]) => {
+  advancedConditions.value = flattenConditions(filters);
   showAdvancedFilter.value = false;
 };
 
@@ -138,7 +143,7 @@ const handleEdit = (contract: any) => {
   showForm.value = true;
 };
 
-const handleView = (contract: Contract) => {
+const handleView = (_contract: Contract) => {
   // Implement view functionality
 };
 
@@ -683,7 +688,7 @@ const getStatusLabel = (status: string) => {
     <ContractForm
       v-else
       :edit-mode="!!editingContract"
-      :initial-data="editingContract"
+      :initial-data="(editingContract as any) ?? undefined"
       :loading="isSaving"
       @submit="handleFormSubmit"
       @cancel="handleFormCancel"
