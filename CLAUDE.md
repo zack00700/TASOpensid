@@ -847,6 +847,25 @@ Act like a world-class senior engineer building production-grade software.
 
 # TASOpensid — TOS Billing Platform
 
+> ### ⚠️ Ouvrir la session Claude **depuis ce dossier**
+>
+> Le dossier projet d'une session est **figé à sa création** — on ne peut pas la déplacer après coup.
+> Si la session est lancée d'ailleurs, elle est rattachée à `/Users/zack` : elle n'apparaît pas
+> sous `TASOpensid` dans la barre latérale de Claude Desktop, et sa mémoire va dans
+> `~/.claude/projects/-Users-zack/memory/` au lieu du projet.
+>
+> - **Claude Desktop** : à la création de la discussion, choisir le dossier
+>   `/Users/zack/Documents/GitHub/TASOpensid` (comme pour `seagatev2`).
+> - **Terminal** :
+>   ```bash
+>   cd /Users/zack/Documents/GitHub/TASOpensid && claude
+>   ```
+>   Sans `--continue` : ce flag **reprend une session existante et garde son dossier d'origine**,
+>   donc il ramène sur `/Users/zack` si la session reprise venait de là.
+> - Pour reprendre le fil d'une session déjà ouverte au bon endroit : `claude --continue`
+>   **depuis ce dossier**, ou `/resume` dans une session déjà rattachée à TASOpensid.
+
+
 Monorepo regroupant les deux services d'une plateforme **TOS (Terminal Operating System) + facturation portuaire** baptisée en interne **TOSBE — TOS 3D Billing Engine**.
 
 ```
@@ -1040,6 +1059,12 @@ Scripts auxiliaires `scripts/extract-i18n-candidates.ts` et `scripts/check-i18n-
 
 ### Flow inverse : sync depuis les repos partagés vers TASOpensid
 
+> **Dernier resync : 20/08/2026** — `FactBack-main` ← `pigch/FactBack@173b833` (merge PR #171),
+> `FactFront-main` ← `pigch/FactFront@409b31d` (merge PR #176 + redeploy SWA).
+> Seul `FactFront-main/.env.development` reste volontairement local
+> (`VITE_API_URL=/api`, via le proxy Vite, au lieu de `http://localhost:8080/api` en amont).
+
+
 Quand le collègue merge une PR (ou push directement sur `main`) sur `pigch/FactBack` ou `pigch/FactFront`, ton snapshot local dans TASOpensid devient obsolète. Il faut re-synchroniser :
 
 1. **Pull** dans le vrai repo :
@@ -1104,3 +1129,28 @@ Deux fichiers de règles vivent à la racine de TASOpensid, **écrits par le col
 - **Sécurité de repo** (à re-vérifier périodiquement) : `FactFront/src/components/` a contenu par le passé `contract.json` et `credentialsCapetownMsc.txt` — vérifier qu'ils sont bien retirés.
 - **`FactFront/src.zip`** est une archive de sauvegarde ; ne pas la considérer comme du code source vivant.
 - **Snapshots dans TASOpensid** (`FactBack-main/` et `FactFront-main/`) sont maintenus manuellement (§4). Si les 2 dossiers divergent du vrai repo `pigch/*/main`, `start.sh` teste du code obsolète — resync avant.
+
+### Outillage local (vérifié le 20/08/2026)
+
+- **JDK** : `openjdk@21` (Homebrew). `~/.zshrc` exporte `JAVA_HOME=/opt/homebrew/opt/openjdk@21`
+  et l'ajoute au PATH ; `start.sh` a le même fallback en dur (l.52). ⚠️ Un shell **non-interactif**
+  (agent, script, hook) ne charge pas `.zshrc` : `java` tombe alors sur le stub `/usr/bin/java`
+  de macOS qui répond *« Unable to locate a Java Runtime »*. Ce n'est **pas** un JDK manquant —
+  exporter `JAVA_HOME` en tête de commande.
+- **`./mvnw test` exige un MongoDB joignable** sur `localhost:27017` : sans lui la suite se bloque
+  sur le monitor du driver Mongo jusqu'au thread dump, sans jamais rendre la main. Lancer
+  `docker compose up -d mongo` (depuis TASOpensid) avant de tester le back.
+- **La CI front ne gate que le build.** `.github/workflows/deploy.yml` n'exécute que `npm ci`
+  puis `npm run build` — ni `npm run typecheck`, ni `npm run test`. Conséquence : `pigch/FactFront@main`
+  peut être (et est) rouge sur ces deux commandes tout en déployant vert. État au 20/08/2026 :
+  `npm run build` ✅, `npm run typecheck` ❌ 8 erreurs (6 dans `src/stores/i18nStore.ts` — le type
+  dérivé de `en.json` est figé en littéral de 2005 clés — + 2 `TS6133` d'imports morts dans
+  `invoiceStore.ts` / `itemStore.ts`), `npm run test` ❌ 18 échecs / 396 sur 6 fichiers
+  (`invoice`, `sidebar-menu`, `bill-of-lading`, `invoices`, `invoice-sort`, `item-service` —
+  Pinia non actif, `useRouter` non mocké, format monétaire `0 €` vs `$0.00`).
+  Ces échecs **préexistent** au resync : ils viennent de commits amont anciens (migrations i18n notamment).
+- **Autorisation deny-by-default côté back** (arrivée avec PR #171) :
+  `quarkus.http.auth.permission.authenticated.paths=/api/*` dans `application.properties`.
+  Elle est **indépendante** de `quarkus.oidc.enabled` et `quarkus.security.auth.enabled-in-dev-mode`,
+  donc `./start.sh --no-auth` (qui ne passe que ces deux `-D`) peut désormais ne plus suffire et
+  renvoyer des 401 sur `/api/*`. À revérifier au prochain démarrage local.
