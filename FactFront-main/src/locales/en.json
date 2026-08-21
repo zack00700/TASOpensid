@@ -1068,7 +1068,7 @@
   "filterBuilder.button.addFilter": "Add Filter",
   "filterBuilder.button.save": "Save",
   "filterBuilder.chip.bol": "BOL",
-  "filterBuilder.chip.includeNull": "includeNull",
+  "filterBuilder.chip.includeNull": "Incl. items with no BOL",
   "filterBuilder.chip.item": "ITEM",
   "filterBuilder.includeNull.label": "Include items with no BOL",
   "filterBuilder.includeNull.tooltip": "By default, items without a Bill of Lading are excluded. Tick the box to include them.",

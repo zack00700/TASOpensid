@@ -1068,7 +1068,7 @@
   "filterBuilder.button.addFilter": "Ajouter un filtre",
   "filterBuilder.button.save": "Enregistrer",
   "filterBuilder.chip.bol": "Connaissement",
-  "filterBuilder.chip.includeNull": "includeNull",
+  "filterBuilder.chip.includeNull": "Sans connaissement inclus",
   "filterBuilder.chip.item": "ARTICLE",
   "filterBuilder.includeNull.label": "Inclure les articles sans connaissement",
   "filterBuilder.includeNull.tooltip": "Par défaut, les articles sans connaissement sont exclus. Cochez la case pour les inclure.",

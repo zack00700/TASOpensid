@@ -308,20 +308,20 @@ async function doSave() {
 </script>
 
 <template>
-  <div class="flex h-full min-h-0 bg-gray-50 overflow-hidden">
+  <div class="flex h-full min-h-0 bg-[rgba(252,247,238,0.55)] overflow-hidden">
 
     <!-- =================================================================
          LEFT PANEL
     ================================================================== -->
-    <div class="flex flex-col w-1/2 min-w-0 border-r border-gray-200 bg-white">
+    <div class="flex flex-col w-1/2 min-w-0 border-r border-[rgba(60,50,35,0.12)] bg-[rgba(255,253,247,0.92)]">
 
       <!-- Mode toggle tabs -->
-      <div class="flex items-center gap-0 border-b border-gray-200 bg-gray-50 px-2 pt-2">
+      <div class="flex items-center gap-0 border-b border-[rgba(60,50,35,0.12)] bg-[rgba(252,247,238,0.55)] px-2 pt-2">
         <button
           class="px-4 py-1.5 text-sm font-medium rounded-t border border-b-0 transition-colors"
           :class="editorMode === 'visual'
-            ? 'bg-white border-gray-200 text-gray-900 z-10'
-            : 'bg-transparent border-transparent text-gray-500 hover:text-gray-700'"
+            ? 'bg-[rgba(255,253,247,0.92)] border-[rgba(60,50,35,0.12)] text-tide-ink z-10'
+            : 'bg-transparent border-transparent text-tide-ink/55 hover:text-tide-ink/80'"
           @click="switchToVisual"
         >
           {{ t('templateEditor.tab.visual') }}
@@ -329,8 +329,8 @@ async function doSave() {
         <button
           class="px-4 py-1.5 text-sm font-medium rounded-t border border-b-0 transition-colors ml-1"
           :class="editorMode === 'code'
-            ? 'bg-white border-gray-200 text-gray-900 z-10'
-            : 'bg-transparent border-transparent text-gray-500 hover:text-gray-700'"
+            ? 'bg-[rgba(255,253,247,0.92)] border-[rgba(60,50,35,0.12)] text-tide-ink z-10'
+            : 'bg-transparent border-transparent text-tide-ink/55 hover:text-tide-ink/80'"
           @click="switchToCode"
         >
           {{ t('templateEditor.tab.code') }}
@@ -342,8 +342,8 @@ async function doSave() {
           <button
             class="px-3 py-1.5 text-sm font-medium rounded-t border border-b-0 transition-colors"
             :class="activeTab === 'html'
-              ? 'bg-white border-gray-200 text-gray-900 z-10'
-              : 'bg-transparent border-transparent text-gray-500 hover:text-gray-700'"
+              ? 'bg-[rgba(255,253,247,0.92)] border-[rgba(60,50,35,0.12)] text-tide-ink z-10'
+              : 'bg-transparent border-transparent text-tide-ink/55 hover:text-tide-ink/80'"
             @click="activeTab = 'html'"
           >
             {{ t('templateEditor.tab.html') }}
@@ -351,15 +351,15 @@ async function doSave() {
           <button
             class="px-3 py-1.5 text-sm font-medium rounded-t border border-b-0 transition-colors ml-1"
             :class="activeTab === 'css'
-              ? 'bg-white border-gray-200 text-gray-900 z-10'
-              : 'bg-transparent border-transparent text-gray-500 hover:text-gray-700'"
+              ? 'bg-[rgba(255,253,247,0.92)] border-[rgba(60,50,35,0.12)] text-tide-ink z-10'
+              : 'bg-transparent border-transparent text-tide-ink/55 hover:text-tide-ink/80'"
             @click="activeTab = 'css'"
           >
             {{ t('templateEditor.tab.css') }}
           </button>
         </template>
 
-        <span class="ml-auto text-xs text-gray-400 pr-2">{{ t('templateEditor.hint.insertClick') }}</span>
+        <span class="ml-auto text-xs text-tide-ink/40 pr-2">{{ t('templateEditor.hint.insertClick') }}</span>
       </div>
 
       <!-- ---------------------------------------------------------------
@@ -368,12 +368,12 @@ async function doSave() {
       <template v-if="editorMode === 'visual'">
 
         <!-- Formatting toolbar -->
-        <div class="flex flex-wrap items-center gap-0.5 px-2 py-1.5 border-b border-gray-200 bg-gray-50 flex-shrink-0">
+        <div class="flex flex-wrap items-center gap-0.5 px-2 py-1.5 border-b border-[rgba(60,50,35,0.12)] bg-[rgba(252,247,238,0.55)] flex-shrink-0">
 
           <!-- Bold -->
           <button
             class="p-1.5 rounded transition-colors hover:bg-gray-200"
-            :class="editor?.isActive('bold') ? 'bg-blue-100 text-blue-700' : 'text-gray-600'"
+            :class="editor?.isActive('bold') ? 'bg-blue-100 text-blue-700' : 'text-tide-ink/70'"
             title="Bold"
             @click="editor?.chain().focus().toggleBold().run()"
           >
@@ -383,7 +383,7 @@ async function doSave() {
           <!-- Italic -->
           <button
             class="p-1.5 rounded transition-colors hover:bg-gray-200"
-            :class="editor?.isActive('italic') ? 'bg-blue-100 text-blue-700' : 'text-gray-600'"
+            :class="editor?.isActive('italic') ? 'bg-blue-100 text-blue-700' : 'text-tide-ink/70'"
             title="Italic"
             @click="editor?.chain().focus().toggleItalic().run()"
           >
@@ -395,7 +395,7 @@ async function doSave() {
           <!-- H1 -->
           <button
             class="px-2 py-1 rounded text-xs font-bold transition-colors hover:bg-gray-200"
-            :class="editor?.isActive('heading', { level: 1 }) ? 'bg-blue-100 text-blue-700' : 'text-gray-600'"
+            :class="editor?.isActive('heading', { level: 1 }) ? 'bg-blue-100 text-blue-700' : 'text-tide-ink/70'"
             title="Heading 1"
             @click="editor?.chain().focus().toggleHeading({ level: 1 }).run()"
           >H1</button>
@@ -403,7 +403,7 @@ async function doSave() {
           <!-- H2 -->
           <button
             class="px-2 py-1 rounded text-xs font-bold transition-colors hover:bg-gray-200"
-            :class="editor?.isActive('heading', { level: 2 }) ? 'bg-blue-100 text-blue-700' : 'text-gray-600'"
+            :class="editor?.isActive('heading', { level: 2 }) ? 'bg-blue-100 text-blue-700' : 'text-tide-ink/70'"
             title="Heading 2"
             @click="editor?.chain().focus().toggleHeading({ level: 2 }).run()"
           >H2</button>
@@ -411,7 +411,7 @@ async function doSave() {
           <!-- H3 -->
           <button
             class="px-2 py-1 rounded text-xs font-bold transition-colors hover:bg-gray-200"
-            :class="editor?.isActive('heading', { level: 3 }) ? 'bg-blue-100 text-blue-700' : 'text-gray-600'"
+            :class="editor?.isActive('heading', { level: 3 }) ? 'bg-blue-100 text-blue-700' : 'text-tide-ink/70'"
             title="Heading 3"
             @click="editor?.chain().focus().toggleHeading({ level: 3 }).run()"
           >H3</button>
@@ -421,7 +421,7 @@ async function doSave() {
           <!-- Align Left -->
           <button
             class="p-1.5 rounded transition-colors hover:bg-gray-200"
-            :class="editor?.isActive({ textAlign: 'left' }) ? 'bg-blue-100 text-blue-700' : 'text-gray-600'"
+            :class="editor?.isActive({ textAlign: 'left' }) ? 'bg-blue-100 text-blue-700' : 'text-tide-ink/70'"
             title="Align left"
             @click="editor?.chain().focus().setTextAlign('left').run()"
           >
@@ -431,7 +431,7 @@ async function doSave() {
           <!-- Align Center -->
           <button
             class="p-1.5 rounded transition-colors hover:bg-gray-200"
-            :class="editor?.isActive({ textAlign: 'center' }) ? 'bg-blue-100 text-blue-700' : 'text-gray-600'"
+            :class="editor?.isActive({ textAlign: 'center' }) ? 'bg-blue-100 text-blue-700' : 'text-tide-ink/70'"
             title="Align center"
             @click="editor?.chain().focus().setTextAlign('center').run()"
           >
@@ -441,7 +441,7 @@ async function doSave() {
           <!-- Align Right -->
           <button
             class="p-1.5 rounded transition-colors hover:bg-gray-200"
-            :class="editor?.isActive({ textAlign: 'right' }) ? 'bg-blue-100 text-blue-700' : 'text-gray-600'"
+            :class="editor?.isActive({ textAlign: 'right' }) ? 'bg-blue-100 text-blue-700' : 'text-tide-ink/70'"
             title="Align right"
             @click="editor?.chain().focus().setTextAlign('right').run()"
           >
@@ -451,7 +451,7 @@ async function doSave() {
           <!-- Align Justify -->
           <button
             class="p-1.5 rounded transition-colors hover:bg-gray-200"
-            :class="editor?.isActive({ textAlign: 'justify' }) ? 'bg-blue-100 text-blue-700' : 'text-gray-600'"
+            :class="editor?.isActive({ textAlign: 'justify' }) ? 'bg-blue-100 text-blue-700' : 'text-tide-ink/70'"
             title="Justify"
             @click="editor?.chain().focus().setTextAlign('justify').run()"
           >
@@ -462,12 +462,12 @@ async function doSave() {
 
           <!-- Text color -->
           <label
-            class="p-1.5 rounded transition-colors hover:bg-gray-200 text-gray-600 cursor-pointer flex items-center gap-1"
+            class="p-1.5 rounded transition-colors hover:bg-gray-200 text-tide-ink/70 cursor-pointer flex items-center gap-1"
             title="Text color"
           >
             <span class="text-xs font-bold" :style="{ color: currentTextColor }">A</span>
             <div
-              class="w-4 h-2 rounded-sm border border-gray-300"
+              class="w-4 h-2 rounded-sm border border-[rgba(60,50,35,0.16)]"
               :style="{ backgroundColor: currentTextColor }"
             ></div>
             <input
@@ -482,7 +482,7 @@ async function doSave() {
 
           <!-- Insert image -->
           <button
-            class="p-1.5 rounded transition-colors hover:bg-gray-200 text-gray-600"
+            class="p-1.5 rounded transition-colors hover:bg-gray-200 text-tide-ink/70"
             title="Insert image"
             @click="toolbarInsertImage"
           >
@@ -491,7 +491,7 @@ async function doSave() {
 
           <!-- Insert table -->
           <button
-            class="p-1.5 rounded transition-colors hover:bg-gray-200 text-gray-600"
+            class="p-1.5 rounded transition-colors hover:bg-gray-200 text-tide-ink/70"
             title="Insert 3×3 table"
             @click="toolbarInsertTable"
           >
@@ -503,23 +503,23 @@ async function doSave() {
         <div class="flex-1 overflow-auto min-h-0">
           <EditorContent
             :editor="editor"
-            class="h-full [&_.ProseMirror]:min-h-full [&_.ProseMirror]:p-4 [&_.ProseMirror]:focus:outline-none [&_.ProseMirror]:text-sm [&_.ProseMirror_table]:border-collapse [&_.ProseMirror_table]:w-full [&_.ProseMirror_td]:border [&_.ProseMirror_td]:border-gray-300 [&_.ProseMirror_td]:p-1.5 [&_.ProseMirror_th]:border [&_.ProseMirror_th]:border-gray-300 [&_.ProseMirror_th]:p-1.5 [&_.ProseMirror_th]:bg-gray-100 [&_.ProseMirror_h1]:text-2xl [&_.ProseMirror_h1]:font-bold [&_.ProseMirror_h1]:mb-2 [&_.ProseMirror_h2]:text-xl [&_.ProseMirror_h2]:font-bold [&_.ProseMirror_h2]:mb-2 [&_.ProseMirror_h3]:text-lg [&_.ProseMirror_h3]:font-bold [&_.ProseMirror_h3]:mb-1 [&_.ProseMirror_ul]:list-disc [&_.ProseMirror_ul]:pl-5 [&_.ProseMirror_ol]:list-decimal [&_.ProseMirror_ol]:pl-5 [&_.ProseMirror_img]:max-w-full"
+            class="h-full [&_.ProseMirror]:min-h-full [&_.ProseMirror]:p-4 [&_.ProseMirror]:focus:outline-none [&_.ProseMirror]:text-sm [&_.ProseMirror_table]:border-collapse [&_.ProseMirror_table]:w-full [&_.ProseMirror_td]:border [&_.ProseMirror_td]:border-[rgba(60,50,35,0.16)] [&_.ProseMirror_td]:p-1.5 [&_.ProseMirror_th]:border [&_.ProseMirror_th]:border-[rgba(60,50,35,0.16)] [&_.ProseMirror_th]:p-1.5 [&_.ProseMirror_th]:bg-[rgba(42,36,30,0.05)] [&_.ProseMirror_h1]:text-2xl [&_.ProseMirror_h1]:font-bold [&_.ProseMirror_h1]:mb-2 [&_.ProseMirror_h2]:text-xl [&_.ProseMirror_h2]:font-bold [&_.ProseMirror_h2]:mb-2 [&_.ProseMirror_h3]:text-lg [&_.ProseMirror_h3]:font-bold [&_.ProseMirror_h3]:mb-1 [&_.ProseMirror_ul]:list-disc [&_.ProseMirror_ul]:pl-5 [&_.ProseMirror_ol]:list-decimal [&_.ProseMirror_ol]:pl-5 [&_.ProseMirror_img]:max-w-full"
           />
         </div>
 
         <!-- Edit CSS button (bottom of visual panel) -->
-        <div class="flex items-center gap-3 px-3 py-2 border-t border-gray-200 bg-gray-50 flex-shrink-0">
+        <div class="flex items-center gap-3 px-3 py-2 border-t border-[rgba(60,50,35,0.12)] bg-[rgba(252,247,238,0.55)] flex-shrink-0">
           <!-- Type selector (visible on creation only) -->
           <label v-if="isCreating" class="flex items-center gap-2 text-sm text-slate-700">
             {{ t('templateEditor.label.type') }}
-            <select v-model="templateType" class="border border-slate-300 rounded px-2 py-1 text-sm bg-white">
+            <select v-model="templateType" class="border border-slate-300 rounded px-2 py-1 text-sm bg-[rgba(255,253,247,0.92)]">
               <option value="final">Final</option>
               <option value="draft">Draft</option>
             </select>
           </label>
 
           <button
-            class="px-4 py-1.5 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium disabled:opacity-60 transition-colors"
+            class="px-4 py-1.5 rounded bg-tide-blue-btn-deep hover:bg-blue-700 text-white text-sm font-medium disabled:opacity-60 transition-colors"
             :disabled="isSaving"
             @click="doSave"
           >
@@ -527,7 +527,7 @@ async function doSave() {
           </button>
 
           <button
-            class="px-3 py-1.5 rounded border border-gray-300 hover:bg-gray-100 text-gray-600 text-sm transition-colors"
+            class="px-3 py-1.5 rounded border border-[rgba(60,50,35,0.16)] hover:bg-[rgba(42,36,30,0.05)] text-tide-ink/70 text-sm transition-colors"
             @click="showCssPanel = !showCssPanel"
           >
             {{ showCssPanel ? t('templateEditor.button.closeCss') : t('templateEditor.button.editCss') }}
@@ -545,16 +545,16 @@ async function doSave() {
         <!-- Inline CSS panel (collapsible, shown at bottom in visual mode) -->
         <div
           v-if="showCssPanel"
-          class="flex-shrink-0 border-t border-gray-200 flex flex-col"
+          class="flex-shrink-0 border-t border-[rgba(60,50,35,0.12)] flex flex-col"
           style="height: 180px;"
         >
-          <div class="flex items-center justify-between px-3 py-1 bg-gray-50 border-b border-gray-200">
-            <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">{{ t('templateEditor.tab.css') }}</span>
-            <button class="text-xs text-gray-400 hover:text-gray-600" @click="showCssPanel = false">✕</button>
+          <div class="flex items-center justify-between px-3 py-1 bg-[rgba(252,247,238,0.55)] border-b border-[rgba(60,50,35,0.12)]">
+            <span class="text-xs font-semibold text-tide-ink/55 uppercase tracking-wide">{{ t('templateEditor.tab.css') }}</span>
+            <button class="text-xs text-tide-ink/40 hover:text-tide-ink/70" @click="showCssPanel = false">✕</button>
           </div>
           <textarea
             v-model="cssContent"
-            class="flex-1 w-full font-mono text-xs p-3 resize-none focus:outline-none bg-white leading-relaxed"
+            class="flex-1 w-full font-mono text-xs p-3 resize-none focus:outline-none bg-[rgba(255,253,247,0.92)] leading-relaxed"
             placeholder="/* body { font-family: Arial; } */"
             spellcheck="false"
             autocomplete="off"
@@ -575,7 +575,7 @@ async function doSave() {
           v-show="activeTab === 'html'"
           ref="htmlTextarea"
           v-model="htmlContent"
-          class="flex-1 w-full font-mono text-xs p-3 resize-none focus:outline-none bg-white leading-relaxed"
+          class="flex-1 w-full font-mono text-xs p-3 resize-none focus:outline-none bg-[rgba(255,253,247,0.92)] leading-relaxed"
           placeholder="<h1>{{invoiceNumber}}</h1>
 <table>
   {{#each lines}}
@@ -593,7 +593,7 @@ async function doSave() {
           v-show="activeTab === 'css'"
           ref="cssTextarea"
           v-model="cssContent"
-          class="flex-1 w-full font-mono text-xs p-3 resize-none focus:outline-none bg-white leading-relaxed"
+          class="flex-1 w-full font-mono text-xs p-3 resize-none focus:outline-none bg-[rgba(255,253,247,0.92)] leading-relaxed"
           placeholder="/* body { font-family: Arial; }
 .invoice-title { color: #af4e8a; }
 table { border-collapse: collapse; width: 100%; } */"
@@ -604,9 +604,9 @@ table { border-collapse: collapse; width: 100%; } */"
         />
 
         <!-- Action bar -->
-        <div class="flex items-center gap-3 px-3 py-2 border-t border-gray-200 bg-gray-50 flex-shrink-0">
+        <div class="flex items-center gap-3 px-3 py-2 border-t border-[rgba(60,50,35,0.12)] bg-[rgba(252,247,238,0.55)] flex-shrink-0">
           <button
-            class="px-4 py-1.5 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium disabled:opacity-60 transition-colors"
+            class="px-4 py-1.5 rounded bg-tide-blue-btn-deep hover:bg-blue-700 text-white text-sm font-medium disabled:opacity-60 transition-colors"
             :disabled="isSaving"
             @click="doSave"
           >
@@ -631,9 +631,9 @@ table { border-collapse: collapse; width: 100%; } */"
     <div class="flex flex-col flex-1 min-w-0">
 
       <!-- Preview header -->
-      <div class="flex items-center justify-between px-3 py-2 border-b border-gray-200 bg-gray-50 flex-shrink-0">
-        <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">{{ t('templateEditor.label.livePreview') }}</span>
-        <span class="text-xs text-gray-400">{{ t('templateEditor.label.sampleData') }}</span>
+      <div class="flex items-center justify-between px-3 py-2 border-b border-[rgba(60,50,35,0.12)] bg-[rgba(252,247,238,0.55)] flex-shrink-0">
+        <span class="text-xs font-semibold text-tide-ink/55 uppercase tracking-wide">{{ t('templateEditor.label.livePreview') }}</span>
+        <span class="text-xs text-tide-ink/40">{{ t('templateEditor.label.sampleData') }}</span>
       </div>
 
       <!-- Split: preview iframe + variables sidebar -->
@@ -642,17 +642,17 @@ table { border-collapse: collapse; width: 100%; } */"
         <!-- Preview iframe -->
         <iframe
           :srcdoc="previewDoc"
-          class="flex-1 border-0 bg-white"
+          class="flex-1 border-0 bg-[rgba(255,253,247,0.92)]"
           sandbox="allow-same-origin"
           title="Template preview"
         />
 
         <!-- Variables sidebar -->
-        <aside class="w-52 flex-shrink-0 overflow-y-auto border-l border-gray-200 bg-white px-3 py-3 text-sm">
-          <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">{{ t('templateEditor.label.variables') }}</p>
+        <aside class="w-52 flex-shrink-0 overflow-y-auto border-l border-[rgba(60,50,35,0.12)] bg-[rgba(255,253,247,0.92)] px-3 py-3 text-sm">
+          <p class="text-xs font-semibold text-tide-ink/55 uppercase tracking-wide mb-3">{{ t('templateEditor.label.variables') }}</p>
 
           <div v-for="group in TEMPLATE_VARIABLES" :key="group.group" class="mb-4">
-            <p class="text-xs font-medium text-gray-400 mb-1">{{ group.group }}</p>
+            <p class="text-xs font-medium text-tide-ink/40 mb-1">{{ group.group }}</p>
             <ul class="space-y-1">
               <li
                 v-for="v in group.vars"
@@ -660,11 +660,11 @@ table { border-collapse: collapse; width: 100%; } */"
                 class="flex items-start gap-1"
               >
                 <button
-                  class="flex-shrink-0 w-5 h-5 rounded bg-blue-50 hover:bg-blue-100 text-blue-600 text-xs font-bold leading-none flex items-center justify-center mt-0.5"
+                  class="flex-shrink-0 w-5 h-5 rounded bg-blue-50 hover:bg-blue-100 text-tide-blue-deep text-xs font-bold leading-none flex items-center justify-center mt-0.5"
                   :title="`Insertar: ${v.token}`"
                   @click="insertVariable(v.token)"
                 >+</button>
-                <span class="text-xs text-gray-600 leading-tight" :title="v.token">{{ v.label }}</span>
+                <span class="text-xs text-tide-ink/70 leading-tight" :title="v.token">{{ v.label }}</span>
               </li>
             </ul>
           </div>

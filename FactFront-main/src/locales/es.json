@@ -1068,7 +1068,7 @@
   "filterBuilder.button.addFilter": "Añadir filtro",
   "filterBuilder.button.save": "Guardar",
   "filterBuilder.chip.bol": "Conocimiento",
-  "filterBuilder.chip.includeNull": "includeNull",
+  "filterBuilder.chip.includeNull": "Incl. artículos sin conocimiento",
   "filterBuilder.chip.item": "ARTÍCULO",
   "filterBuilder.includeNull.label": "Incluir artículos sin conocimiento",
   "filterBuilder.includeNull.tooltip": "Por defecto, los artículos sin conocimiento de embarque quedan excluidos. Marque la casilla para incluirlos.",

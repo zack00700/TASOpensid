@@ -122,7 +122,7 @@ onMounted(fetchTemplates);
           <tr
             v-for="(t, idx) in templates"
             :key="t.id"
-            :class="['hover:bg-[rgba(90,138,171,0.10)] transition-colors', idx % 2 === 1 && 'bg-slate-50/40']"
+            :class="['hover:bg-[rgba(90,138,171,0.10)] transition-colors', idx % 2 === 1 && 'bg-[rgba(252,247,238,0.35)]']"
           >
             <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-tide-ink">
               {{ t.name }}
