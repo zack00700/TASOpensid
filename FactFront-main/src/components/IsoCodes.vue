@@ -212,7 +212,7 @@ onMounted(async () => {
                   @click="onEdit(c)"
                   :data-test="`iso-edit-${c.code}`"
                   class="text-tide-blue-deep hover:text-tide-blue-deep p-1 rounded hover:bg-[rgba(90,138,171,0.10)]"
-                  :title="t('isoCodes.button.edit')"
+                  :title="t('isoCodes.button.edit')" :aria-label="t('isoCodes.button.edit')"
                 >
                   <Pencil class="h-4 w-4" />
                 </button>
@@ -225,7 +225,7 @@ onMounted(async () => {
                     'p-1 rounded',
                     c.isStandard ? 'text-gray-300 cursor-not-allowed' : 'text-red-600 hover:text-red-900 hover:bg-red-50'
                   ]"
-                  :title="c.isStandard ? t('isoCodes.tooltip.cannotDeleteStandard') : t('isoCodes.button.delete')"
+                  :title="c.isStandard ? t('isoCodes.tooltip.cannotDeleteStandard') : t('isoCodes.button.delete')" :aria-label="c.isStandard ? t('isoCodes.tooltip.cannotDeleteStandard') : t('isoCodes.button.delete')"
                 >
                   <Container class="h-4 w-4" />
                 </button>

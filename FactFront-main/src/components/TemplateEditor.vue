@@ -374,7 +374,7 @@ async function doSave() {
           <button
             class="p-1.5 rounded transition-colors hover:bg-gray-200"
             :class="editor?.isActive('bold') ? 'bg-blue-100 text-blue-700' : 'text-tide-ink/70'"
-            title="Bold"
+            title="Bold" aria-label="Bold"
             @click="editor?.chain().focus().toggleBold().run()"
           >
             <Bold :size="14" />
@@ -384,7 +384,7 @@ async function doSave() {
           <button
             class="p-1.5 rounded transition-colors hover:bg-gray-200"
             :class="editor?.isActive('italic') ? 'bg-blue-100 text-blue-700' : 'text-tide-ink/70'"
-            title="Italic"
+            title="Italic" aria-label="Italic"
             @click="editor?.chain().focus().toggleItalic().run()"
           >
             <Italic :size="14" />
@@ -422,7 +422,7 @@ async function doSave() {
           <button
             class="p-1.5 rounded transition-colors hover:bg-gray-200"
             :class="editor?.isActive({ textAlign: 'left' }) ? 'bg-blue-100 text-blue-700' : 'text-tide-ink/70'"
-            title="Align left"
+            title="Align left" aria-label="Align left"
             @click="editor?.chain().focus().setTextAlign('left').run()"
           >
             <AlignLeft :size="14" />
@@ -432,7 +432,7 @@ async function doSave() {
           <button
             class="p-1.5 rounded transition-colors hover:bg-gray-200"
             :class="editor?.isActive({ textAlign: 'center' }) ? 'bg-blue-100 text-blue-700' : 'text-tide-ink/70'"
-            title="Align center"
+            title="Align center" aria-label="Align center"
             @click="editor?.chain().focus().setTextAlign('center').run()"
           >
             <AlignCenter :size="14" />
@@ -442,7 +442,7 @@ async function doSave() {
           <button
             class="p-1.5 rounded transition-colors hover:bg-gray-200"
             :class="editor?.isActive({ textAlign: 'right' }) ? 'bg-blue-100 text-blue-700' : 'text-tide-ink/70'"
-            title="Align right"
+            title="Align right" aria-label="Align right"
             @click="editor?.chain().focus().setTextAlign('right').run()"
           >
             <AlignRight :size="14" />
@@ -452,7 +452,7 @@ async function doSave() {
           <button
             class="p-1.5 rounded transition-colors hover:bg-gray-200"
             :class="editor?.isActive({ textAlign: 'justify' }) ? 'bg-blue-100 text-blue-700' : 'text-tide-ink/70'"
-            title="Justify"
+            title="Justify" aria-label="Justify"
             @click="editor?.chain().focus().setTextAlign('justify').run()"
           >
             <AlignJustify :size="14" />
@@ -483,7 +483,7 @@ async function doSave() {
           <!-- Insert image -->
           <button
             class="p-1.5 rounded transition-colors hover:bg-gray-200 text-tide-ink/70"
-            title="Insert image"
+            title="Insert image" aria-label="Insert image"
             @click="toolbarInsertImage"
           >
             <Image :size="14" />
@@ -492,7 +492,7 @@ async function doSave() {
           <!-- Insert table -->
           <button
             class="p-1.5 rounded transition-colors hover:bg-gray-200 text-tide-ink/70"
-            title="Insert 3×3 table"
+            title="Insert 3×3 table" aria-label="Insert 3×3 table"
             @click="toolbarInsertTable"
           >
             <TableIcon :size="14" />

@@ -460,14 +460,14 @@ const handleExport = () => {
                   <button
                     @click="handleEdit(vessel)"
                     class="text-tide-blue-deep hover:text-tide-blue-deep p-1 rounded hover:bg-[rgba(90,138,171,0.10)] transition-colors duration-150"
-                    :title="t('vessels.aria.editVessel')"
+                    :title="t('vessels.aria.editVessel')" :aria-label="t('vessels.aria.editVessel')"
                   >
                     <Pencil class="h-4 w-4" />
                   </button>
                   <button
                     @click="handleDelete(vessel)"
                     class="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50 transition-colors duration-150"
-                    :title="t('vessels.aria.deleteVessel')"
+                    :title="t('vessels.aria.deleteVessel')" :aria-label="t('vessels.aria.deleteVessel')"
                   >
                     <Trash2 class="h-4 w-4" />
                   </button>

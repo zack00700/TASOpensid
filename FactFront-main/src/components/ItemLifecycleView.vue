@@ -300,7 +300,7 @@ const sortFields = computed(() => ([
                   v-if="lifecycle.events && lifecycle.events.length > 0"
                   @click="selectedLifecycleId = lifecycle.id!"
                   class="p-1 text-tide-ink/40 hover:text-tide-ink/70 hover:bg-[rgba(42,36,30,0.05)] rounded"
-                  :title="t('itemLifecycleView.label.viewEvents')"
+                  :title="t('itemLifecycleView.label.viewEvents')" :aria-label="t('itemLifecycleView.label.viewEvents')"
                 >
                   <Eye class="h-4 w-4" />
                 </button>

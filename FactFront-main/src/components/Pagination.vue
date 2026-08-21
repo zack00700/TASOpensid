@@ -136,7 +136,7 @@ const showingEnd = computed(() => {
           @click="handlePageChange(1)"
           :disabled="pagination.currentPage === 1"
           class="relative inline-flex items-center rounded-l-md px-2 py-2 text-tide-ink/40 ring-1 ring-inset ring-gray-300 hover:bg-[rgba(252,247,238,0.55)] focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed"
-          :title="t('pagination.label.firstPage')"
+          :title="t('pagination.label.firstPage')" :aria-label="t('pagination.label.firstPage')"
         >
           <ChevronsLeft class="h-5 w-5" />
         </button>
@@ -146,7 +146,7 @@ const showingEnd = computed(() => {
           @click="handlePageChange(pagination.currentPage - 1)"
           :disabled="!pagination.hasPrevious"
           class="relative inline-flex items-center px-2 py-2 text-tide-ink/40 ring-1 ring-inset ring-gray-300 hover:bg-[rgba(252,247,238,0.55)] focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed"
-          :title="t('pagination.label.previousPage')"
+          :title="t('pagination.label.previousPage')" :aria-label="t('pagination.label.previousPage')"
         >
           <ChevronLeft class="h-5 w-5" />
         </button>
@@ -190,7 +190,7 @@ const showingEnd = computed(() => {
           @click="handlePageChange(pagination.currentPage + 1)"
           :disabled="!pagination.hasNext"
           class="relative inline-flex items-center px-2 py-2 text-tide-ink/40 ring-1 ring-inset ring-gray-300 hover:bg-[rgba(252,247,238,0.55)] focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed"
-          :title="t('pagination.label.nextPage')"
+          :title="t('pagination.label.nextPage')" :aria-label="t('pagination.label.nextPage')"
         >
           <ChevronRight class="h-5 w-5" />
         </button>
@@ -200,7 +200,7 @@ const showingEnd = computed(() => {
           @click="handlePageChange(pagination.totalPages)"
           :disabled="pagination.currentPage === pagination.totalPages"
           class="relative inline-flex items-center rounded-r-md px-2 py-2 text-tide-ink/40 ring-1 ring-inset ring-gray-300 hover:bg-[rgba(252,247,238,0.55)] focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed"
-          :title="t('pagination.label.lastPage')"
+          :title="t('pagination.label.lastPage')" :aria-label="t('pagination.label.lastPage')"
         >
           <ChevronsRight class="h-5 w-5" />
         </button>

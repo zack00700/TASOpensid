@@ -592,7 +592,7 @@ const getCardClasses = (rate: Rate) => {
                   type="button"
                   @click="handleCopyRate(rate)"
                   class="p-2 text-tide-ink/40 hover:text-tide-blue-deep hover:bg-[rgba(90,138,171,0.10)] rounded-lg transition-colors"
-                  :title="t('contractRateManagement.label.copyRate')"
+                  :title="t('contractRateManagement.label.copyRate')" :aria-label="t('contractRateManagement.label.copyRate')"
                 >
                   <Copy class="h-4 w-4" />
                 </button>
@@ -600,7 +600,7 @@ const getCardClasses = (rate: Rate) => {
                   type="button"
                   @click="handleEditRate(rate)"
                   class="p-2 text-tide-ink/40 hover:text-tide-blue-deep hover:bg-[rgba(90,138,171,0.10)] rounded-lg transition-colors"
-                  :title="t('contractRateManagement.label.editRate')"
+                  :title="t('contractRateManagement.label.editRate')" :aria-label="t('contractRateManagement.label.editRate')"
                 >
                   <Edit3 class="h-4 w-4" />
                 </button>
@@ -609,7 +609,7 @@ const getCardClasses = (rate: Rate) => {
                 type="button"
                 @click="handleDeleteRate(rate)"
                 class="p-2 text-tide-ink/40 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                :title="t('contractRateManagement.label.deleteRate')"
+                :title="t('contractRateManagement.label.deleteRate')" :aria-label="t('contractRateManagement.label.deleteRate')"
               >
                 <Trash2 class="h-4 w-4" />
               </button>

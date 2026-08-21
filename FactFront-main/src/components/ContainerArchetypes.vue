@@ -138,7 +138,7 @@ onMounted(async () => {
                   @click="onEdit(a)"
                   :data-test="`arch-edit-${a.id}`"
                   class="text-tide-blue-deep hover:text-tide-blue-deep p-1 rounded hover:bg-[rgba(90,138,171,0.10)]"
-                  :title="t('archetypes.button.edit')"
+                  :title="t('archetypes.button.edit')" :aria-label="t('archetypes.button.edit')"
                 >
                   <Pencil class="h-4 w-4" />
                 </button>
@@ -151,7 +151,7 @@ onMounted(async () => {
                     'p-1 rounded',
                     (assignedCount[a.id ?? ''] ?? 0) > 0 ? 'text-gray-300 cursor-not-allowed' : 'text-red-600 hover:text-red-900 hover:bg-red-50'
                   ]"
-                  :title="(assignedCount[a.id ?? ''] ?? 0) > 0 ? t('archetypes.tooltip.cannotDeleteInUse') : t('archetypes.button.delete')"
+                  :title="(assignedCount[a.id ?? ''] ?? 0) > 0 ? t('archetypes.tooltip.cannotDeleteInUse') : t('archetypes.button.delete')" :aria-label="(assignedCount[a.id ?? ''] ?? 0) > 0 ? t('archetypes.tooltip.cannotDeleteInUse') : t('archetypes.button.delete')"
                 >
                   <Trash2 class="h-4 w-4" />
                 </button>

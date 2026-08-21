@@ -1849,14 +1849,14 @@ const generateInvoice = async () => {
                     <button
                       @click="duplicateItem(index)"
                       class="p-2 text-tide-ink/40 hover:text-tide-ink/70 hover:bg-[rgba(42,36,30,0.05)] rounded-lg transition-colors"
-                      :title="t('billOfLadingForm.button.duplicateItem')"
+                      :title="t('billOfLadingForm.button.duplicateItem')" :aria-label="t('billOfLadingForm.button.duplicateItem')"
                     >
                       <Copy class="h-4 w-4" />
                     </button>
                     <button
                       @click="removeItem(index)"
                       class="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                      :title="t('billOfLadingForm.button.removeItem')"
+                      :title="t('billOfLadingForm.button.removeItem')" :aria-label="t('billOfLadingForm.button.removeItem')"
                     >
                       <Trash2 class="h-4 w-4" />
                     </button>
