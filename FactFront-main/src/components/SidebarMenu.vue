@@ -69,7 +69,7 @@
                   :data-active="activeItem === item.name"
                   :data-test="`menu-item-${item.name.toLowerCase().replace(/\s+/g, '-')}`"
                   :tabindex="activeItem === item.name ? -1 : 0"
-                  class="flex items-center w-full px-2.5 py-2 text-[13px] rounded-tide-pill group relative focus-visible:ring-2 focus-visible:ring-tide-blue focus-visible:ring-offset-1"
+                  class="flex items-start w-full px-2.5 py-2 text-left text-[13px] rounded-tide-pill group relative focus-visible:ring-2 focus-visible:ring-tide-blue focus-visible:ring-offset-1"
                   :class="
                     activeItem === item.name
                       ? 'bg-gradient-to-br from-[rgba(255,253,247,0.95)] to-[rgba(252,247,238,0.70)] text-tide-ink font-medium border border-[rgba(60,50,35,0.10)] transition-none'
@@ -83,7 +83,7 @@
                   ></div>
 
                   <div
-                    class="flex items-center justify-center w-5 h-5 mr-2.5"
+                    class="flex shrink-0 items-center justify-center w-5 h-5 mr-2.5 mt-px"
                     :class="
                       activeItem === item.name
                         ? 'text-tide-blue-deep transition-none'
@@ -92,7 +92,7 @@
                   >
                     <component :is="item.icon" class="w-4 h-4" />
                   </div>
-                  <span>{{ $t(item.i18nKey) }}</span>
+                  <span class="flex-1 leading-[1.35]">{{ $t(item.i18nKey) }}</span>
                 </button>
               </li>
             </ul>
