@@ -1,0 +1,11 @@
+# Progression de TASOpensid suivie par pilot. Valeurs du relevé du 29/09/2026 reprises (aucun commit depuis).
+projet: tasopensid
+documents_de_pilotage:
+  - docs/revue-2026-08-21.md
+axes:
+  en_cours:
+    nom: "Défauts corrigés (§ 3) contre points ouverts (§ 6) de la revue du 21/08/2026"
+    source: docs/revue-2026-08-21.md
+    fait: 13
+    partiel: 0
+    reste: 10
